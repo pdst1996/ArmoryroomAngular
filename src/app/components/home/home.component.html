@@ -1,0 +1,246 @@
+<title>{{applicationconfig.applicationName}}</title>
+
+<!-- !Primary nav bar -->
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light pr-0 pt-0 pb-0 pl-0" id="primaryNavbar"
+  role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <a class="navbar-brand justify-content-center" href="#">
+    <img alt="" src="{{ applicationconfig.logo }}" class="d-flex justify-content-end mtop-5 imgIcon"
+      triggers="mouseenter:mouseleave" [popover]="popAplication" popoverTitle="Application information"
+      placement="right bottom">
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="mr-auto">
+    </div>
+    <form class="form-inline my-2 my-lg-0">
+      <ul *ngIf="applicationData.menus.length>0" class="navbar-nav mr-3">
+        <!-- Level one dropdown -->
+        <li class="nav-item dropdown" *ngFor="let menu of (applicationData.menus | sort:'orden' |filterMenu:0 )">
+          <a class="nav-link" href="#" routerLink='{{menu.link}}'
+            *ngIf="(applicationData.menus |filterMenu:menu.idMenu).length == 0">
+            <i *ngIf="menu.name == 'Home'" class="fas fa-home"></i>
+            <span *ngIf="menu.name != 'Home'" class="text-uppercase">{{menu.name}}</span>
+          </a>
+          <a class="nav-link text-uppercase" href="#" id="dropdownMenu1" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false"
+            *ngIf="(applicationData.menus |filterMenu:menu.idMenu).length > 0">{{menu.name}}
+            <i class="fas fa-angle-down fa-xs m-1"></i>
+          </a>
+          <ul aria-labelledby="dropdownMenu1" class="dropdown-menu border-0 shadow">
+            <li *ngFor="let submenu of (applicationData.menus | sort:'orden' |filterMenu:menu.idMenu)">
+              <a href="#" routerLink='{{submenu.link}}' class="dropdown-item"
+                *ngIf="(applicationData.menus |filterMenu:submenu.idMenu).length == 0">{{submenu.name}}</a>
+            </li>
+            <!-- Level two dropdown-->
+            <li class="dropdown-submenu"
+              *ngFor="let submenu of (applicationData.menus | sort:'orden' |filterMenu:menu.idMenu)">
+              <a id="dropdownMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" class="dropdown-item"
+                *ngIf="(applicationData.menus |filterMenu:submenu.idMenu).length > 0">{{submenu.name}}
+                <i class="fas fa-angle-right fa-xs m-1"></i>
+              </a>
+              <ul aria-labelledby="dropdownMenu2" class="dropdown-menu border-0 shadow">
+                <li *ngFor="let submenu1 of (applicationData.menus | sort:'orden' |filterMenu:submenu.idMenu)">
+                  <a tabindex="-1" routerLink='{{submenu1.link}}' href="#" class="dropdown-item">{{submenu1.name}}</a>
+                </li>
+              </ul>
+            </li>
+            <!-- End Level two -->
+          </ul>
+        </li>
+      </ul>
+      <div class="justify-content-start mr-3">
+        <div id="profilePopOver">
+          <img [src]="'http://plant8.sanmina.com:8080/SanmAPI/getImageUser/?employee='+user.userName"
+            alt="User profile picture" width="40" height="40" class="rounded-circle mr-2 pointer"
+            triggers="mouseenter:mouseleave" [popover]="popUser" popoverTitle="User information" placement="bottom">
+          <a class="nav-item uppercase">
+            {{user.userName| uppercase}}</a>
+        </div>
+      </div>
+      <div class="float-right mr-3">
+        <a class="btn btn-white rounded-circle border pointer logOut" (click)="logout()">
+          <span><i class="fas fa-power-off"></i></span>
+        </a>
+      </div>
+    </form>
+  </div>
+</nav>
+<nav class="navbarM w-100 p-3" style="box-shadow: 1px 5px 12px grey; height: 33px;">
+  <div class="col-md-1 float-left">
+    <a class="navbar-brand float-left" style="margin-top: -23px; margin-left: -30px;">
+      <button class="btn btn-secondary btn-sm" (click)="back()">
+        <span><i class="fas fa-arrow-left text-bigger"></i></span>
+      </button>
+    </a>
+    <a class="float-left" style="margin-top: -13px">
+      <small class="text-uppercase font-weight-bold text-white">
+        {{currentRoute}}
+      </small>
+    </a>
+  </div>
+
+  <div class="col-md-2 float-right">
+    <a class="nav-link float-right text-white" id="navbarDropdown" role="button" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false" style="margin-top: -18px">
+      <small class="text-uppercase font-weight-bold text-white">
+        {{currentPlant}}
+      </small>
+      <i class="fas fa-angle-down fa-xs m-1"></i>
+    </a>
+    <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item-sanmina-danger"><small class="text-secondary">PLANTA 2</small></a>
+            <a class="dropdown-item-sanmina-danger"><small class="text-secondary">REGIONAL IMS</small></a>
+        </div> -->
+    <ul aria-labelledby="navbarDropdown" class="dropdown-menu border-0 shadow">
+      <li class="nav-item dropdown" *ngFor="let plant of plants" (click)="changeCurrentPlant(plant.name)">
+        <a class="dropdown-item">
+          {{plant.name}}
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<!-- !Content -->
+<router-outlet></router-outlet>
+<!-- Modals -->
+<!-- Confirm Modal -->
+<div id="loadingModal" class="modal uppercase" tabindex="-1" role="dialog" aria-labelledby="LoadingModal"
+  aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+            class="ion-close-round"></span></button>
+        <h4 class="modal-title" id="mySmallModalLabel">Please Wait... <i class="ion-loading"></i></h4>
+      </div>
+      <div class="modal-body">
+        loadingMessage
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div id="selectPlant" class="modal fade uppercase" tabindex="-1" role="dialog" aria-labelledby="SelectModal"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Select a Plant</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 text-center">
+            <button style="height: 150px;"
+              class="btn btn-lg btn-primary btn-block mtop-30 text-center">plant.plant</button>
+          </div>
+          <div class="col-md-12 text-center">
+            <h4 class="modal-title">Setting plant and getting menus plese wait...</h4>
+          </div>
+          <div class="col-md-12 text-center">
+            <h4 class="modal-title">You don't have assigned plant, please contact IT</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div>
+  <div id="confirmModal" class="modal fade uppercase" tabindex="-1" role="dialog" aria-labelledby="ConfirmModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+              class="ion-close-round"></span></button>
+          <h4 class="modal-title" id="titleAction"></h4>
+        </div>
+        <div id="messageAction" class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" id="saveConfirmButton" class="btn btn-success"><i class="ion-checkmark-round"></i>
+            Save</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <footer id="footer" class="col-md-12">
+    <div class="text-center">
+      <strong class="uppercase"><a href="http://www.sanmina.com/company-profile/legal-information/" target="_blank">
+          <small>
+            <font><u>LEGAL
+                INFORMATION </u></font>
+          </small>
+        </a>
+        <small>
+          <font color="red">POWERED BY:</font> MEXICO RAPID INNOVATION LAB - {{currentYear}}
+        </small>
+        <a href="http://www.sanmina.com/company-profile/safe-harbor-statement/" target="_blank"><small> <u>SAFE HARBOR
+              STATEMENT</u></small></a>
+      </strong>
+    </div>
+    <!-- <div class="col-md-offset-12" id="iconFooter">
+      <img class="img-circle" src="assets/sanmina/sanmina-100x56.png" id="bottomImg" />
+    </div> -->
+  </footer>
+</div>
+<!-- Modals -->
+<!-- Confirm Modal -->
+<div class="loadingmodal">
+  <div bsModal #modalCharg='bs-modal' class="modal uppercase" tabindex="-1" role="dialog" aria-labelledby="LoadingModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+              class="ion-close-round"></span></button>
+          <h4 class="modal-title" id="mySmallModalLabel">Please Wait... <i class="ion-loading"></i></h4>
+        </div>
+        <div class="modal-body">
+          Getting user information...
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>
+
+<!--pop over user-->
+<ng-template #popUser>
+  <div>
+    <div class="col-md-4">
+      <img class="rounded-circle shadow" width="80" height="80"
+        [src]="'http://plant8.sanmina.com:8080/SanmAPI/getImageUser/?employee='+user.userName" />
+    </div>
+    <div class="col-md-6">
+      <div id="NamePopover">{{user.name +' '+ user.lastName}}</div>
+      <div id="employeNumber">{{user.employeeNumber}}</div>
+      <div class="text-secondary logBy">Login By: {{applicationData.loginType}}</div>
+    </div>
+  </div>
+
+</ng-template>
+<!--pop over application-->
+<ng-template #popAplication>
+  <div class="col-md-12">
+    <div id="NamePopover">{{applicationconfig.application}}</div>
+    <div id="employeNumber">v: {{applicationconfig.applicationVersion}}</div>
+    <div id="NamePopover">Master Page</div>
+    <div id="employeNumber">v: {{applicationconfig.masterPageVersion}}</div>
+  </div>
+</ng-template>

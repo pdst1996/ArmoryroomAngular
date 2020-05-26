@@ -1,0 +1,23 @@
+.loadingmodal {
+    .modal .modal-dialog:after,
+    .panel.panel-danger .panel-footer:after,
+    .panel.panel-gray .panel-footer:after,
+    .panel.panel-gray-dark .panel-footer:after,
+    .panel.panel-gray-darker .panel-footer:after,
+    .panel.panel-gray-light .panel-footer:after,
+    .panel.panel-info .panel-footer:after,
+    .panel.panel-success .panel-footer:after,
+    .panel.panel-warning .panel-footer:after {
+        position: unset;
+    }
+}
+
+.modal-header {
+    background: #505760;
+    color: white;
+    height: 50%;
+}
+
+.modal-title {
+    font-size: 20px;
+}
