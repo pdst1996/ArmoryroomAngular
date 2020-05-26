@@ -5,7 +5,7 @@
   role="navigation">
   <!-- Brand and toggle get grouped for better mobile display -->
   <a class="navbar-brand justify-content-center" href="#">
-    <img alt="" src="{{ applicationconfig.logo }}" class="d-flex justify-content-end mtop-5 imgIcon"
+    <img alt="" src="{{ applicationconfig.logo }}" class="d-flex justify-content-end mt-1 ml-2 imgIcon"
       triggers="mouseenter:mouseleave" [popover]="popAplication" popoverTitle="Application information"
       placement="right bottom">
   </a>
@@ -18,11 +18,11 @@
     <div class="mr-auto">
     </div>
     <form class="form-inline my-2 my-lg-0">
-      <ul *ngIf="applicationData.menus.length>0" class="navbar-nav mr-3">
+      <ul *ngIf="applicationData != null" class="navbar-nav mr-3">
         <!-- Level one dropdown -->
         <li class="nav-item dropdown" *ngFor="let menu of (applicationData.menus | sort:'orden' |filterMenu:0 )">
           <a class="nav-link" href="#" routerLink='{{menu.link}}'
-            *ngIf="(applicationData.menus |filterMenu:menu.idMenu).length == 0">
+            *ngIf="(applicationData.menus |filterMenu:menu.idMenu).length == 0" (click)="changeRoute(menu.link)">
             <i *ngIf="menu.name == 'Home'" class="fas fa-home"></i>
             <span *ngIf="menu.name != 'Home'" class="text-uppercase">{{menu.name}}</span>
           </a>
@@ -54,54 +54,62 @@
           </ul>
         </li>
       </ul>
-      <div class="justify-content-start mr-3">
-        <div id="profilePopOver">
-          <img [src]="'http://plant8.sanmina.com:8080/SanmAPI/getImageUser/?employee='+user.userName"
-            alt="User profile picture" width="40" height="40" class="rounded-circle mr-2 pointer"
-            triggers="mouseenter:mouseleave" [popover]="popUser" popoverTitle="User information" placement="bottom">
-          <a class="nav-item uppercase">
-            {{user.userName| uppercase}}</a>
+      <ng-container *ngIf="applicationData != null">
+        <div class="justify-content-start mr-3">
+          <div id="profilePopOver">
+            <img [src]="'http://plant8.sanmina.com:8080/SanmAPI/getImageUser/?employee='+ user.userName"
+              alt="User profile picture" width="40" height="40" class="rounded-circle mr-2 pointer"
+              triggers="mouseenter:mouseleave" [popover]="popUser" popoverTitle="User information" placement="bottom">
+            <a class="nav-item uppercase">
+              {{user.userName| uppercase}}</a>
+          </div>
         </div>
-      </div>
-      <div class="float-right mr-3">
-        <a class="btn btn-white rounded-circle border pointer logOut" (click)="logout()">
-          <span><i class="fas fa-power-off"></i></span>
-        </a>
+        <div class="float-right mr-3">
+          <a class="btn btn-white rounded-circle border pointer logOut" (click)="logout()">
+            <span><i class="fas fa-power-off"></i></span>
+          </a>
+        </div>
+      </ng-container>
+      <div *ngIf="applicationData == null">
+        <div class="justify-content-start mr-3">
+          <div id="profilePopOver">
+            <img src="assets/sanmina/application/user.jpg"
+              alt="User profile picture" width="40" height="40" class="rounded-circle mr-2 pointer">
+            <a class="nav-item uppercase">
+              GENERAL_USER</a>
+          </div>
+        </div>
       </div>
     </form>
   </div>
 </nav>
 <nav class="navbarM w-100 p-3" style="box-shadow: 1px 5px 12px grey; height: 33px;">
-  <div class="col-md-1 float-left">
+  <div class="col-md-2 float-left" *ngIf="applicationData != null">
     <a class="navbar-brand float-left" style="margin-top: -23px; margin-left: -30px;">
       <button class="btn btn-secondary btn-sm" (click)="back()">
         <span><i class="fas fa-arrow-left text-bigger"></i></span>
       </button>
     </a>
-    <a class="float-left" style="margin-top: -13px">
+    <p class="float-left" style="margin-top: -13px">
       <small class="text-uppercase font-weight-bold text-white">
         {{currentRoute}}
       </small>
-    </a>
+    </p>
   </div>
 
-  <div class="col-md-2 float-right">
-    <a class="nav-link float-right text-white" id="navbarDropdown" role="button" data-toggle="dropdown"
+  <div class="col-md-2 float-right" *ngIf="applicationData != null">
+    <p class="nav-link float-right text-white pointer" id="navbarDropdown" role="button" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false" style="margin-top: -18px">
       <small class="text-uppercase font-weight-bold text-white">
         {{currentPlant}}
       </small>
       <i class="fas fa-angle-down fa-xs m-1"></i>
-    </a>
-    <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item-sanmina-danger"><small class="text-secondary">PLANTA 2</small></a>
-            <a class="dropdown-item-sanmina-danger"><small class="text-secondary">REGIONAL IMS</small></a>
-        </div> -->
+    </p>
     <ul aria-labelledby="navbarDropdown" class="dropdown-menu border-0 shadow">
       <li class="nav-item dropdown" *ngFor="let plant of plants" (click)="changeCurrentPlant(plant.name)">
-        <a class="dropdown-item">
+        <p class="dropdown-item">
           {{plant.name}}
-        </a>
+        </p>
       </li>
     </ul>
   </div>

@@ -11,14 +11,13 @@ import { ArraySortPipe } from 'src/app/helpers/pipes/orderMenu';
 import { FilterMenuPipe } from 'src/app/helpers/pipes/filterMenu';
 import { RequimttoComponent } from 'src/app/components/requimtto/requimtto.component';
 import {MatTableModule, MatPaginatorModule} from '@angular/material';
-import { ToolingComponent } from 'src/app/components/tooling/tooling.component'
 
 @NgModule({
     declarations: [
         HomeComponent,
         ArraySortPipe,
         FilterMenuPipe,RequimttoComponent
-        ,ToolingComponent
+        
     ],
     imports: [
         CommonModule,
@@ -27,7 +26,7 @@ import { ToolingComponent } from 'src/app/components/tooling/tooling.component'
         HomeRoutingModule,
         FormsModule,
         MatTableModule,
-         MatPaginatorModule
+        MatPaginatorModule
 
     ],
     providers: [

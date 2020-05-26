@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from '../../components/home/home.component';
 import { LoginAct } from '../../loginact.service';
 import { RequimttoComponent } from 'src/app/components/requimtto/requimtto.component';
-import { ToolingComponent } from 'src/app/components/tooling/tooling.component'
 
 const routes: Routes = [
     {
@@ -14,10 +13,11 @@ const routes: Routes = [
                 loadChildren: 'src/app/modules/principal/principal.module#PrincipalModule', canActivate: [LoginAct]
             },
             {
-                path:'requimtto', component: RequimttoComponent
+                path: 'config/tooling',
+                loadChildren: 'src/app/modules/tooling/tooling.module#ToolingModule', canActivate: [LoginAct]
             },
             {
-                path:'config/tooling', component: ToolingComponent
+                path:'requimtto', component: RequimttoComponent
             }
            
         ]

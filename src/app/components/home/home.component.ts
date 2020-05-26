@@ -1,17 +1,14 @@
-import { Location, PlatformLocation } from "@angular/common";
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { PlatformLocation, Location } from "@angular/common";
 import { Router } from "@angular/router";
-import { ModalDirective } from "ngx-bootstrap/modal";
-import { Subscription } from "rxjs";
-import {
-  GeneralResponse,
-  LoginResponse
-} from "src/app/models/login/login.model";
-import { Constants } from "../../helpers/constats";
-import { ApplicationData, User } from "../../models/home/home.model";
-import { HomeService } from "../../modules/home/home.service";
-import { LoginService } from "../../modules/login/login.service";
+import { User, ApplicationData, Menu } from "../../models/home/home.model";
 import { Notify } from "../../modules/notify/notify";
+import { ModalDirective } from "ngx-bootstrap/modal";
+import { HomeService } from "../../modules/home/home.service";
+import { Constants } from "../../helpers/constats";
+import { Subscription } from "rxjs";
+import { LoginService } from "../../modules/login/login.service";
+import { GeneralResponse } from "src/app/models/login/login.model";
 declare var $: any;
 
 @Component({
@@ -22,7 +19,7 @@ declare var $: any;
 export class HomeComponent implements OnInit {
   @ViewChild("modalCharg", { static: true }) charging: ModalDirective;
   public applicationconfig = {
-    applicationVersion: "1.0.0.0",
+    applicationVersion: "0.0.0.0",
     masterPageVersion: Constants.masterPageVersion,
     application: Constants.application,
     applicationName: Constants.applicationName,
@@ -30,9 +27,7 @@ export class HomeComponent implements OnInit {
     ico: Constants.ico,
     localStorage: Constants.localStorage
   };
-  private subscriptions: Array<Subscription>;
-  private generalresponse: GeneralResponse;
-  private loginResponse: LoginResponse;
+  public subscriptions: Subscription[] = [];
   public user: User;
   public applicationData: ApplicationData;
   public applicationDataRefreshed: ApplicationData;
@@ -46,8 +41,8 @@ export class HomeComponent implements OnInit {
     application?: String;
     plant?: string;
   } = {
-    application: Constants.application
-  };
+      application: Constants.application
+    };
 
   constructor(
     public location: PlatformLocation,
@@ -56,91 +51,96 @@ export class HomeComponent implements OnInit {
     public homeService: HomeService,
     public notify: Notify,
     public loginService: LoginService
-  ) {
-    this.subscriptions = [];
-  }
+  ) {  }
 
   ngOnInit() {
-    const message = localStorage.getItem("message");
-    const date = new Date();
-    this.applicationData = JSON.parse(
-      localStorage.getItem(Constants.localStorage)
-    );
-    this.user = this.applicationData.userInfo;
-    this.plants = this.applicationData.sites;
-    if (this.applicationData.applicationVersion) {
-      this.applicationconfig.applicationVersion = this.applicationData.applicationVersion;
-    }
-    if (!localStorage.getItem(Constants.plantLS)) {
-      this.currentPlant = this.plants[0].name;
-      localStorage.setItem(Constants.plantLS, this.currentPlant);
-    } else {
-      this.currentPlant = localStorage.getItem(Constants.plantLS);
-    }
-    const refreshApplicationData: Subscription = this.homeService
-      .RefreshApplicationData({
-        application: this.applicationconfig.application,
-        plant: this.currentPlant
-      })
-      .subscribe(
-        res => {
-          this.applicationDataRefreshed = res.data;
-        },
-        error => {
-          console.log(error);
-        },
-        () => {
-          this.applicationData.sites = this.applicationDataRefreshed.sites;
-          this.applicationData.menus = this.applicationDataRefreshed.menus;
-          this.applicationData.profiles = this.applicationDataRefreshed.profiles;
-          this.applicationData.applicationVersion = this.applicationDataRefreshed.applicationVersion;
-          localStorage.setItem(
-            Constants.localStorage,
-            JSON.stringify(this.applicationData)
-          );
-          this.user = this.applicationData.userInfo;
-          this.plants = this.applicationData.sites;
-          this.applicationconfig.applicationVersion = this.applicationData.applicationVersion;
-          this.charging.hide();
-          this.notify.setNotification("Login Success", message, "success");
-        }
+    if (this.applicationData == null) {
+      const message = localStorage.getItem("message");
+      const date = new Date();
+      this.applicationData = JSON.parse(
+        localStorage.getItem(Constants.localStorage)
       );
-    this.subscriptions.push(refreshApplicationData);
-    switch (this.router.url) {
-      case "/": {
-        this.currentRoute = "home";
-        break;
+      this.user = this.applicationData.userInfo;
+      this.plants = this.applicationData.sites;
+      if (this.applicationData.applicationVersion) {
+        this.applicationconfig.applicationVersion = this.applicationData.applicationVersion;
       }
-      case "/Prueba1link": {
-        this.currentRoute = "prueba1";
-        break;
+      if (!localStorage.getItem(Constants.plantLS)) {
+        this.currentPlant = this.plants[0].name;
+        localStorage.setItem(Constants.plantLS, this.currentPlant);
+      } else {
+        this.currentPlant = localStorage.getItem(Constants.plantLS);
       }
-    }
-    this.currentYear = date.getFullYear();
+      const refreshApplicationData: Subscription = this.homeService
+        .RefreshApplicationData({
+          application: this.applicationconfig.application,
+          plant: this.currentPlant
+        })
+        .subscribe(
+          res => {
+            this.applicationDataRefreshed = res.data;
+          },
+          error => {
+            console.log(error);
+          },
+          () => {
+            this.applicationData.sites = this.applicationDataRefreshed.sites;
+            this.applicationData.menus = this.applicationDataRefreshed.menus;
+            this.applicationData.profiles = this.applicationDataRefreshed.profiles;
+            this.applicationData.applicationVersion = this.applicationDataRefreshed.applicationVersion;
+            localStorage.setItem(
+              Constants.localStorage,
+              JSON.stringify(this.applicationData)
+            );
+            this.user = this.applicationData.userInfo;
+            this.plants = this.applicationData.sites;
+            this.applicationconfig.applicationVersion = this.applicationData.applicationVersion;
+            this.charging.hide();
+            this.notify.setNotification("Login Success", message, "success");
+          }
+        );
+      this.subscriptions.push(refreshApplicationData);
+      switch (this.router.url) {
+        case "/": {
+          this.currentRoute = "home";
+          break;
+        }
+        case "/config/tooling": {
+          this.currentRoute = "tooling";
+          break;
+        }
+        case "/requimtto": {
+          this.currentRoute = "requimtto";
+          break;
+        }
+      }
+      this.currentYear = date.getFullYear();
+      $(".dropdown-menu a.dropdown-toggle").on("click", function (e) {
+        if (
+          !$(this)
+            .next()
+            .hasClass("show")
+        ) {
+          $(this)
+            .parents(".dropdown-menu")
+            .first()
+            .find(".show")
+            .removeClass("show");
+        }
+        var $subMenu = $(this).next(".dropdown-menu");
+        $subMenu.toggleClass("show");
 
-    $(".dropdown-menu a.dropdown-toggle").on("click", function(e) {
-      if (
-        !$(this)
-          .next()
-          .hasClass("show")
-      ) {
         $(this)
-          .parents(".dropdown-menu")
-          .first()
-          .find(".show")
-          .removeClass("show");
-      }
-      const subMenu = $(this).next(".dropdown-menu");
-      subMenu.toggleClass("show");
+          .parents("li.nav-item.dropdown.show")
+          .on("hidden.bs.dropdown", function (e) {
+            $(".dropdown-submenu .show").removeClass("show");
+          });
 
-      $(this)
-        .parents("li.nav-item.dropdown.show")
-        .on("hidden.bs.dropdown", function() {
-          $(".dropdown-submenu .show").removeClass("show");
-        });
-
-      return false;
-    });
+        return false;
+      });
+    } else {
+      this.applicationData = null;
+    }
   }
 
   changeCurrentPlant(plant) {
@@ -161,12 +161,16 @@ export class HomeComponent implements OnInit {
   }
   changeRoute(currentRoute: string): void {
     switch (currentRoute) {
-      case "Home": {
+      case "": {
         this.currentRoute = "home";
         break;
       }
-      case "/Prueba1link": {
-        this.currentRoute = "prueba1";
+      case "/config/tooling": {
+        this.currentRoute = "tooling";
+        break;
+      }
+      case "/requimtto": {
+        this.currentRoute = "requimtto";
         break;
       }
     }
@@ -177,11 +181,15 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       switch (this.router.url) {
         case "/": {
-          this.currentRoute = "Home";
+          this.currentRoute = "home";
           break;
         }
-        case "/Prueba1link": {
-          this.currentRoute = "Prueba1";
+        case "/config/tooling": {
+          this.currentRoute = "tooling";
+          break;
+        }
+        case "/requimtto": {
+          this.currentRoute = "requimtto";
           break;
         }
       }
