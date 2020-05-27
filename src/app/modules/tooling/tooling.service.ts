@@ -1,8 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Project } from '../../models/tooling/tooling.model'
+import { Project, PartNumber } from '../../models/tooling/tooling.model'
 import { Constants } from '../../helpers/constats'
+
 
 @Injectable({
   providedIn: "root"
@@ -10,6 +11,7 @@ import { Constants } from '../../helpers/constats'
 export class ToolingService {
  
   private projectUrl = `${Constants.SERVER}projects`
+  private partNumberUrl = `${Constants.SERVER}partnumbers`
   
   constructor(private httpClient : HttpClient) { }
 
@@ -17,6 +19,9 @@ export class ToolingService {
     return this.httpClient.get<Project[]>(`${this.projectUrl}/all`).pipe();
   }
 
+  getPartNumbersByProject(id:number): Observable<PartNumber[]>{
+    return this.httpClient.get<PartNumber[]>(`${this.partNumberUrl}/partnumbersByProject?${id}`).pipe();
+  }
   
 
   

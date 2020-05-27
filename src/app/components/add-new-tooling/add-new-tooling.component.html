@@ -1,13 +1,48 @@
 
-<div class="container-sm">
-    <div class="col-sm-4">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="inputGroupSelect01">PROYECTO:</label>
+<div class="container">
+    <div class="row justify-content-around mt-5">
+        <div class="col-5">
+            <div class="input-group form-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">PROYECTO:</label>
+                </div>
+                <select class="custom-select" [(ngModel)]="slProject" (change)="loadPartnumbers()">
+                    <option value="null" [selected]="slProject == null">Elige...</option>
+                    <option *ngFor="let project of projects" value="{{project.pk_project}}">{{project.project_name}}</option>
+                </select>
             </div>
-            <select class="custom-select" id="inputGroupSelect01" >
-                <option *ngFor="let project of projects" value="{{project.pk_project}}">{{project.project_name}}</option>               
-            </select>
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">NUMERO DE PARTE:</label>
+                </div>
+                <select class="custom-select" [(ngModel)]="slPartNumber" [disabled]="slProject == '' || slProject == null || slProject == 'Elige...'">
+                    <option selected>Elige...</option>
+                    <option *ngFor="let project of projects" value="{{project.pk_project}}">{{project.project_name}}</option>               
+                </select>
+            </div>
         </div>
     </div>
+    <div class="row justify-content-center mt-4">
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">TIPO:</label>
+                </div>
+                <select class="custom-select">
+                    <option selected>Elige...</option>
+                    <option *ngFor="let project of projects" value="{{project.pk_project}}">{{project.project_name}}</option>               
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="status">Status</label>
+        <select class="form-control" name="status" [(ngModel)]="category.status">
+           <option [value]="1" [selected]="category.status ==1">Active</option>
+           <option [value]="0" [selected]="category.status ==0">In Active</option>
+        </select>
+    </div>
 </div>
+

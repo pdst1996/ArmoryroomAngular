@@ -3,3 +3,9 @@ export interface Project {
     project_name: string,
     sfdcpc: string
 }
+
+export interface PartNumber {
+    pk_partnumber?: number,
+    partnumber: string,
+    fk_project: number
+}
