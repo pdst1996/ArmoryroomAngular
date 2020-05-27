@@ -2,18 +2,22 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Project } from '../../models/tooling/tooling.model'
+import { Constants } from '../../helpers/constats'
 
 @Injectable({
   providedIn: "root"
 })
 export class ToolingService {
  
-  private projectUrl = 'http://143.116.205.46:8080/ArmoryRoom_Back/projects'
+  private projectUrl = `${Constants.SERVER}projects`
+  
   constructor(private httpClient : HttpClient) { }
 
   findAllProjects(): Observable<Project[]>{
-    return this.httpClient.get<Project[]>(`${this.projectUrl}/all`);
+    return this.httpClient.get<Project[]>(`${this.projectUrl}/all`).pipe();
   }
+
+  
 
   
 }

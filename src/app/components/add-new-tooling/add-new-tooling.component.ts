@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { Project } from '../../models/tooling/tooling.model'
+import { Constants } from '../../helpers/constats'
 
 @Component({
   selector: 'app-add-new-tooling',
@@ -15,7 +16,6 @@ export class AddNewToolingComponent implements OnInit {
   getAllProjects(){
     this.projectService.findAllProjects().subscribe(projects =>{
       this.projects = projects;
-      console.log(this.projects);
     });
   }
 
