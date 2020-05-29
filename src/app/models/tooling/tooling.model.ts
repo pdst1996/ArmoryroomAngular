@@ -3,7 +3,6 @@ export interface Project {
     project_name: string,
     sfdcpc: string
 }
-
 export interface PartNumber {
     pk_Partnumber?: number,
     partnumber: string,
@@ -13,25 +12,28 @@ export interface PartNumber {
         project_name: string
     }
 }
-
 export interface Type {
     pktype?: number,
     type: string
 }
-
-export interface Project {
-    pkProject?: number,
-    project_name: string,
-    sfdcpc: string
+export interface Tooling {
+    pk_tooling?: number,
+    tooling: string,
+    fk_status: number,
+    fk_type: number,
+    rack: string,
+    position: string,
+    last_mtce: string,
+    next_mtce: string
 }
 
-export class cProject {
-    pkProject: number;
-    project_name: string;
-    sfdcpc: string;
-}
-
-export class cPartNumber {
-    pk_Partnumber: number;
-    partnumber: string;
+export class objTooling {
+    pk_tooling: number;
+    tooling: string;
+    fk_status: number;
+    fk_type: number;
+    rack: string;
+    position: string;
+    last_mtce: string;
+    next_mtce: string;
 }

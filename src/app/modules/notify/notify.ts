@@ -47,7 +47,7 @@ export class Notify {
     });
   }
 
-  setLoading(text: string, time:number) {
+  setLoading(text: string, time:number, delay:number) {
       
     const loader = PNotify.alert({
       text: ' '+text,
@@ -71,7 +71,7 @@ export class Notify {
         type : 'success',
         text: "   Listo"
       });
-    }, 1500);
+    }, delay);
 
   
     

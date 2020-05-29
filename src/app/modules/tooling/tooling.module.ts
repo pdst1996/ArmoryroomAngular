@@ -9,6 +9,9 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import {MatIconModule} from '@angular/material/icon';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+
+
 
 
 @NgModule({
@@ -19,7 +22,9 @@ import {MatIconModule} from '@angular/material/icon';
     ModalModule.forRoot(),
     FormsModule,
     MatTabsModule,
-    MatIconModule
+    MatIconModule,
+    BsDatepickerModule.forRoot(),
+    
   ],
   declarations: [ToolingComponent, AddNewToolingComponent]
 })
