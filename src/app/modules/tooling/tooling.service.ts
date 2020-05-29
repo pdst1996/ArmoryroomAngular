@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Project, PartNumber } from '../../models/tooling/tooling.model'
+import { Project, PartNumber, Type } from '../../models/tooling/tooling.model'
 import { Constants } from '../../helpers/constats'
 
 
@@ -10,8 +10,9 @@ import { Constants } from '../../helpers/constats'
 })
 export class ToolingService {
  
-  private projectUrl = `${Constants.SERVER}projects`
-  private partNumberUrl = `${Constants.SERVER}partnumbers`
+  private projectUrl = `${Constants.SERVER}projects`;
+  private partNumberUrl = `${Constants.SERVER}partnumbers`;
+  private typeUrl = `${Constants.SERVER}types`;
   
   constructor(private httpClient : HttpClient) { }
 
@@ -20,9 +21,12 @@ export class ToolingService {
   }
 
   getPartNumbersByProject(id:number): Observable<PartNumber[]>{
-    return this.httpClient.get<PartNumber[]>(`${this.partNumberUrl}/partnumbersByProject?${id}`).pipe();
+    return this.httpClient.get<PartNumber[]>(`${this.partNumberUrl}/byProject/${id}`).pipe();
   }
   
+  findAllTypes(): Observable<Type[]>{
+    return this.httpClient.get<Type[]>(`${this.typeUrl}/all`).pipe();
+  }
 
   
 }

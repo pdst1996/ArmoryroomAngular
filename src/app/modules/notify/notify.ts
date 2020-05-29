@@ -46,4 +46,41 @@ export class Notify {
       }
     });
   }
+
+  setLoading(text: string, time:number) {
+      
+    const loader = PNotify.alert({
+      text: ' '+text,
+      icon: 'fas fa-spinner fa-pulse',
+      type: 'info',
+      title:false,
+      shadow: false,
+      sticker: false,
+      delay: time,
+      stack: {
+        dir1: 'down',
+        firstpos1: 25,
+        modal: false,
+        maxOpen: Infinity
+      }
+    });
+    
+    setTimeout(() => {
+      loader.update({
+        icon : 'fas fa-check',
+        type : 'success',
+        text: "   Listo"
+      });
+    }, 1500);
+
+  
+    
+   
+  
+  
+
+    return loader;
+ 
+
+  }
 }
