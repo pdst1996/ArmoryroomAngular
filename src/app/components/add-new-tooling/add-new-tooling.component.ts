@@ -98,7 +98,7 @@ export class AddNewToolingComponent implements OnInit {
       this.notify.setLoading(" Guardando herramental",2000,1500);
       const obj = new objTooling();
       obj.tooling = this.serialTooling;
-      obj. = this.typeSelected;
+      //obj. = this.typeSelected;
       //this.clearForm();
     }
   }
