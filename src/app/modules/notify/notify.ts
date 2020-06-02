@@ -47,16 +47,17 @@ export class Notify {
     });
   }
 
-  setLoading(text: string, time:number, delay:number) {
-      
+  setLoading(text: string, oldLoader: any) {
+    if(oldLoader!=null)
+      oldLoader.close();
     const loader = PNotify.alert({
       text: ' '+text,
       icon: 'fas fa-spinner fa-pulse',
       type: 'info',
+      delay: 10000,
       title:false,
       shadow: false,
       sticker: false,
-      delay: time,
       stack: {
         dir1: 'down',
         firstpos1: 25,
@@ -64,23 +65,57 @@ export class Notify {
         maxOpen: Infinity
       }
     });
-    
-    setTimeout(() => {
-      loader.update({
-        icon : 'fas fa-check',
-        type : 'success',
-        text: "   Listo"
-      });
-    }, delay);
-
-  
-    
-   
-  
-  
-
     return loader;
- 
-
   }
+
+  setLoadingChangeText(text: string, loader:any) {
+    loader.update({
+      text: " "+text
+    });
+    return loader;
+  }
+
+  setLoadingDone(text: string, loader:any) {
+    loader.update({
+      text: " "+text,
+      icon : 'fas fa-check',
+      type : 'success',
+      hide: true,
+    });
+    setTimeout(() => {
+      loader.close();
+    }, 400);
+    return loader;
+  }
+
+  // setLoading(text: string, time:number, delay:number) {
+      
+  //   const loader = PNotify.alert({
+  //     text: ' '+text,
+  //     icon: 'fas fa-spinner fa-pulse',
+  //     type: 'info',
+  //     title:false,
+  //     shadow: false,
+  //     sticker: false,
+  //     delay: time,
+  //     stack: {
+  //       dir1: 'down',
+  //       firstpos1: 25,
+  //       modal: false,
+  //       maxOpen: Infinity
+  //     }
+  //   });
+    
+  //   setTimeout(() => {
+  //     loader.update({
+  //       icon : 'fas fa-check',
+  //       type : 'success',
+  //       text: "   Listo"
+  //     });
+  //   }, delay);
+
+  
+  //   return loader;
+
+  // }
 }

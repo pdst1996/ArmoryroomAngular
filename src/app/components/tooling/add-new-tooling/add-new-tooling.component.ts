@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
-import { Project, PartNumber, Type, objTooling } from '../../models/tooling/tooling.model'
+import { Project, PartNumber, Type, objTooling } from '../../../models/tooling/tooling.model'
 import { Notify } from 'src/app/modules/notify/notify';
 
 @Component({
@@ -24,6 +24,8 @@ export class AddNewToolingComponent implements OnInit {
   public cantMaintance : number;
   public cantPasses : number;
   public serialTooling : string;
+  public notifyLoading : any;
+  public buttonDisabled : boolean;
 
   constructor(private toolingService: ToolingService, private notify : Notify, private element : ElementRef) {
     
@@ -36,6 +38,7 @@ export class AddNewToolingComponent implements OnInit {
     this.cantMaintance = 0;
     this.cantPasses = 0;
     this.serialTooling = "";
+    this.buttonDisabled = false;
     this.getAllProjects();
     this.getAllTypes();
   }
@@ -54,6 +57,7 @@ export class AddNewToolingComponent implements OnInit {
       }else{
         this.partNumberSelected = 0.1;
       }
+      this.notifyLoading = this.notify.setLoadingDone("Listo", this.notifyLoading);
     });
   }
 
@@ -64,7 +68,7 @@ export class AddNewToolingComponent implements OnInit {
   }
 
   loadPartnumbers(){
-    this.notify.setLoading("Espera un momento",1000,800);
+    this.notifyLoading = this.notify.setLoading("Espera un momento", this.notifyLoading);
     this.getPartNumbersByProject(this.projectSelected);
   }
 
@@ -95,11 +99,22 @@ export class AddNewToolingComponent implements OnInit {
       this.element.nativeElement.querySelector("#txtPasses").focus();
     }
     else{
-      this.notify.setLoading(" Guardando herramental",2000,1500);
+      this.notifyLoading = this.notify.setLoading(" Guardando herramental", this.notifyLoading);
+      this.buttonDisabled = true;
       const obj = new objTooling();
       obj.tooling = this.serialTooling;
       //obj. = this.typeSelected;
       //this.clearForm();
+
+      setTimeout(() => {
+        this.notifyLoading = this.notify.setLoadingChangeText(" Wue sigo esperando :c", this.notifyLoading);
+        setTimeout(() => {
+          this.notifyLoading = this.notify.setLoadingChangeText(" Y nunca recibí nada >:v", this.notifyLoading);
+          setTimeout(() => {
+            this.notifyLoading = this.notify.setLoadingDone(" :)", this.notifyLoading);
+          }, 2000);
+        }, 3000);
+      }, 3000);
     }
   }
 

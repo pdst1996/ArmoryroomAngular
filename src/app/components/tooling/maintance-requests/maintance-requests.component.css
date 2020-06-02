@@ -9,3 +9,4 @@ table{
     text-align:center;
     font-weight: 600;
 }
+mat-checkbox ::ng-deep .mat-checkbox-inner-container {width: 28px;height: 28px; margin-top: 9px;}

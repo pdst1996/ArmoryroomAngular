@@ -13,8 +13,8 @@ import { LoginService } from "./modules/login/login.service";
 import { Notify } from "./modules/notify/notify";
 import { AppRoutingModule } from "./routes.module";
 import { ReactiveFormsModule } from '@angular/forms';
-
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 
 
 @NgModule({

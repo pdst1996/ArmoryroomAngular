@@ -1,6 +1,6 @@
 import { Component, OnInit,ViewChild } from '@angular/core';
- 
 import {MatPaginator,MatTableDataSource} from '@angular/material';
+
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -41,7 +41,6 @@ export class RequimttoComponent implements OnInit {
 
   displayedColumns: string[] = ['position','name','weight', 'symbol'];
   dataSource = new MatTableDataSource <PeriodicElement>(ELEMENT_DATA);
-  //@ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   constructor() { }
 
