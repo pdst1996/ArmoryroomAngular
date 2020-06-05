@@ -4,7 +4,7 @@ export interface GeneralApplicationData {
   message: string;
 }
 
-export interface ApplicationData {
+export class ApplicationData {
   menus: Array<Menu>;
   profiles: Array<Profile>;
   sites: Array<Site>;
@@ -14,7 +14,7 @@ export interface ApplicationData {
   loginType: string;
 }
 
-export interface User {
+export class User {
   active: boolean;
   mail: string;
   fullName: string;
@@ -44,7 +44,7 @@ export interface Site {
   name: string;
 }
 
-export interface Profile {
+export class Profile {
   active: boolean;
   description: string;
   idProfile: number;

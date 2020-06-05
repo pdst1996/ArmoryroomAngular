@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { Project, PartNumber, Type, objTooling } from '../../../models/tooling/tooling.model'
 import { Notify } from 'src/app/modules/notify/notify';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-add-new-tooling',
@@ -20,12 +21,14 @@ export class AddNewToolingComponent implements OnInit {
   types : Type[];
   public projectSelected : number;
   public partNumberSelected : number;
-  public typeSelected : string ;
+  public typeSelected : number ;
   public cantMaintance : number;
   public cantPasses : number;
   public serialTooling : string;
   public notifyLoading : any;
   public buttonDisabled : boolean;
+  public positionTooling : string;
+  public rackTooling : string;
 
   constructor(private toolingService: ToolingService, private notify : Notify, private element : ElementRef) {
     
@@ -34,11 +37,13 @@ export class AddNewToolingComponent implements OnInit {
   ngOnInit() {
     this.projectSelected = 0;
     this.partNumberSelected = 0.1;
-    this.typeSelected = "Elige...";
+    this.typeSelected = 0;
     this.cantMaintance = 0;
     this.cantPasses = 0;
     this.serialTooling = "";
     this.buttonDisabled = false;
+    this.positionTooling = "";
+    this.rackTooling = "";
     this.getAllProjects();
     this.getAllTypes();
   }
@@ -46,6 +51,7 @@ export class AddNewToolingComponent implements OnInit {
   getAllProjects(){
     this.toolingService.findAllProjects().subscribe(pprojects =>{
       this.projects = pprojects;
+      
     });
   }
 
@@ -57,6 +63,7 @@ export class AddNewToolingComponent implements OnInit {
       }else{
         this.partNumberSelected = 0.1;
       }
+      console.log(this.partNumbers)
       this.notifyLoading = this.notify.setLoadingDone("Listo", this.notifyLoading);
     });
   }
@@ -65,6 +72,22 @@ export class AddNewToolingComponent implements OnInit {
     this.toolingService.findAllTypes().subscribe(ptypes =>{
       this.types = ptypes;
     });
+  }
+
+  saveNewTooling(toolingObj: objTooling){
+    this.toolingService.saveNewTooling(toolingObj).subscribe(
+      results =>{
+        this.notifyLoading = this.notify.setLoadingDone(" Insertado", this.notifyLoading);
+        this.clearForm();
+      },
+      (err: HttpErrorResponse) => {
+        if (err.error instanceof Error) {
+          console.log("Client-side error");
+        } else {
+          console.log("Server-side error");
+        }
+      }
+    );
   }
 
   loadPartnumbers(){
@@ -82,7 +105,7 @@ export class AddNewToolingComponent implements OnInit {
       this.notify.setNotification("CAMPO VACIO", "Por favor selecciona un numero de parte", "error");
       this.element.nativeElement.querySelector("#slPartNumber").focus();
     }
-    else if(this.typeSelected == "Elige..."){
+    else if(this.typeSelected == 0){
       this.notify.setNotification("CAMPO VACIO", "Por favor selecciona un tipo de herramental", "error");
       this.element.nativeElement.querySelector("#slType").focus();
     }
@@ -90,11 +113,11 @@ export class AddNewToolingComponent implements OnInit {
       this.notify.setNotification("CAMPO VACIO", "Por favor escribe un numero de serial", "error");
       this.element.nativeElement.querySelector("#txtSerialTooling").focus();
     }
-    else if(this.typeSelected == "Magazine" && this.cantMaintance == 0){
+    else if(this.typeSelected == 2 && this.cantMaintance == 0){
       this.notify.setNotification("CAMPO VACIO", "Por favor escribe las semanas para mantenimiento", "error");
       this.element.nativeElement.querySelector("#txtMaintance").focus();
     }
-    else if(this.typeSelected == "Pallet" && this.cantPasses == 0){
+    else if(this.typeSelected == 3 || this.typeSelected == 5 && this.cantPasses == 0){
       this.notify.setNotification("CAMPO VACIO", "Por favor escribe la cantidad de pasadas", "error");
       this.element.nativeElement.querySelector("#txtPasses").focus();
     }
@@ -102,29 +125,28 @@ export class AddNewToolingComponent implements OnInit {
       this.notifyLoading = this.notify.setLoading(" Guardando herramental", this.notifyLoading);
       this.buttonDisabled = true;
       const obj = new objTooling();
-      obj.tooling = this.serialTooling;
-      //obj. = this.typeSelected;
-      //this.clearForm();
-
-      setTimeout(() => {
-        this.notifyLoading = this.notify.setLoadingChangeText(" Wue sigo esperando :c", this.notifyLoading);
-        setTimeout(() => {
-          this.notifyLoading = this.notify.setLoadingChangeText(" Y nunca recibí nada >:v", this.notifyLoading);
-          setTimeout(() => {
-            this.notifyLoading = this.notify.setLoadingDone(" :)", this.notifyLoading);
-          }, 2000);
-        }, 3000);
-      }, 3000);
+      obj.tool = this.serialTooling;
+      obj.fkPartNumber = Number(this.partNumberSelected);
+      obj.position = this.positionTooling;
+      obj.rack = this.rackTooling;
+      obj.mtceMagazine = this.cantMaintance;
+      obj.mtcePallet = this.cantPasses;
+      obj.fkType = Number(this.typeSelected);
+      obj.fkStatus = 1;
+      this.saveNewTooling(obj);
+      console.log(obj)
     }
   }
 
   clearForm(){
     this.projectSelected = 0;
     this.partNumberSelected = 0.1;
-    this.typeSelected = "Elige...";
+    this.typeSelected = 0;
     this.cantMaintance = 0;
     this.cantPasses = 0;
     this.serialTooling = "";
+    this.positionTooling = "";
+    this.rackTooling = "";
     this.getAllProjects();
     this.getAllTypes();
   }

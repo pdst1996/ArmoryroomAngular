@@ -6,6 +6,7 @@ import { ToolingComponent } from '../../components/tooling/tooling.component';
 import { AddNewToolingComponent } from '../../components/tooling/add-new-tooling/add-new-tooling.component';
 import { ShowToolingsComponent } from '../../components/tooling/show-toolings/show-toolings.component';
 import { MaintanceRequestsComponent } from '../../components/tooling/maintance-requests/maintance-requests.component';
+import { InOutToolingsComponent } from '../../components/tooling/in-out-toolings/in-out-toolings.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +17,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   imports: [
@@ -31,8 +35,16 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ButtonsModule,
+    TooltipModule.forRoot(),
+    MatSelectModule
   ],
-  declarations: [ToolingComponent, AddNewToolingComponent, ShowToolingsComponent, MaintanceRequestsComponent]
+  declarations: [
+    ToolingComponent, 
+    AddNewToolingComponent, 
+    ShowToolingsComponent, 
+    MaintanceRequestsComponent, 
+    InOutToolingsComponent]
 })
 export class ToolingModule { }

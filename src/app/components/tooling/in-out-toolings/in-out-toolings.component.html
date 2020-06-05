@@ -1,0 +1,73 @@
+<h3 class="mt-4" [hidden]="radioModel=='in'">Salida de herramentales&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i></h3>
+<h3 class="mt-4" [hidden]="radioModel=='out'"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;Entrada de herramentales</h3>
+<div class="container mb-6">
+    <div class="row justify-content-around mt-4">
+        <div class="btn-group" btnRadioGroup [(ngModel)]="radioModel">
+            <label class="btn btn-info btn-md" btnRadio="in" tabindex="0" role="button">ENTRADA</label>
+            <label class="btn btn-info btn-md" btnRadio="out" tabindex="0" role="button">SALIDA</label>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-4">
+            <div class="row">
+                <div class="col-11">
+                    <textarea class="form-control" rows="8" [(ngModel)]="txtToolings"></textarea>
+                </div>
+                <div class="col-1">
+                    <p align="left" style="margin-left: -15px; font-size: 12pt; font-weight: 600; color: green;">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-1">
+            <button type="button" title="Validar" (click)="validateToolings()" class="btn btn-outline-success btn-lg btn-toolings" 
+                id="btnValidateToolings" style="padding-top: 11px;" [innerHTML] = "iconButtonValidate"></button>
+        </div>
+        <div class="col-6 offset-md-1" [hidden]="true">
+            <b style="color:#de0000;">HERRAMENTALES ERRONEOS (12)</b>
+            <table mat-table [dataSource]="dataSource">
+                <ng-container matColumnDef="serial">
+                  <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> SERIAL </th>
+                  <td mat-cell *matCellDef="let element"> {{element.serial}} </td>
+                </ng-container>
+                <ng-container matColumnDef="message">
+                  <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> MENSAJE </th>
+                  <td mat-cell *matCellDef="let element"> {{element.message}} </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+              <mat-paginator [pageSize]="2" [pageSizeOptions]="[2, 5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="card col-8">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" >ENTREGA:</label>
+                            </div>
+                            <input class="form-control" placeholder="Numero de empleado"> 
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" >RECIBE:</label>
+                            </div>
+                            <input class="form-control" placeholder="Numero de empleado"> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-4">
+            <button (click)="saveInOut()" class="btn btn-success btn-lg btn-block mt-2" [hidden]="true">
+                <span class="content"><i class="fas fa-save"></i>&nbsp;&nbsp;Guardar</span>
+            </button>
+        </div>
+    </div>
+</div>

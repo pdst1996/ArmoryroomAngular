@@ -2,39 +2,39 @@
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> ID </th>
-      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.pkTooling}} </td>
     </ng-container>
     <ng-container matColumnDef="project">
       <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PROYECTO </th>
-      <td mat-cell *matCellDef="let element"> {{element.project}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.tooling}} </td>
     </ng-container>
     <ng-container matColumnDef="serial">
       <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> SERIAL </th>
-      <td mat-cell *matCellDef="let element"> {{element.serial}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.tooling}} </td>
     </ng-container>
     <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> SERIAL </th>
-      <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+      <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> TIPO </th>
+      <td mat-cell *matCellDef="let element"> {{element.fkType.type}} </td>
     </ng-container>
     <ng-container matColumnDef="qtyPasses">
       <th mat-header-cell *matHeaderCellDef  class="center-mat-cell"> PASADAS </th>
-      <td mat-cell *matCellDef="let element"> {{element.qtyPasses}} </td>
+      <td mat-cell *matCellDef="let element"> {{(element.fkType.pktype == 3  || element.fkType.pktype == 5) ? element.actualQty : "NA"}} </td>
     </ng-container>
     <ng-container matColumnDef="qtyMtto">
-      <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> MTTO </th>
-      <td mat-cell *matCellDef="let element"> {{element.qtyMtto}} </td>
+      <th mat-header-cell *matHeaderCellDef class="center-mat-cell">ULTIMO MTTO </th>
+      <td mat-cell *matCellDef="let element"> {{(element.lastMtce != null) ? element.lastMtce.replace('T',' ').substring(0,16) : "NA"}} </td>
     </ng-container>
     <ng-container matColumnDef="proxMtto">
       <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PROXIMO MTTO </th>
-      <td mat-cell *matCellDef="let element"> {{element.proxMtto}} </td>
+      <td mat-cell *matCellDef="let element"> {{(element.nextMtce != null) ? element.nextMtce.replace('T',' ').substring(0,16) : "NA"}} </td>
     </ng-container>
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> STATUS </th>
-      <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.fkStatus.status}} </td>
     </ng-container>
     <ng-container matColumnDef="controls">
       <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> ACCIONES </th>
-      <td mat-cell *matCellDef="let element"><button type="button" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button></td>
+      <td mat-cell *matCellDef="let element"><button type="button" class="btn btn-primary btn-sm" (click)=" openToolingModal(template, element.pkTooling)"><i class="fas fa-edit"></i></button></td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -45,4 +45,148 @@
     <input matInput (keyup)="applyFilter($event)" placeholder="Clave">
   </mat-form-field>
 </div>
+
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Editar herramental</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()" style="padding-top: 23px; padding-right: 23px;">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body modal-lg">
+    <div class="row justify-content-center mt-2">
+      <div class="col-3">
+        <p>
+          <mat-form-field appearance="outline">
+            <mat-label style="font-size: 14pt;">ID</mat-label>
+            <input matInput  [(ngModel)]="idToolingEdit" style="font-size: 12pt;" readonly>
+          </mat-form-field>
+        </p>
+      </div>
+      <div class="col-4">
+        <p>
+          <mat-form-field appearance="outline">
+            <mat-label style="font-size: 14pt;">SERIAL</mat-label>
+            <input matInput [(ngModel)]="serialToolingEdit" style="font-size: 12pt;" readonly>
+          </mat-form-field>
+        </p>
+      </div>
+      <div class="col-4">
+        <p>
+          <mat-form-field appearance="outline">
+            <mat-label style="font-size: 14pt;">PROYECTO</mat-label>
+            <input matInput [(ngModel)]="projectToolingEdit" style="font-size: 12pt;" readonly>
+          </mat-form-field>
+        </p>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-6">
+        <p>
+          <mat-form-field appearance="outline">
+            <mat-label style="font-size: 14pt;">TIPO</mat-label>
+            <input matInput [(ngModel)]="typeToolingEdit" style="font-size: 12pt;" readonly>
+          </mat-form-field>
+        </p>
+      </div>
+      <div class="col-5">
+        <div class="input-group input-group-lg" style="margin-top: 4px;">
+          <div class="input-group-prepend">
+              <label class="input-group-text" style="font-size: 12pt">STATUS:</label>
+          </div>
+          <select class="custom-select form-control-lg" [(ngModel)]="statusToolingEdit">
+              <option *ngFor="let statusElement of statusArray" value="{{statusElement.pkstatus}}">{{statusElement.status}}</option>               
+          </select>
+          
+        </div>
+        <small class="" style="font-size: 9pt; color: green;">    Editable</small>
+        
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-4">
+        <p>
+          <mat-form-field appearance="outline">
+            <mat-label style="font-size: 14pt;">PROX MTTO</mat-label>
+            <input matInput [(ngModel)]="mttoToolingEdit" style="font-size: 12pt;" type="text" [readonly]="typeTooling != 2">
+            <mat-hint style="font-size: 9pt; color: green;" [hidden]="typeTooling != 2">Editable</mat-hint>
+          </mat-form-field>
+        </p>
+      </div>
+      <div class="col-3">
+        <p>
+          <mat-form-field appearance="outline">
+            <mat-label style="font-size: 14pt;">RACK</mat-label>
+            <input matInput [(ngModel)]="rackToolingEdit" style="font-size: 12pt;">
+            <mat-hint style="font-size: 9pt; color: green;">Editable</mat-hint>
+          </mat-form-field>
+        </p>
+      </div>
+      <div class="col-4">
+        <p>
+          <mat-form-field appearance="outline">
+            <mat-label style="font-size: 14pt;">POSITION</mat-label>
+            <input matInput [(ngModel)]="positionToolingEdit" style="font-size: 12pt;">
+            <mat-hint style="font-size: 9pt; color: green;">Editable</mat-hint>
+          </mat-form-field>
+        </p>
+      </div>
+    </div>
+    <div [hidden]="typeTooling == 2">
+      <div class="row justify-content-center">
+        <div class="col-3">
+          <p>
+            <mat-form-field appearance="outline">
+              <mat-label style="font-size: 14pt;">PASADAS TOTALES</mat-label>
+              <input matInput [(ngModel)]="qtyTotalPasesEdit" style="font-size: 12pt;" readonly>
+            </mat-form-field>
+          </p>
+        </div>
+        <div class="col-4">
+          <p>
+            <mat-form-field appearance="outline">
+              <mat-label style="font-size: 14pt;">PASADAS DESDE MTTO</mat-label>
+              <input matInput value="{{qtyCurrentPasesEdit}} pasadas" style="font-size: 12pt;" readonly>
+            </mat-form-field>
+          </p>
+        </div>
+        <div class="col-4">
+          <p>
+            <mat-form-field appearance="outline">
+              <mat-label style="font-size: 14pt;">RESTANTES PARA MTTO</mat-label>
+              <input matInput value="{{qtyMttoPassesEdit-qtyCurrentPasesEdit}}" style="font-size: 12pt;" readonly>
+            </mat-form-field>
+          </p>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-5">
+          <p>
+            <mat-form-field appearance="outline">
+              <mat-label style="font-size: 14pt;">VIDA RESTANTE</mat-label>
+              <input matInput value="{{qtyLifePasesEdit-qtyTotalPasesEdit}} pasadas" style="font-size: 12pt;" readonly>
+            </mat-form-field>
+          </p>
+        </div>
+        <div class="col-6">
+          <p>
+            <mat-form-field appearance="outline">
+              <mat-label style="font-size: 14pt;">PASADAS PARA CADA MTTO</mat-label>
+              <input matInput [(ngModel)]="qtyMttoPassesEdit" style="font-size: 12pt;">
+              <mat-hint style="font-size: 9pt; color: green;">Editable</mat-hint>
+            </mat-form-field>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-11">
+        <button (click)="chargeToolingChanges()" class="btn btn-success btn-lg btn-block mt-2">
+          <span class="content"><i class="fas fa-save"></i>&nbsp;&nbsp;Guardar cambios</span>
+      </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
     

@@ -1,0 +1,25 @@
+table{
+    width:100%;
+}
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+.center-mat-cell {
+    text-align:center;
+    font-weight: 600;
+}
+.btn-toolings{
+    font-size: 23pt; 
+    width: 65px; 
+    height: 65px; 
+    margin-top: 60px;
+}
+:host >>> .tooltip-inner {
+    background-color: #009688;
+    color: #fff;
+  }
+  :host >>> .tooltip.top .tooltip-arrow:before,
+  :host >>> .tooltip.top .tooltip-arrow {
+    border-top-color: #009688;
+  }

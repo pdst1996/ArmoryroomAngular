@@ -1,7 +1,7 @@
 
 <div class="container mb-5">
     <!-- <form focusInvalidInput [formGroup]="form" (ngSubmit)="submit()"> -->
-        <div class="row justify-content-around mt-1">
+        <div class="row justify-content-around mt-4">
             <div class="col-5">
                 <div class="input-group form-group">
                     <div class="input-group-prepend">
@@ -21,25 +21,24 @@
                     <select class="custom-select" [(ngModel)]="partNumberSelected" [disabled]="projectSelected == 0 || projectSelected == null" id="slPartNumber">
                         <option [hidden]="partNumbers != undefined && partNumbers.length != 0" value="0.1" selected>No hay opciones...</option>
                         <option [hidden]="partNumbers == undefined || partNumbers.length == 0" value="0" selected>Elige...</option>
-                        <option *ngFor="let partNumber of partNumbers" value="{{partNumber.pk_Partnumber}}">{{partNumber.partnumber}}</option>               
+                        <option *ngFor="let partNumber of partNumbers" value="{{partNumber.pkPartnumber}}">{{partNumber.partnumber}}</option>               
                     </select>
                     
                 </div>
             </div>
         </div>
         <div class="row justify-content-around mt-4">
-            <div class="col-6">
+            <div class="col-8">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <label class="input-group-text">TIPO:</label>
                     </div>
                     <select class="custom-select" [(ngModel)]="typeSelected" id="slType">
-                        <option selected>Elige...</option>
-                        <option *ngFor="let type of types">{{type.type}}</option>               
+                        <option selected value="0">Elige...</option>
+                        <option *ngFor="let type of types" value="{{type.pktype}}">{{type.type}}</option>               
                     </select>
                 </div>
             </div>
-        
         </div>
         <div class="row justify-content-center mt-4">
             <div class="col-5 mt-3">
@@ -50,23 +49,39 @@
                     <input class="form-control" placeholder="Numero de herramental" [(ngModel)]="serialTooling" id="txtSerialTooling"> 
                 </div>
             </div>
+            <div class="col-3 mt-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" >RACK:</label>
+                    </div>
+                    <input class="form-control" placeholder="Rack (opcional)" [(ngModel)]="rackTooling"> 
+                </div>
+            </div>
         </div>
         <div class="row justify-content-center mt-4">
-            <div class="col-5 mt-3">
-                <div class="input-group" [hidden]="typeSelected == 'Magazine' || typeSelected == 'Elige...'">
+            <div class="col-4 mt-3">
+                <div class="input-group" [hidden]="typeSelected == 2 || typeSelected == 0">
                     <div class="input-group-prepend">
                         <label class="input-group-text" >NUMERO DE PASADAS:</label>
                     </div>
                     <input class="form-control" placeholder="Cantidad" type="number" [(ngModel)]="cantPasses" id="txtPasses">
                 </div>
-                <div class="input-group" [hidden]="typeSelected == 'Pallet' || typeSelected == 'Elige...'">
+                <div class="input-group" [hidden]="typeSelected == 3 || this.typeSelected == 5">
                     <div class="input-group-prepend">
-                        <label class="input-group-text" >MANTENIMIENTO CADA:</label>
+                        <label class="input-group-text" >MTTO CADA:</label>
                     </div>
                     <input class="form-control" placeholder="Cantidad" type="number" [(ngModel)]="cantMaintance" id="txtMaintance">
                     <div class="input-group-append">
                         <span class="input-group-text" id="basic-addon2">semanas</span>
                     </div>
+                </div>
+            </div>
+            <div class="col-4 mt-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" >POSITION:</label>
+                    </div>
+                    <input class="form-control" placeholder="Position (opcional)" [(ngModel)]="positionTooling"> 
                 </div>
             </div>
         </div>

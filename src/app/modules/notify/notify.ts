@@ -88,6 +88,19 @@ export class Notify {
     return loader;
   }
 
+  setLoadingError(text: string, loader:any) {
+    loader.update({
+      text: " "+text,
+      icon : 'fas fa-times',
+      type : 'error',
+      hide: true,
+    });
+    setTimeout(() => {
+      loader.close();
+    }, 900);
+    return loader;
+  }
+
   // setLoading(text: string, time:number, delay:number) {
       
   //   const loader = PNotify.alert({

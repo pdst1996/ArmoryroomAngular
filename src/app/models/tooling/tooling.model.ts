@@ -4,7 +4,7 @@ export interface Project {
     sfdcpc: string
 }
 export interface PartNumber {
-    pk_Partnumber?: number,
+    pkPartnumber?: number,
     partnumber: string,
     fk_project: {
         pkProject: number,
@@ -16,24 +16,64 @@ export interface Type {
     pktype?: number,
     type: string
 }
+export interface Status {
+    pkstatus?: number,
+    status: string
+}
 export interface Tooling {
-    pk_tooling?: number,
+    pkTooling?: number,
     tooling: string,
-    fk_status: number,
-    fk_type: number,
+    fkStatus: {
+        pkstatus: number,
+        status: string,
+    },
+    fkType: {
+        pktype:number,
+        type:string
+    },
     rack: string,
     position: string,
-    last_mtce: string,
-    next_mtce: string
+    lastMtce: string,
+    nextMtce: string,
+    actualQty: number,
+    mtceQty: number,
+    totalQty: number,
+    lifeQty:number,
+    project: string
 }
 
 export class objTooling {
-    pk_tooling: number;
-    tooling: string;
-    fk_status: number;
-    fk_type: number;
+    tool: string;
+    fkStatus: number;
+    fkType: number;
+    fkPartNumber:  number;
     rack: string;
     position: string;
-    last_mtce: string;
-    next_mtce: string;
+    mtcePallet: number;
+    mtceMagazine: number;
+}
+
+export interface RequesMaintance {
+    pkRequest?:number,
+    fkTooling:{
+        pkTooling: number,
+        tooling: string,
+        fkStatus: {
+            pkstatus: number,
+            status: string,
+        },
+        fkType: {
+            pktype:number,
+            type:string
+        },
+        rack: string,
+        position: string,
+        lastMtce: string,
+        nextMtce: string
+    },
+    userRequest: string,
+    date: string,
+    comments: string,
+    aproved: boolean,
+    userAproved: string
 }
