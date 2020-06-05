@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Project, PartNumber, Type, objTooling, Tooling, Status, RequesMaintance } from '../../models/tooling/tooling.model'
+import { Project, PartNumber, Type, objTooling, Tooling, Status, RequestMaintance } from '../../models/tooling/tooling.model'
 import { Constants } from '../../helpers/constats'
 import { GeneralResponse } from "src/app/models/login/login.model";
 
@@ -54,8 +54,8 @@ export class ToolingService {
     return this.httpClient.get<Status[]>(`${this.statusUrl}/all`).pipe();
   }
   
-  findAllRequestMaintance(): Observable<RequesMaintance[]>{
-    return this.httpClient.get<RequesMaintance[]>(`${this.rmUrl}/all`).pipe();
+  findAllRequestMaintance(): Observable<RequestMaintance[]>{
+    return this.httpClient.get<RequestMaintance[]>(`${this.rmUrl}/all`).pipe();
   }
 
   aproveRejectRequestMaintance(action : boolean, idRequestMaintance : number, userAprove : string): Observable<GeneralResponse>{

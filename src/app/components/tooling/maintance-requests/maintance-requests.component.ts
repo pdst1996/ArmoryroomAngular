@@ -3,7 +3,7 @@ import { MatPaginator,MatTableDataSource } from '@angular/material';
 import { ApplicationData, Profile, User } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
-import { RequesMaintance } from 'src/app/models/tooling/tooling.model';
+import { RequestMaintance } from 'src/app/models/tooling/tooling.model';
 import { Notify } from 'src/app/modules/notify/notify';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -22,13 +22,14 @@ export class MaintanceRequestsComponent implements OnInit {
   public profiles: Profile[];
   public user: User;
   public userPermissionToAproveReject = false;
-  public requests : RequesMaintance[];
+  public requests : RequestMaintance[];
   public notifyLoading:any;
   action = false;
   pkRequest = 0;
-  dataSource = new MatTableDataSource <RequesMaintance>(this.requests);
+  dataSource = new MatTableDataSource <RequestMaintance>(this.requests);
   modalRef: BsModalRef;
   valueSign = "";
+  thereRequests = false;
 
   constructor(private toolingService: ToolingService, private notify:Notify, private modalService: BsModalService,private element : ElementRef) { 
     this.applicationData = new ApplicationData();
@@ -56,10 +57,19 @@ export class MaintanceRequestsComponent implements OnInit {
 
   getAllRequestMaintance(){
     this.toolingService.findAllRequestMaintance().subscribe(prequests =>{
-      this.requests = prequests;
-      this.dataSource = new MatTableDataSource <RequesMaintance>(this.requests);
-      this.dataSource.paginator = this.paginator;
+      this.requests = new Array<RequestMaintance>();
+      for (const iterator of prequests) {
+        if(iterator.aproved == null){
+          this.requests.push(iterator);
+        } 
+      }
+      console.log(prequests)
       console.log(this.requests)
+      if(this.requests.length != 0)
+        this.thereRequests = true;
+      
+      this.dataSource = new MatTableDataSource <RequestMaintance>(this.requests);
+      this.dataSource.paginator = this.paginator;
     });
   }
 
