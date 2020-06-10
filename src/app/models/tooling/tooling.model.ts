@@ -1,21 +1,3 @@
-export interface Project {
-    pkProject?: number,
-    project_name: string,
-    sfdcpc: string
-}
-export interface PartNumber {
-    pkPartnumber?: number,
-    partnumber: string,
-    fk_project: {
-        pkProject: number,
-        sfdcpc: string,
-        project_name: string
-    }
-}
-export interface Type {
-    pktype?: number,
-    type: string
-}
 export interface Status {
     pkstatus?: number,
     status: string
@@ -53,27 +35,8 @@ export class objTooling {
     mtceMagazine: number;
 }
 
-export class RequestMaintance {
-    pkRequest?:number;
-    fkTooling:{
-        pkTooling: number;
-        tooling: string;
-        fkStatus: {
-            pkstatus: number;
-            status: string;
-        },
-        fkType: {
-            pktype:number;
-            type:string;
-        },
-        rack: string;
-        position: string;
-        lastMtce: string;
-        nextMtce: string;
-    }
-    userRequest: string;
-    date: string;
-    comments: string;
-    aproved: boolean;
-    userAproved: string;
+export class ToolingValidation {
+    tooling: string;
+    existe: boolean;
+    status: string;
 }

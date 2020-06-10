@@ -5,6 +5,9 @@ import { Tooling, Status, objTooling } from 'src/app/models/tooling/tooling.mode
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { Notify } from 'src/app/modules/notify/notify';
 import { HttpErrorResponse } from '@angular/common/http';
+import { HistoryService } from 'src/app/modules/history/history.service';
+import { ApplicationData } from 'src/app/models/home/home.model';
+import { Constants } from 'src/app/helpers/constats';
 
 
 @Component({
@@ -31,15 +34,19 @@ export class ShowToolingsComponent implements OnInit {
   public qtyCurrentPasesEdit = 3;
   public qtyTotalPasesEdit = 10;
   public qtyLifePasesEdit = 3000;
+  public applicationData: ApplicationData;
 
   tooling : Tooling;
   notifyLoading : any;
   
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  constructor(private modalService: BsModalService, private toolingService: ToolingService, private notify:Notify) {}
+  constructor(private modalService: BsModalService, private toolingService: ToolingService, private notify:Notify, private historyService: HistoryService) {}
 
   ngOnInit() {
     this.getAllToolings();
+    this.applicationData = JSON.parse(
+      localStorage.getItem(Constants.localStorage)
+    );
   }
 
   getAllToolings(){
@@ -114,6 +121,7 @@ export class ShowToolingsComponent implements OnInit {
     this.toolingService.updateTooling(objTolingEdit, this.idToolingEdit).subscribe(
       results =>{
         this.notifyLoading = this.notify.setLoadingDone(" Actualizado", this.notifyLoading);
+        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Modificó el herramental (${objTolingEdit.tool})`);
       },
       (err: HttpErrorResponse) => {
         if (err.error instanceof Error) {

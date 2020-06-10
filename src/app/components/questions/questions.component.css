@@ -1,0 +1,29 @@
+.card-questions{
+    align-items: center;
+    margin-left:auto; 
+    margin-right:auto; 
+    margin-top: 1%; 
+    width: 90%;
+}
+table{
+    width:100%;
+}
+.mat-form-field {
+    font-size: 15px;
+    width: 100%;
+}
+.center-mat-cell {
+    text-align:center;
+    font-weight: 600;
+}
+.radio-answer{
+    margin-left: 25px;
+}
+.div-input-edit{
+    margin-bottom: -9px; margin-top: -15px;
+}
+mat-checkbox ::ng-deep .mat-checkbox-inner-container {width: 28px;height: 28px; margin-top: 9px;}
+mat-radio-button ::ng-deep .mat-radio-outer-circle {width: 28px;height: 28px; margin-top: 1px;}
+mat-radio-button ::ng-deep .mat-radio-inner-circle {width: 28px;height: 28px; margin-top: 1px;}
+mat-radio-button ::ng-deep .mat-radio-label-content {font-size: 12pt; margin-top: 9px; margin-left: 3px;}
+

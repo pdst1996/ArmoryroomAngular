@@ -3,7 +3,8 @@ import { MatPaginator,MatTableDataSource } from '@angular/material';
 import { ApplicationData, Profile, User } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
-import { RequestMaintance } from 'src/app/models/tooling/tooling.model';
+import { HistoryService } from 'src/app/modules/history/history.service';
+import { RequestMaintance } from 'src/app/models/request-maintance/request-maintance.model';
 import { Notify } from 'src/app/modules/notify/notify';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -31,7 +32,11 @@ export class MaintanceRequestsComponent implements OnInit {
   valueSign = "";
   thereRequests = false;
 
-  constructor(private toolingService: ToolingService, private notify:Notify, private modalService: BsModalService,private element : ElementRef) { 
+  constructor(private toolingService: ToolingService, 
+              private notify:Notify, 
+              private modalService: BsModalService,
+              private element : ElementRef,
+              private historyService: HistoryService) { 
     this.applicationData = new ApplicationData();
     this.applicationData.profiles = new Array<Profile>();
   }
@@ -46,7 +51,6 @@ export class MaintanceRequestsComponent implements OnInit {
       this.user = this.applicationData.userInfo;
     }
     
-    console.log(this.profiles)
     for (const profile of this.profiles) {
       if(profile.idProfile==41){
         this.userPermissionToAproveReject = true;
@@ -63,8 +67,7 @@ export class MaintanceRequestsComponent implements OnInit {
           this.requests.push(iterator);
         } 
       }
-      console.log(prequests)
-      console.log(this.requests)
+  
       if(this.requests.length != 0)
         this.thereRequests = true;
       
@@ -83,17 +86,28 @@ export class MaintanceRequestsComponent implements OnInit {
 
   signRequest(){
     let value = "";
+    let value2 = "";
     if(this.action){
       value = "Aprobando requisicion";
+      value2 = "aprobó";
     }else{
-      value = "Rechazando requisicion"
+      value = "Rechazando requisicion";
+      value2 = "denegó";
     }
 
     this.notifyLoading = this.notify.setLoading(" "+value, this.notifyLoading);
     this.toolingService.aproveRejectRequestMaintance(this.action, this.pkRequest, this.user.userName).subscribe(
       results =>{
-        this.notifyLoading = this.notify.setLoadingDone(" Listo", this.notifyLoading);
-        this.modalRef.hide();
+        if(results.success){
+          this.notifyLoading = this.notify.setLoadingDone(" Listo", this.notifyLoading);
+          this.modalRef.hide();
+          this.historyService.insertNewHistory(this.user.userName, `Se ${value2} la requisición ${this.pkRequest}`);
+        }else{
+          this.notifyLoading = this.notify.setLoadingError(" Error", this.notifyLoading);
+          this.notify.setNotification("ERROR", results.message +". Se recomiendo actualizar la pagina", "error");
+          this.modalRef.hide();
+        }
+       
       },
       (err: HttpErrorResponse) => {
         if (err.error instanceof Error) {

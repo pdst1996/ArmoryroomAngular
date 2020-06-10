@@ -15,11 +15,17 @@ table{
     height: 65px; 
     margin-top: 60px;
 }
-:host >>> .tooltip-inner {
+.btn-employees{
+    font-size: 15pt; 
+    width: 45px; 
+    height: 45px; 
+    margin-top: 0px;
+}
+/* :host >>> .tooltip-inner {
     background-color: #009688;
     color: #fff;
   }
   :host >>> .tooltip.top .tooltip-arrow:before,
   :host >>> .tooltip.top .tooltip-arrow {
     border-top-color: #009688;
-  }
+  } */

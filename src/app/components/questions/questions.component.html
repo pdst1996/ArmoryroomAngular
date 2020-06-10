@@ -1,0 +1,75 @@
+<div class="p-3 bg-white center rounded shadow-md card--z-5 card-questions">
+    <div class="row justify-content-around">
+        <div class="col-5">
+            <h6 style="margin-bottom: -2px;">Tipo de herramental</h6>
+            <mat-form-field style="width: 100%;">
+            <mat-label style="font-size: 13pt;">Elige un tipo...</mat-label>
+            <mat-select [(value)]="typeSelected" (selectionChange)=getAllQuestions()>
+                <mat-option value="{{type.pktype}}" *ngFor="let type of types">{{type.type}}</mat-option>
+            </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row justify-content-around" [hidden]="!thereQuestions  || !questionsFilled">
+        <div class="col-11">
+            <table mat-table [dataSource]="dataSource">
+                <ng-container matColumnDef="question">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PREGUNTA </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span id="spQuestion_{{element.pkQuestion}}" (click)="editQuestion(element.pkQuestion)">{{element.question}}</span>
+                        <div id="inputQuestion_{{element.pkQuestion}}" style="display: none;" class="div-input-edit">
+                            <mat-form-field appearance="standard">
+                                <input matInput value="{{element.question}}" (change)="saveQuestionChanges(element)" id="txtQuestion_{{element.pkQuestion}}">
+                                <button mat-icon-button matSuffix style="font-size: 10pt;" title="Salir de la edición" (click)="closeInputFieldEdit(element.pkQuestion)">
+                                    <mat-icon>highlight_off</mat-icon>
+                                </button>
+                                <!-- <mat-icon matSuffix style="margin-top: 7px;">sentiment_very_satisfied</mat-icon> -->
+                            </mat-form-field>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="answer">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> RESPUESTA </th>
+                    <td mat-cell *matCellDef="let element"> 
+                        <mat-radio-group aria-label="Select an option" (change)="saveAnswerChanges(element,$event)" id="radioGroup_{{element.pkQuestion}}">
+                            <mat-radio-button value="Yes" [checked]="element.correctAnswer == 'Yes'">SI</mat-radio-button>
+                            <mat-radio-button value="NO" [checked]="element.correctAnswer == 'NO'" class="radio-answer">NO</mat-radio-button>
+                            <mat-radio-button value="N/A" [checked]="element.correctAnswer == 'N/A'" class="radio-answer">NA</mat-radio-button>
+                        </mat-radio-group>    
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> ACTIVAR / DESACTIVAR </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-checkbox title="Activar/Desactivar" [checked]="element.status" (change)="saveStatusChanges(element,$event)"></mat-checkbox>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
+            <div class="row justify-content-right ">
+                <div class="offset-md-8 col-4 mt-n2">
+                    <mat-form-field>
+                        <mat-label>Buscar en toda la tabla</mat-label>
+                        <input matInput (keyup)="applyFilter($event)" placeholder="Clave">
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-around mt-3" [hidden]="thereQuestions || !questionsFilled">
+        <div class="col-10">
+            <div class="alert alert-danger" role="alert">
+            <h5 class="mt-2">Lo sentimos, no hay preguntas para este tipo de herramental</h5>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-around mt-3" [hidden]="questionsFilled">
+        <div class="col-10">
+            <div class="alert alert-info" role="alert">
+            <h5 class="mt-2">Selecciona un tipo de  herramental</h5>
+            </div>
+        </div>
+    </div>
+</div>

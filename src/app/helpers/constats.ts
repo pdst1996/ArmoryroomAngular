@@ -12,7 +12,7 @@ export class Constants {
 
   public static masterPageVersion: String = "1.2.0.1";
 
-  public static logo: String = "assets/sanmina/Sanmina-Logo.png";
+  public static logo: String = "assets/sanmina/armoryroom-logo.png";
 
   public static ico: String = "assets/sanmina/sanmina.ico";
 

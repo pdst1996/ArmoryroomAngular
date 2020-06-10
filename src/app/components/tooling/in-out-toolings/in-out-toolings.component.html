@@ -3,27 +3,32 @@
 <div class="container mb-6">
     <div class="row justify-content-around mt-4">
         <div class="btn-group" btnRadioGroup [(ngModel)]="radioModel">
-            <label class="btn btn-info btn-md" btnRadio="in" tabindex="0" role="button">ENTRADA</label>
-            <label class="btn btn-info btn-md" btnRadio="out" tabindex="0" role="button">SALIDA</label>
+            <label class="btn btn-info btn-md" btnRadio="in" tabindex="0" role="button" [disabled]="serialsDone">ENTRADA</label>
+            <label class="btn btn-info btn-md" btnRadio="out" tabindex="0" role="button" [disabled]="serialsDone">SALIDA</label>
+            <i [hidden]="!serialsDone" [tooltip]="contentTooltip" class="fas fa-info-circle" style="color: orangered; font-size: 18pt;  margin-top: 6px; margin-left: 10px;" [adaptivePosition]="false"
+            placement="right"></i>
         </div>
+        
     </div>
     <div class="row justify-content-center mt-3">
-        <div class="col-4">
+        <div class="col-4 offset-md-1">
             <div class="row">
                 <div class="col-11">
-                    <textarea class="form-control" rows="8" [(ngModel)]="txtToolings"></textarea>
+                    <textarea class="form-control" rows="7" id="textAreaToolings" [(ngModel)]="txtToolings" (keyup)=countNumberOfSerials() [disabled]="serialsDone"></textarea>
                 </div>
                 <div class="col-1">
-                    <p align="left" style="margin-left: -15px; font-size: 12pt; font-weight: 600; color: green;">0</p>
+                    <p align="left" style="margin-left: -15px; font-size: 12pt; font-weight: 600; color: green;" id="spCountSerials">{{spCountSerials}}</p>
                 </div>
             </div>
         </div>
         <div class="col-1">
-            <button type="button" title="Validar" (click)="validateToolings()" class="btn btn-outline-success btn-lg btn-toolings" 
-                id="btnValidateToolings" style="padding-top: 11px;" [innerHTML] = "iconButtonValidate"></button>
+            <button type="button" title="Validar" (click)="validateToolings()" class="btn btn-outline-success btn-lg btn-toolings" [disabled]="serialsDone"
+                id="btnValidateToolings" style="padding-top: 10px;" [innerHTML] = "iconButtonValidate"></button>
+            <button type="button" title="Seguir agregando seriales" (click)="continueEditing()" class="btn btn-warning btn-md" [hidden]="!serialsDone"
+                style="margin-top: 6px;" ><i class="far fa-edit"></i></button>
         </div>
-        <div class="col-6 offset-md-1" [hidden]="true">
-            <b style="color:#de0000;">HERRAMENTALES ERRONEOS (12)</b>
+        <div class="col-6" [hidden]="tableErrorsHidden">
+            <b style="color:#de0000;">HERRAMENTALES ERRONEOS ({{this.ELEMENT_DATA.length}})</b>
             <table mat-table [dataSource]="dataSource">
                 <ng-container matColumnDef="serial">
                   <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> SERIAL </th>
@@ -40,33 +45,44 @@
         </div>
     </div>
     <div class="row justify-content-center mt-3">
-        <div class="card col-8">
+        <div class="card col-10">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-6">
-                        <div class="input-group">
+                <div class="row justify-content-center">
+                    <div class="col-5">
+                        <div class="input-group mt-1">
                             <div class="input-group-prepend">
                                 <label class="input-group-text" >ENTREGA:</label>
                             </div>
-                            <input class="form-control" placeholder="Numero de empleado"> 
+                            <input class="form-control" [disabled]="employeesDone" placeholder="Numero de empleado" id="txtDelieveringEmployee" [(ngModel)]="delieveringEmployee"> 
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="input-group">
+                    <div class="col-5">
+                        <div class="input-group mt-1">
                             <div class="input-group-prepend">
                                 <label class="input-group-text" >RECIBE:</label>
                             </div>
-                            <input class="form-control" placeholder="Numero de empleado"> 
+                            <input class="form-control" [disabled]="employeesDone" placeholder="Numero de empleado" id="txtReceivingEmployee" [(ngModel)]="receivingEmployee"> 
                         </div>
+                    </div>
+                    <div class="col-1" id="divButtonsEmployees">
+                        <button type="button" title="Validar empleados" (click)="validateEmployees()" class="btn btn-outline-success btn-lg btn-employees" [disabled]="employeesDone"
+                            id="btnValidateEmployees" style="padding-top: 7px; padding-left: 12px;" [innerHTML] = "iconButtonValidateEmployee"></button>
+                        <button type="button" title="Editar numeros de empleado" (click)="continueEditingEmployees()" class="btn btn-warning btn-md" [hidden]="!employeesDone"
+                            style="margin-top: 6px; margin-left: 5px;" ><i class="far fa-edit"></i></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row justify-content-center mt-3">
+    <div class="row justify-content-center mt-3 mb-4">
         <div class="col-4">
-            <button (click)="saveInOut()" class="btn btn-success btn-lg btn-block mt-2" [hidden]="true">
+            <button (click)="saveInOut()" class="btn btn-success btn-lg btn-block mt-2" [disabled]="!employeesDone || !serialsDone || txtToolings.trim() == ''">
                 <span class="content"><i class="fas fa-save"></i>&nbsp;&nbsp;Guardar</span>
+            </button>
+        </div>
+        <div class="col-1">
+            <button (click)="clearForm()" class="btn btn-warning btn-lg btn-block mt-2" title="Limpiar formulario">
+                <span class="content"><i class="fas fa-trash"></i></span>
             </button>
         </div>
     </div>

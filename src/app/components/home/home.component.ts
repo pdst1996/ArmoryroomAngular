@@ -109,6 +109,10 @@ export class HomeComponent implements OnInit {
           this.currentRoute = "tooling";
           break;
         }
+        case "/checklist/questions": {
+          this.currentRoute = "questions";
+          break;
+        }
         case "/requimtto": {
           this.currentRoute = "requimtto";
           break;
@@ -169,6 +173,10 @@ export class HomeComponent implements OnInit {
         this.currentRoute = "tooling";
         break;
       }
+      case "/checklist/questions": {
+        this.currentRoute = "questions";
+        break;
+      }
       case "/requimtto": {
         this.currentRoute = "requimtto";
         break;
@@ -186,6 +194,10 @@ export class HomeComponent implements OnInit {
         }
         case "/config/tooling": {
           this.currentRoute = "tooling";
+          break;
+        }
+        case "/checklist/questions": {
+          this.currentRoute = "questions";
           break;
         }
         case "/requimtto": {

@@ -1,4 +1,4 @@
-export interface GeneralResponse {
+export class GeneralResponse {
   success: boolean;
   message: string;
   data: any;

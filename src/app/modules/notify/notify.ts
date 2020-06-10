@@ -17,7 +17,7 @@ export class Notify {
       title: title,
       text: text,
       type: type,
-      delay: "1000"
+      delay: "3000"
     });
   }
 
