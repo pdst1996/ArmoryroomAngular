@@ -1,0 +1,34 @@
+<div class="p-3 bg-white  rounded shadow-md card--z-5"
+    style="margin-left:auto; margin-right:auto; margin-top: 2%; width: 80%;">
+
+    <button type="button" class="btn btn-primary" (click)="bVisibleNP='npdiv'">No.Parte</button>
+    <button type="button" class="btn btn-success " (click)="bVisibleNP='cmdiv'">ConMasc</button>
+    <br><br>
+   
+    <div id="Npart" [hidden]="bVisibleNP!='npdiv'" >
+        <label style="font-weight: bold; ">NUMERO DE PARTE:</label>
+        <br>
+        <select [(ngModel)]="pNParte" style="width: 50%;" class="custom-select">
+            <option value="0" selected>Elige...</option>
+            <option *ngFor="let PartNumber of PartNumbers " value="{{PartNumber.pk_partnumber}}">
+                {{PartNumber.partnumber}}</option>
+        </select>
+        <br><br>
+    </div>
+    <div  [hidden]="bVisibleNP!='cmdiv'">
+        <label style="font-weight: bold; ">CONTRAMASCARA:</label>
+        <br>
+        <select [(ngModel)]="pkCMask" style="width: 50%;" class="custom-select">
+            <option value="0" selected>Elige...</option>
+            <option *ngFor="let CounterMask of nCounterMasks "  value="{{CounterMask.pk_tooling}}">
+                {{CounterMask.tooling}}</option>
+        </select>
+        <br><br>
+    </div>
+    
+    <div class="row col-sm-12">
+        <textarea class="col-sm-4" placeholder="writing someone" #txtAinput style="margin-left: 6%;" [(ngModel)]="textValue" required > </textarea>
+        <img type="button" class="col-sm-3" src="/assets/sanmina/application/flags.png" (click)="mInsert(txtAinput.value)" alt="">
+        <textarea class="col-sm-4" placeholder="writing someone" id="txtAoutput"></textarea>
+    </div>
+</div>

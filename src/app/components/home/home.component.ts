@@ -109,6 +109,10 @@ export class HomeComponent implements OnInit {
           this.currentRoute = "tooling";
           break;
         }
+        case "/config/countermask": {
+          this.currentRoute = "countermask";
+          break;
+        }
         case "/checklist/questions": {
           this.currentRoute = "questions";
           break;
@@ -173,6 +177,10 @@ export class HomeComponent implements OnInit {
         this.currentRoute = "tooling";
         break;
       }
+      case "/config/countermask": {
+        this.currentRoute = "countermask";
+        break;
+      }
       case "/checklist/questions": {
         this.currentRoute = "questions";
         break;
@@ -194,6 +202,10 @@ export class HomeComponent implements OnInit {
         }
         case "/config/tooling": {
           this.currentRoute = "tooling";
+          break;
+        }
+        case "/config/countermask": {
+          this.currentRoute = "countermask";
           break;
         }
         case "/checklist/questions": {

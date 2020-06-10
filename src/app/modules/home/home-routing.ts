@@ -17,6 +17,10 @@ const routes: Routes = [
                 loadChildren: 'src/app/modules/tooling/tooling.module#ToolingModule', canActivate: [LoginAct]
             },
             {
+                path: 'config/countermask',
+                loadChildren: 'src/app/modules/countermask/countermask.module#CountermaskModule', canActivate: [LoginAct]
+            },
+            {
                 path: 'checklist/questions',
                 loadChildren: 'src/app/modules/questions/questions.module#QuestionsModule', canActivate: [LoginAct]
             },
