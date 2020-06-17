@@ -138,6 +138,14 @@ export class HomeComponent implements OnInit {
           this.currentRoute = "contact us";
           break;
         }
+        case "/pallet-validator/scan-pallet": {
+          this.currentRoute = "scan pallet";
+          break;
+        }
+        case "/pallet-validator/liberate-pallet": {
+          this.currentRoute = "liberate pallet";
+          break;
+        }
       }
       this.currentYear = date.getFullYear();
       $(".dropdown-menu a.dropdown-toggle").on("click", function (e) {
@@ -224,6 +232,14 @@ export class HomeComponent implements OnInit {
         this.currentRoute = "contact us";
         break;
       }
+      case "/pallet-validator/scan-pallet": {
+        this.currentRoute = "scan pallet";
+        break;
+      }
+      case "/pallet-validator/liberate-pallet": {
+        this.currentRoute = "liberate pallet";
+        break;
+      }
     }
   }
 
@@ -266,6 +282,14 @@ export class HomeComponent implements OnInit {
         }
         case "/contact-us": {
           this.currentRoute = "contact us";
+          break;
+        }
+        case "/pallet-validator/scan-pallet": {
+          this.currentRoute = "scan pallet";
+          break;
+        }
+        case "/pallet-validator/liberate-pallet": {
+          this.currentRoute = "liberate pallet";
           break;
         }
       }

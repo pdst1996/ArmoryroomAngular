@@ -61,7 +61,7 @@ export class ShowToolingsComponent implements OnInit {
     console.log(objTool)
     this.valueStatus = (action == 9) ? 'scrap' : 'cuarentena';
     this.openModal2(modal);
-    this.valueInOut = (action == 2) ? 'sacar de' : 'poner en';
+    this.valueInOut = (action == 5) ? 'sacar de' : 'poner en';
   }
 
   saveNewStatus(){
@@ -71,6 +71,7 @@ export class ShowToolingsComponent implements OnInit {
         this.notifyLoading = this.notify.setLoadingDone(" Cambios guardados", this.notifyLoading);
         this.modalRef2.hide();
         this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Se puso en ${(this.newStatus == 9) ? "scrap" : "cuarentena"} al herramental (${this.toolingToChangeStatus.tooling})`);
+        this.getAllToolings();
       },
       (err: HttpErrorResponse) => {
         if (err.error instanceof Error) {

@@ -16,14 +16,15 @@ export class ContactUsService {
         
     }
 
-    sendMail(from:string, to:string, subject:string, message:string) : Observable<GeneralResponse>{
+    sendMail(from:string, to:string, subject:string, message:string, user:string) : Observable<GeneralResponse>{
+        let date: Date = new Date();  
         let mail = new Mail();
         mail.from = from;
         mail.to = to;
         mail.subject = subject;
-        mail.message = message;
+        mail.message = message +`\n\n\nUSER: ${user}\nDATE: ${date}`;
         console.log(mail)
-        return this.httpClient.post<GeneralResponse>(`${this.mailUrl}/sendMail`,mail).pipe();
+        return this.httpClient.post<GeneralResponse>(`${this.mailUrl}/sendmail`,mail).pipe();
     }
 
     

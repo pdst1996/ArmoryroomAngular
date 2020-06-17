@@ -34,13 +34,13 @@ export class InOutToolingsComponent implements OnInit {
   public ELEMENT_DATA : ValidationResults[];
   public dataSource : any;
   public statusAvailablesToIn = ["In Line"];
-  public statusAvailablesToOut = ["In tool","In maintance"];
+  public statusAvailablesToOut = ["In Toolcrib"];
   public serialsDone = false;
   public delieveringEmployee = "";
   public receivingEmployee = "";
   public employeesDone = false;
   public applicationData : ApplicationData;
-  public contentTooltip:string;
+  public contentTooltip : string;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   displayedColumns: string[] = ['serial','message'];
@@ -60,7 +60,7 @@ export class InOutToolingsComponent implements OnInit {
   saveInOut(){
     this.notifyLoading = this.notify.setLoading(`Guadando ${(this.radioModel == 'in') ? "entradas" : "salidas"}`, this.notifyLoading);
     var toolingsToInOut = this.getToolingsSerialsFormated();
-    this.toolingService.inOutToolings(toolingsToInOut, (this.radioModel == 'in') ? 5 : 6).subscribe(
+    this.toolingService.inOutToolings(toolingsToInOut, (this.radioModel == 'in') ? 5 : 2).subscribe(
       results =>{
         this.notifyLoading = this.notify.setLoadingDone(" Cambios guardados", this.notifyLoading);
         this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Se les dio ${(this.radioModel == 'in') ? "entrada" : "salida"} a los herramentales (${toolingsToInOut}) entregó: ${this.delieveringEmployee} y recibió: ${this.receivingEmployee}`);

@@ -102,6 +102,7 @@ export class MaintanceRequestsComponent implements OnInit {
           this.notifyLoading = this.notify.setLoadingDone(" Listo", this.notifyLoading);
           this.modalRef.hide();
           this.historyService.insertNewHistory(this.user.userName, `Se ${value2} la requisición ${this.pkRequest}`);
+          this.getAllRequestMaintance();
         }else{
           this.notifyLoading = this.notify.setLoadingError(" Error", this.notifyLoading);
           this.notify.setNotification("ERROR", results.message +". Se recomiendo actualizar la pagina", "error");

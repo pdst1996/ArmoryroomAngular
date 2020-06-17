@@ -45,7 +45,7 @@
         </div>  
         <div class="row justify-content-center mb-2">
             <div class="col-11" style="text-align: center;">
-                <button (click)="sendMail()" class="btn btn-primary btn-lg btn-block mt-1" [disabled]="mailMessage == '' || mailSubject == ''">
+                <button (click)="sendMail()" class="btn btn-primary btn-lg btn-block mt-1" [disabled]="mailMessage == '' || mailSubject == ''" [innerHTML]="innerButton">
                     <span class="content"><i class="far fa-paper-plane"></i>&nbsp;&nbsp;Enviar</span>
                 </button>
             </div>

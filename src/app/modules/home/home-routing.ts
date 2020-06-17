@@ -43,6 +43,14 @@ const routes: Routes = [
             {
                 path: 'contact-us',
                 loadChildren: 'src/app/modules/contact-us/contact-us.module#ContactUsModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'pallet-validator/scan-pallet',
+                loadChildren: 'src/app/modules/pallet-validator/scan-pallet/scan-pallet.module#ScanPalletModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'pallet-validator/liberate-pallet',
+                loadChildren: 'src/app/modules/pallet-validator/liberate-pallet/liberate-pallet.module#LiberatePalletModule', canActivate: [LoginAct]
             }
            
         ]

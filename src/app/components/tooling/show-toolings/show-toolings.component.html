@@ -41,7 +41,7 @@
         <button type="button" class="btn btn-warning btn-sm ml-2" title="Poner en cuarentena" (click)=" changeStatus(template2, element, 10)" [hidden]="element.fkStatus.pkstatus == 9 || element.fkStatus.pkstatus == 10">
           <i class="fas fa-sign-in-alt"></i>
         </button>
-        <button type="button" class="btn btn-warning btn-sm ml-2" title="Sacar de cuarentena" (click)=" changeStatus(template2, element, 2)" [hidden]="element.fkStatus.pkstatus != 10">
+        <button type="button" class="btn btn-warning btn-sm ml-2" title="Sacar de cuarentena" (click)=" changeStatus(template2, element, 5)" [hidden]="element.fkStatus.pkstatus != 10">
           <i class="fas fa-sign-out-alt"></i>
         </button>
         <button type="button" class="btn btn-danger btn-sm ml-2" title="Poner en scrap" (click)=" changeStatus(template2, element, 9)" [hidden]="element.fkStatus.pkstatus == 9">
