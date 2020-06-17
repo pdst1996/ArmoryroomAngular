@@ -1,42 +1,92 @@
-<div class="p-3 bg-white center rounded shadow-md card--z-5" style="align-items: center;margin-left:auto; margin-right:auto; margin-top: 2%; width: 80%;">
-
-    <div class="mat-elevation-z8" style="margin-bottom: 2%;">
+<div class="p-3 bg-white center rounded shadow-md card--z-5 card-requimtto">
+  <div class="mat-elevation-z8" style="margin-bottom: 2%;">
+    <div class="row justify-content-around">
+      <div class="col-12">
+        <div class="row justify-content-end">
+          <div class="col-4 mt-1">
+              <mat-form-field  style="width: 90%;">
+                  <mat-label><i class="fas fa-search"></i> Buscar en toda la tabla</mat-label>
+                  <input matInput (keyup)="applyFilter($event)" placeholder="Clave">
+              </mat-form-field>
+          </div>
+        </div>
         <table mat-table [dataSource]="dataSource">
-      
-          <!-- Position Column -->
-          <ng-container matColumnDef="position">
-            <th mat-header-cell *matHeaderCellDef> No. </th>
-            <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> ID </th>
+            <td mat-cell *matCellDef="let element">
+              <button type="button" class="btn btn-link" (click)="setSerialOnTextBox(element.tooling, element.pkTooling)">{{element.pkTooling}}</button></td>
           </ng-container>
-      
-          <!-- Name Column -->
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+          <ng-container matColumnDef="project">
+            <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PROYECTO </th>
+            <td mat-cell *matCellDef="let element"> {{element.project.substring(0,element.project.length-1)}} </td>
           </ng-container>
-      
-          <!-- Weight Column -->
-          <ng-container matColumnDef="weight">
-            <th mat-header-cell *matHeaderCellDef> Weight </th>
-            <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+          <ng-container matColumnDef="serial">
+            <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> SERIAL </th>
+            <td mat-cell *matCellDef="let element"> {{element.tooling}} </td>
           </ng-container>
-      
-          <!-- Symbol Column -->
-          <ng-container matColumnDef="symbol">
-            <th mat-header-cell *matHeaderCellDef> Symbol </th>
-            <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> TIPO </th>
+            <td mat-cell *matCellDef="let element"> {{element.fkType.type}} </td>
           </ng-container>
-      
+          <ng-container matColumnDef="qtyPasses">
+            <th mat-header-cell *matHeaderCellDef  class="center-mat-cell"> PASADAS </th>
+            <td mat-cell *matCellDef="let element"> {{(element.fkType.pktype == 3  || element.fkType.pktype == 5) ? element.actualQty : "NA"}} </td>
+          </ng-container>
+          <ng-container matColumnDef="qtyMtto">
+            <th mat-header-cell *matHeaderCellDef class="center-mat-cell">ULTIMO MTTO </th>
+            <td mat-cell *matCellDef="let element"> {{(element.lastMtce != null) ? element.lastMtce.replace('T',' ').substring(0,16) : "NA"}} </td>
+          </ng-container>
+          <ng-container matColumnDef="proxMtto">
+            <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PROXIMO MTTO </th>
+            <td mat-cell *matCellDef="let element"> {{(element.nextMtce != null) ? element.nextMtce.replace('T',' ').substring(0,16) : "NA"}} </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> STATUS </th>
+            <td mat-cell *matCellDef="let element"> {{element.fkStatus.status}} </td>
+          </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-      
         <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
       </div>
-      
-
-    <p >Herramental</p>
-    <input type="text" placeholder="Serial Number" class="shadow-sm" style="margin-bottom: 2%;">
-    <p>Comentarios</p>
-    <textarea placeholder="Motivo para requerir mantenimiento" style="width: 30%;"> </textarea>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <p>
+            <mat-form-field appearance="outline">
+              <mat-label style="font-size: 15pt;">Herramental</mat-label>
+              <input matInput [(ngModel)]="toolingToAskMaintance" style="font-size: 13pt;" readonly title="Para insertar el serial seleccionalo en la tabla de arriba">
+              <mat-icon matSuffix>vpn_key</mat-icon>
+            </mat-form-field>
+          </p>
+        </div>
+      </div>
+      <div class="row justify-content-center mt-n3">
+        <div class="col-8">
+          <p>
+            <mat-form-field appearance="outline">
+              <mat-label style="font-size: 15pt;">Comentario</mat-label>
+              <textarea matInput placeholder="Comentario" rows="3" style="font-size: 13pt;" id="txtComments" [(ngModel)]="commentToAskMaintance"></textarea>
+              <mat-icon matSuffix>comment</mat-icon>
+            </mat-form-field>
+          </p>
+        </div>
+        <div class="col-4">
+          <button (click)="askToolingMaintance()" class="btn btn-success btn-lg btn-block mt-2 zoom"  [disabled]="toolingToAskMaintance=='' || commentToAskMaintance==''">
+            <div class="row">
+              <div class="col-3">
+                <i class="far fa-paper-plane" style="margin-top: 20px; margin-left: 5px;"></i>
+              </div>
+              <div class="col-9" style="text-align: start;">
+                Enviar requerimiento
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,22 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { QuestionsRoutingModule } from './questions-routing.module';
-import { QuestionsComponent } from '../../components/questions/questions.component';
+import { RequimttoRoutingModule } from './requimtto-routing.module';
+import { RequimttoComponent } from '../../components/requimtto/requimtto.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule, MatPaginatorModule } from '@angular/material';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   imports: [
     CommonModule,
-    QuestionsRoutingModule,
+    RequimttoRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
@@ -25,12 +24,11 @@ import { MatButtonModule } from '@angular/material/button';
     MatPaginatorModule,
     MatFormFieldModule,
     MatInputModule,
-    MatRadioModule,
-    MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule
   ],
   declarations: [
-    QuestionsComponent
+    RequimttoComponent
   ]
 })
-export class QuestionsModule { }
+export class RequimttoModule { }

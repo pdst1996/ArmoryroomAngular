@@ -52,6 +52,7 @@ export class ToolingService {
   }
 
   inOutToolings(data:string, pkNewStatus:number): Observable<ToolingValidation[]>{
+    console.log(data+":"+pkNewStatus)
     return this.httpClient.post<ToolingValidation[]>(`${this.toolingUrl}/changeStatusTools/${pkNewStatus}`,data);
   }
 

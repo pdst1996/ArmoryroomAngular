@@ -30,5 +30,9 @@ export class QuestionsService {
   updateQuestion(obj:Question) : Observable<GeneralResponse>{
     return this.httpClient.post<GeneralResponse>(`${this.questionsUrl}/insert`,obj).pipe();
   }
+
+  insertQuestion(obj:Question) : Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.questionsUrl}/insert`,obj).pipe();
+  }
   
 }

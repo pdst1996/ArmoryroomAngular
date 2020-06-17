@@ -1,0 +1,200 @@
+<div class="p-3 bg-white center rounded shadow-md card--z-5 card-questions">
+    <div class="row justify-content-around">
+        <div class="col-11">
+            <div class="row justify-content-right ">
+                <div class="offset-md-9 col-3 mt-1">
+                    <mat-form-field>
+                        <mat-label><i class="fas fa-search"></i> Buscar en toda la tabla</mat-label>
+                        <input matInput (keyup)="applyFilter($event)" placeholder="Clave">
+                    </mat-form-field>
+                </div>
+            </div>
+            <table mat-table [dataSource]="dataSource">
+                <ng-container matColumnDef="question">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> ID </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button type="button" class="btn btn-link" (click)="openModalQuestionnaire(template, element)"><u><b>{{element.pkMaintenance}}</b></u></button>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="tooling">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> HERRAMENTAL </th>    
+                    <td mat-cell *matCellDef="let element"> 
+                        {{element.fkTooling.tooling}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="answer">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> REQUISITOR </th>
+                    <td mat-cell *matCellDef="let element"> 
+                        {{element.userName}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> FECHA </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.dateMtce.replace('T',' ').substring(0,16)}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="comments">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> COMENTARIOS </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.comments}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> STATUS </th>
+                    <td mat-cell *matCellDef="let element" [class]="(element.signed && element.approved) ? 'color-st-green border-rounded-snm' : (element.signed && !element.approved) ? 'color-st-red border-rounded-snm' : 'color-st-yellow border-rounded-snm'">
+                        <b>{{(element.signed && element.approved) ? 'APROBADA' : (element.signed && !element.approved) ? 'RECHAZADA' : 'SIN APROBAR'}}</b>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>
+
+<ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left"></h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()" style="padding-top: 23px; padding-right: 23px;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body modal-lg center" style="text-align: center;">
+      <div class="row justify-content-center mt-2">
+        <div class="col-11">
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading" style="text-align: center;">Informacion del mantenimiento</h4>
+                <div class="row">
+                    <div class="col-3 justify-content-center">
+                        <img class="img-employee ml-3" [src]="imgSrc">
+                    </div>
+                    <div class="col-6 mt-4" style="text-align: center; font-size: 13pt;">
+                        <b>ID Mantenimiento:</b> {{idMaintenance}}<br>
+                        <b>Usuario:</b> {{userMaintenance}}<br>
+                        <b>Fecha:</b> {{dateMaintenance}}<br>
+                    </div>
+                    <div class="col-3">
+                        <div class="set-size mt-1">
+                            <div class="c100" [class]="averageMaintenanceClass">
+                              <span>{{averageMaintenanceClass.replace('c100 p','')}}%</span>
+                              <div class="slice">
+                                <div class="bar"></div>
+                                <div class="fill"></div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <table mat-table [dataSource]="dataSourceQuestions">
+                            <ng-container matColumnDef="question">
+                              <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PREGUNTA </th>
+                              <td mat-cell *matCellDef="let element"> {{element.question}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="answer">
+                              <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> RESPUESTA </th>
+                              <td mat-cell *matCellDef="let element"><b [class]="(element.answer.toUpperCase() == element.correctAnswer.toUpperCase()) ? 'answer-green' : 'answer-red'">{{element.answer.toUpperCase()}}</b></td>
+                            </ng-container>
+                            <ng-container matColumnDef="correct">
+                                <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> CORRECTA </th>
+                                <td mat-cell *matCellDef="let element"> {{element.correctAnswer.toUpperCase()}} </td>
+                              </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsQuestions"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsQuestions;"></tr>
+                          </table>
+                    </div>
+                </div>
+              </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-11 alert alert-success" [hidden]="!processSignDone || processSignRejected">
+                    <i class="fas fa-check"></i>&nbsp;&nbsp;Firma procesos lista, firmada por {{processSigner}}
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-11 alert alert-warning" [hidden]="processSignDone || processSignPermission || processSignRejected">
+                    <i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;Falta firma procesos
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-11 alert alert-danger" [hidden]="!processSignRejected">
+                    <i class="fas fa-times"></i>&nbsp;&nbsp;Firma procesos rechazada
+                </div>
+            </div>
+            <div class="row justify-content-center" [hidden]="processSignDone || !processSignPermission || processSignRejected">
+                <div class="col-4">
+                    <button (click)="signMaintenance('procesos',false,template2)" class="btn btn-outline-danger btn-lg btn-block mt-2 mb3">
+                        <span class="content"><i class="fas fa-thumbs-down"></i>&nbsp;&nbsp;Denegar</span>
+                    </button>
+                </div>
+                <div class="col-7">
+                    <button (click)="signMaintenance('procesos',true,template2)" class="btn btn-success btn-lg btn-block mt-2 mb-3">
+                        <span class="content"><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Aprobar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-11 alert alert-success" [hidden]="!qualitySignDone || qualitySignRejected">
+                    <i class="fas fa-check"></i>&nbsp;&nbsp;Firma calidad lista, firmada por {{qualitySigner}}
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-11 alert alert-warning" [hidden]="qualitySignDone || qualitySignPermission || qualitySignRejected">
+                    <i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;Falta firma calidad
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-11 alert alert-danger" [hidden]="!qualitySignRejected">
+                    <i class="fas fa-times"></i>&nbsp;&nbsp;Firma calidad rechazada
+                </div>
+            </div>
+            <div class="row justify-content-center" [hidden]="qualitySignDone || !qualitySignPermission || qualitySignRejected">
+                <div class="col-4">
+                    <button (click)="signMaintenance('calidad',false,template2)" class="btn btn-outline-danger btn-lg btn-block mb-3">
+                        <span class="content"><i class="fas fa-thumbs-down"></i>&nbsp;&nbsp;Denegar</span>
+                    </button>
+                </div>
+                <div class="col-7">
+                    <button (click)="signMaintenance('calidad',true,template2)" class="btn btn-success btn-lg btn-block  mb-3">
+                        <span class="content"><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Aprobar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+     
+    </div>
+  </ng-template>
+
+  <ng-template #template2>
+    <div class="modal-body modal-lg">
+        <div class="row justify-content-center mt-4">
+          <div class="col-11">
+            <h3>¿Esta seguro que desea {{valueSign}} el mantenimiento por parte de {{departmentSign.toUpperCase()}}?</h3>
+            <p>Recuerde que será permanente y no se podrá revertir</p>
+            <div class="row justify-content-end">
+              <div class="col-3">
+                <button type="button" class="btn btn-outline-danger mt-1" (click)="modalRef2.hide()">Cancelar</button>
+              </div>
+              <div class="col-3 form-group">
+                <input type="button" class="btn btn-success btn-lg" id="btnAccept" (click)="addSignMaintenance()" value="Aceptar">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </ng-template>

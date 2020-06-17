@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import { QuestionsService } from 'src/app/modules/questions/questions.service';
 import { Type } from '../../models/type/type.model'
-import { MatPaginator, MatTableDataSource, MatRadioChange, MatRadioButton, MatCheckboxChange } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatRadioChange, MatRadioButton, MatCheckboxChange, MatRadioGroup } from '@angular/material';
 import { Question } from 'src/app/models/questions/questions.model';
-import { element } from 'protractor';
 import { Notify } from 'src/app/modules/notify/notify';
-import { HistoryLog } from 'src/app/models/history/history.model';
 import { HistoryService } from 'src/app/modules/history/history.service';
 import { ApplicationData } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-questions',
@@ -27,12 +26,50 @@ export class QuestionsComponent implements OnInit {
   thereQuestions = false;
   questionsFilled = false;
   applicationData :ApplicationData;
+  modalRef : BsModalRef;
+  questionNew = "";
+  answerSelected = "Yes";
 
-  constructor(private questionsService: QuestionsService, private element: ElementRef, private  notify: Notify, private historyService: HistoryService) { }
+  constructor(private questionsService: QuestionsService, 
+    private element: ElementRef, 
+    private  notify: Notify, 
+    private historyService: HistoryService,
+    private modalService : BsModalService) { }
 
   ngOnInit() {
     this.getAllTypes();
     this.applicationData = JSON.parse( localStorage.getItem(Constants.localStorage) );
+  }
+
+  saveNewQuestion(){
+    let newObjQuestion = new Question();
+    newObjQuestion.question = "¿"+this.questionNew+"?";
+    newObjQuestion.correctAnswer = this.answerSelected;
+    newObjQuestion.fkType = new Type(this.typeSelected,"");
+    newObjQuestion.status = true;
+    this.notifyLoader = this.notify.setLoading("Insertando",this.notifyLoader);
+    this.questionsService.insertQuestion(newObjQuestion).subscribe(
+      results =>{
+        if(results.success){
+          this.notifyLoader = this.notify.setLoadingDone("Insertado",this.notifyLoader);
+          this.historyService.insertNewHistory(this.applicationData.userInfo.userName,"Se inserto la pregunta "+this.questionNew);
+          this.questionNew = "";
+          this.getAllQuestions("reload");
+        }else{
+          this.notifyLoader = this.notify.setLoadingError("Error",this.notifyLoader);
+          this.notify.setNotification("Error",results.message,"error");
+        }
+      }
+    );
+  }
+
+  changeAnswer(radio:MatRadioChange){
+    this.answerSelected = radio.value;
+  }
+
+  openModalAddQuestions(template:any){
+    this.answerSelected = "Yes";
+    this.openModal(template);
   }
 
   editQuestion(pkQuestion:string){
@@ -93,8 +130,9 @@ export class QuestionsComponent implements OnInit {
     this.element.nativeElement.querySelector("#spQuestion_"+pkQuestion).setAttribute('style','display:block;');
   }
 
-  getAllQuestions(){
-    this.notifyLoader = this.notify.setLoading("Cargando preguntas",this.notifyLoader);
+  getAllQuestions(action:string){
+    if(action=="load")
+      this.notifyLoader = this.notify.setLoading("Cargando preguntas",this.notifyLoader);
     this.questionsService.findAllQuestions().subscribe(results =>{
       let questions = new Array<Question>();
       questions=results.data;
@@ -112,14 +150,19 @@ export class QuestionsComponent implements OnInit {
     
       this.dataSource = new MatTableDataSource <Question>(this.questionsArray);
       this.dataSource.paginator = this.paginator;
-      let newRowObject = this.element.nativeElement.querySelector("#trAdditional");
-      this.dataSource.data.unshift(newRowObject);
-      this.notifyLoader = this.notify.setLoadingDone("Listo",this.notifyLoader);
+      
+      if(action=="load")
+        this.notifyLoader = this.notify.setLoadingDone("Listo",this.notifyLoader);
     });
   }
 
   getAllTypes(){
     this.questionsService.findAllTypes().subscribe( results =>{ this.types = results; } );
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
+    this.modalRef.setClass('modal-md');
   }
 
   applyFilter(event: Event) {

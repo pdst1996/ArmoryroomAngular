@@ -1,7 +1,7 @@
 import { Component, OnInit,ViewChild, TemplateRef } from '@angular/core';
 import { MatPaginator,MatTableDataSource } from '@angular/material';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Tooling, Status, objTooling } from 'src/app/models/tooling/tooling.model';
+import { Tooling, Status, objTooling, objTooling2} from 'src/app/models/tooling/tooling.model';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { Notify } from 'src/app/modules/notify/notify';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -17,6 +17,7 @@ import { Constants } from 'src/app/helpers/constats';
 })
 export class ShowToolingsComponent implements OnInit {
   modalRef: BsModalRef;
+  modalRef2: BsModalRef;
   toolingTable : Tooling[];
   statusArray : Status[];
   displayedColumns: string[] = ['id','project','serial', 'type', 'qtyPasses', 'qtyMtto', 'proxMtto', 'status', 'controls'];
@@ -35,6 +36,10 @@ export class ShowToolingsComponent implements OnInit {
   public qtyTotalPasesEdit = 10;
   public qtyLifePasesEdit = 3000;
   public applicationData: ApplicationData;
+  public newStatus : number;
+  public toolingToChangeStatus : objTooling2;
+  public valueStatus:string;
+  public valueInOut = 'poner';
 
   tooling : Tooling;
   notifyLoading : any;
@@ -46,6 +51,34 @@ export class ShowToolingsComponent implements OnInit {
     this.getAllToolings();
     this.applicationData = JSON.parse(
       localStorage.getItem(Constants.localStorage)
+    );
+  }
+
+  changeStatus(modal:any, objTool:objTooling2,action:number){
+    this.newStatus = action;
+    this.toolingToChangeStatus = new objTooling2();
+    this.toolingToChangeStatus = objTool;
+    console.log(objTool)
+    this.valueStatus = (action == 9) ? 'scrap' : 'cuarentena';
+    this.openModal2(modal);
+    this.valueInOut = (action == 2) ? 'sacar de' : 'poner en';
+  }
+
+  saveNewStatus(){
+    this.notifyLoading = this.notify.setLoading(`${(this.newStatus == 9) ? "Scrapeando" : `${(this.newStatus == 2) ? 'Sacando de' : 'Poniendo en'} cuarentena`}`, this.notifyLoading);
+    this.toolingService.inOutToolings(this.toolingToChangeStatus.tooling,this.newStatus).subscribe(
+      results =>{
+        this.notifyLoading = this.notify.setLoadingDone(" Cambios guardados", this.notifyLoading);
+        this.modalRef2.hide();
+        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Se puso en ${(this.newStatus == 9) ? "scrap" : "cuarentena"} al herramental (${this.toolingToChangeStatus.tooling})`);
+      },
+      (err: HttpErrorResponse) => {
+        if (err.error instanceof Error) {
+          console.log("Client-side error");
+        } else {
+          console.log("Server-side error");
+        }
+      }
     );
   }
 
@@ -144,6 +177,11 @@ export class ShowToolingsComponent implements OnInit {
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
     this.modalRef.setClass('modal-lg');
+  }
+
+  openModal2(template: TemplateRef<any>) {
+    this.modalRef2 = this.modalService.show(template);
+    this.modalRef2.setClass('modal-md');
   }
 
   applyFilter(event: Event) {

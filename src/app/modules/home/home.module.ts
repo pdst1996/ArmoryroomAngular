@@ -9,24 +9,19 @@ import { CommonModule } from '@angular/common';
 import { HomeService } from './home.service';
 import { ArraySortPipe } from 'src/app/helpers/pipes/orderMenu';
 import { FilterMenuPipe } from 'src/app/helpers/pipes/filterMenu';
-import { RequimttoComponent } from 'src/app/components/requimtto/requimtto.component';
-import {MatTableModule, MatPaginatorModule} from '@angular/material';
 
 @NgModule({
     declarations: [
         HomeComponent,
         ArraySortPipe,
-        FilterMenuPipe,RequimttoComponent
-        
+        FilterMenuPipe
     ],
     imports: [
         CommonModule,
         PopoverModule.forRoot(),
         ModalModule.forRoot(),
         HomeRoutingModule,
-        FormsModule,
-        MatTableModule,
-        MatPaginatorModule
+        FormsModule
 
     ],
     providers: [

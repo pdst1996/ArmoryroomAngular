@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from '../../components/home/home.component';
 import { LoginAct } from '../../loginact.service';
-import { RequimttoComponent } from 'src/app/components/requimtto/requimtto.component';
 
 const routes: Routes = [
     {
@@ -24,8 +23,26 @@ const routes: Routes = [
                 path: 'checklist/questions',
                 loadChildren: 'src/app/modules/questions/questions.module#QuestionsModule', canActivate: [LoginAct]
             },
+            
             {
-                path:'requimtto', component: RequimttoComponent
+                path: 'checklist/questionnaire',
+                loadChildren: 'src/app/modules/questionnaire/questionnaire.module#QuestionnaireModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'requimtto',
+                loadChildren: 'src/app/modules/requimtto/requimtto.module#RequimttoModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'history',
+                loadChildren: 'src/app/modules/history/history.module#HistoryModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'fill-mtto',
+                loadChildren: 'src/app/modules/fill-mtto/fill-mtto.module#FillMttoModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'contact-us',
+                loadChildren: 'src/app/modules/contact-us/contact-us.module#ContactUsModule', canActivate: [LoginAct]
             }
            
         ]

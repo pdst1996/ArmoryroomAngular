@@ -1,36 +1,12 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit,ViewChild, ElementRef } from '@angular/core';
 import {MatPaginator,MatTableDataSource} from '@angular/material';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-  {position: 11, name: 'Sodium', weight: 22.9897, symbol: 'Na'},
-  {position: 12, name: 'Magnesium', weight: 24.305, symbol: 'Mg'},
-  {position: 13, name: 'Aluminum', weight: 26.9815, symbol: 'Al'},
-  {position: 14, name: 'Silicon', weight: 28.0855, symbol: 'Si'},
-  {position: 15, name: 'Phosphorus', weight: 30.9738, symbol: 'P'},
-  {position: 16, name: 'Sulfur', weight: 32.065, symbol: 'S'},
-  {position: 17, name: 'Chlorine', weight: 35.453, symbol: 'Cl'},
-  {position: 18, name: 'Argon', weight: 39.948, symbol: 'Ar'},
-  {position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K'},
-  {position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca'},
-];
-
+import { Tooling, ToolingClass } from 'src/app/models/tooling/tooling.model';
+import { ToolingService } from 'src/app/modules/tooling/tooling.service';
+import { Notify } from 'src/app/modules/notify/notify';
+import { RequestMaintance } from 'src/app/models/request-maintance/request-maintance.model';
+import { RequimttoService } from 'src/app/modules/requimtto/requimtto.service';
+import { ApplicationData } from 'src/app/models/home/home.model';
+import { Constants } from 'src/app/helpers/constats';
 
 @Component({
   selector: 'app-requimtto',
@@ -39,13 +15,63 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class RequimttoComponent implements OnInit {
 
-  displayedColumns: string[] = ['position','name','weight', 'symbol'];
-  dataSource = new MatTableDataSource <PeriodicElement>(ELEMENT_DATA);
+  displayedColumns: string[] = ['id','project','serial', 'type', 'qtyPasses', 'qtyMtto', 'proxMtto', 'status'];
+  toolings:Tooling[];
+  dataSource : any;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  constructor() { }
+  notifyLoader : any;
+  commentToAskMaintance = "";
+  toolingToAskMaintance = "";
+  pktool = 0;
+  dataApplication : ApplicationData;
+
+  constructor(private toolingService : ToolingService, private notify : Notify, private element : ElementRef, private requimttoService:RequimttoService) { }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
+    this.getAllToolings();
+  }
+
+  getAllToolings(){
+    this.notifyLoader = this.notify.setLoading("Cargando herramentales",this.notifyLoader);
+    this.toolingService.getAllToolings().subscribe(ptoolings =>{
+      this.toolings = ptoolings;
+      this.dataSource = new MatTableDataSource <Tooling>(this.toolings);
+      this.dataSource.paginator = this.paginator;
+      this.notifyLoader = this.notify.setLoadingDone("Listo",this.notifyLoader);
+    });
+    this.dataApplication  = JSON.parse( localStorage.getItem(Constants.localStorage));
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  setSerialOnTextBox(tool:string, pktool:number){
+    this.toolingToAskMaintance = tool;
+    this.element.nativeElement.querySelector("#txtComments").focus();
+    this.pktool = pktool;
+  }
+
+  askToolingMaintance(){
+   
+    let obj = new RequestMaintance();
+    obj.comments = this.commentToAskMaintance;
+    obj.fkTooling = new ToolingClass(this.pktool);
+    obj.userRequest = this.dataApplication.userInfo.userName;
+    this.notifyLoader = this.notify.setLoading("Insertando",this.notifyLoader);
+    console.log(obj)
+    this.requimttoService.insertRequiMtto(obj).subscribe(results=>{
+      if(results.success){
+        this.notifyLoader = this.notify.setLoadingDone("Listo", this.notifyLoader);
+        this.pktool = 0;
+        this.toolingToAskMaintance = "";
+        this.commentToAskMaintance = "";
+      }
+      else{
+        this.notifyLoader = this.notify.setLoadingError("Error", this.notifyLoader);
+      }
+    });
   }
 
 }

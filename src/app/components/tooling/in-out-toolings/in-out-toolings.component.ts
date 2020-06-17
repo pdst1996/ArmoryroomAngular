@@ -73,13 +73,7 @@ export class InOutToolingsComponent implements OnInit {
         }
       }
     );
-    
-    setTimeout(() => {
-      this.notifyLoading = this.notify.setLoadingChangeText(" Wue sigo esperando :c", this.notifyLoading);
-      setTimeout(() => {
-        this.notifyLoading = this.notify.setLoadingDone(" :)", this.notifyLoading);
-      }, 3000);
-    }, 3000);
+  
   }
 
   clearForm(){

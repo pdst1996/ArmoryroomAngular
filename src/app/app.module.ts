@@ -15,8 +15,6 @@ import { AppRoutingModule } from "./routes.module";
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
-
 @NgModule({
   declarations: [AppComponent],
   imports: [

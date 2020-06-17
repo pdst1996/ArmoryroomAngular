@@ -19,4 +19,6 @@ export class Constants {
   public static localStorage: string = Constants.application + "_dataAuth";
 
   public static plantLS: string = Constants.application + "_plant";
+
+  public static mail : string = "dl-gdl3devsupport@sanmina.com";
 }

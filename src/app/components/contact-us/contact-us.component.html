@@ -1,0 +1,54 @@
+
+<div class="row justify-content-center mt-4">
+    <div class="p-3 bg-white center rounded shadow-md card--z-5 card-sanm col-8">
+        <div class="row justify-content-center mt-3">
+            <div class="col-3" style="text-align: right;">
+                <mat-card class="card-mail">FROM</mat-card>
+            </div>
+            <div class="col-8">
+                <mat-form-field appearance="fill">
+                    <input matInput [(ngModel)]="mailFromText" style="font-size: 13pt;" readonly>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-3" style="text-align: right;">
+                <mat-card class="card-mail">TO</mat-card>
+            </div>
+            <div class="col-8">
+                <mat-form-field appearance="fill">
+                    <input matInput [(ngModel)]="mailTo" style="font-size: 13pt;" readonly>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-3" style="text-align: right;">
+                <mat-card class="card-mail">SUBJECT</mat-card>
+            </div>
+            <div class="col-8">
+                <mat-form-field appearance="fill">
+                    <input matInput [(ngModel)]="mailSubject" style="font-size: 13pt;" placeholder="Subject">
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-11" style="text-align: center;">
+                <mat-card class="card-mail" style="height: 30px; padding-top: 6px; width: 99.9%;">MESSAGE</mat-card>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-11" style="text-align: center;">
+                <mat-form-field appearance="fill">
+                    <textarea matInput [(ngModel)]="mailMessage" rows="2" style="font-size: 13pt;" placeholder="Message"></textarea>
+                </mat-form-field>
+            </div>
+        </div>  
+        <div class="row justify-content-center mb-2">
+            <div class="col-11" style="text-align: center;">
+                <button (click)="sendMail()" class="btn btn-primary btn-lg btn-block mt-1" [disabled]="mailMessage == '' || mailSubject == ''">
+                    <span class="content"><i class="far fa-paper-plane"></i>&nbsp;&nbsp;Enviar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { QuestionsRoutingModule } from './questions-routing.module';
-import { QuestionsComponent } from '../../components/questions/questions.component';
+import { FillMttoRoutingModule } from './fill-mtto-routing.module';
+import { FillMttoComponent } from '../../components/fill-mtto/fill-mtto.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -16,7 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 @NgModule({
   imports: [
     CommonModule,
-    QuestionsRoutingModule,
+    FillMttoRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
@@ -30,7 +30,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule
   ],
   declarations: [
-    QuestionsComponent
+    FillMttoComponent
   ]
 })
-export class QuestionsModule { }
+export class FillMttoModule { }

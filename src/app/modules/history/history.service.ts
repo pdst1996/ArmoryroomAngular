@@ -35,5 +35,9 @@ export class HistoryService {
     insert(obj: any):Observable<GeneralResponse>{
        return this.httpClient.post<GeneralResponse>(`${this.historyUrl}/insert`, obj).pipe();
     }
+
+    getHistory():Observable<HistoryLog[]>{
+        return this.httpClient.get<HistoryLog[]>(`${this.historyUrl}/all`).pipe();
+     }
 }
   

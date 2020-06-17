@@ -29,6 +29,10 @@
     <div class="row col-sm-12">
         <textarea class="col-sm-4" placeholder="writing someone" #txtAinput style="margin-left: 6%;" [(ngModel)]="textValue" required > </textarea>
         <img type="button" class="col-sm-3" src="/assets/sanmina/application/flags.png" (click)="mInsert(txtAinput.value)" alt="">
-        <textarea class="col-sm-4" placeholder="writing someone" id="txtAoutput"></textarea>
+        <select class="col-sm-4" placeholder="writing someone" id="txtAoutput" multiple>
+            <option>cosa</option>
+            <option>cosa2</option>
+            <option>cosa3</option>
+        </select>
     </div>
 </div>

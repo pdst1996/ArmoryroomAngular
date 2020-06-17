@@ -100,6 +100,7 @@ export class HomeComponent implements OnInit {
           }
         );
       this.subscriptions.push(refreshApplicationData);
+      
       switch (this.router.url) {
         case "/": {
           this.currentRoute = "home";
@@ -117,8 +118,24 @@ export class HomeComponent implements OnInit {
           this.currentRoute = "questions";
           break;
         }
+        case "/checklist/questionnaire": {
+          this.currentRoute = "questionnaire";
+          break;
+        }
         case "/requimtto": {
           this.currentRoute = "requimtto";
+          break;
+        }
+        case "/history": {
+          this.currentRoute = "history";
+          break;
+        }
+        case "/fill-mtto": {
+          this.currentRoute = "fill mtto";
+          break;
+        }
+        case "/contact-us": {
+          this.currentRoute = "contact us";
           break;
         }
       }
@@ -168,7 +185,9 @@ export class HomeComponent implements OnInit {
     }
   }
   changeRoute(currentRoute: string): void {
+    
     switch (currentRoute) {
+      
       case "": {
         this.currentRoute = "home";
         break;
@@ -185,8 +204,24 @@ export class HomeComponent implements OnInit {
         this.currentRoute = "questions";
         break;
       }
+      case "/checklist/questionnaire": {
+        this.currentRoute = "questionnaire";
+        break;
+      }
       case "/requimtto": {
         this.currentRoute = "requimtto";
+        break;
+      }
+      case "/history": {
+        this.currentRoute = "history";
+        break;
+      }
+      case "/fill-mtto": {
+        this.currentRoute = "fill mtto";
+        break;
+      }
+      case "/contact-us": {
+        this.currentRoute = "contact us";
         break;
       }
     }
@@ -195,6 +230,7 @@ export class HomeComponent implements OnInit {
   back(): void {
     this.loc.back();
     setTimeout(() => {
+      
       switch (this.router.url) {
         case "/": {
           this.currentRoute = "home";
@@ -212,8 +248,24 @@ export class HomeComponent implements OnInit {
           this.currentRoute = "questions";
           break;
         }
+        case "/checklist/questionnaire": {
+          this.currentRoute = "questionnaire";
+          break;
+        }
         case "/requimtto": {
           this.currentRoute = "requimtto";
+          break;
+        }
+        case "/history": {
+          this.currentRoute = "history";
+          break;
+        }
+        case "/fill-mtto": {
+          this.currentRoute = "fill mtto";
+          break;
+        }
+        case "/contact-us": {
+          this.currentRoute = "contact us";
           break;
         }
       }

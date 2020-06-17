@@ -1,15 +1,19 @@
 <div class="p-3 bg-white center rounded shadow-md card--z-5 card-questions">
-    <div class="row justify-content-around">
-        <div class="col-5">
+    <div class="row justify-content-center">
+        <div class="col-5" [class]="(questionsFilled) ? 'col-5 offset-md-2' : 'col-5'">
             <h6 style="margin-bottom: -2px;">Tipo de herramental</h6>
             <mat-form-field style="width: 100%;">
             <mat-label style="font-size: 13pt;">Elige un tipo...</mat-label>
-            <mat-select [(value)]="typeSelected" (selectionChange)=getAllQuestions()>
+            <mat-select [(value)]="typeSelected" (selectionChange)="getAllQuestions('load')">
                 <mat-option value="{{type.pktype}}" *ngFor="let type of types">{{type.type}}</mat-option>
             </mat-select>
             </mat-form-field>
         </div>
+        <div class="col-2 mt-3" [hidden]="!questionsFilled">
+            <button type="button" class="btn btn-info  pb-2" (click)="openModalAddQuestions(template)"><i class="fas fa-plus"></i> Agregar nueva</button>
+        </div>
     </div>
+    <hr>
     <div class="row justify-content-around" [hidden]="!thereQuestions  || !questionsFilled">
         <div class="col-11">
             <table mat-table [dataSource]="dataSource">
@@ -58,14 +62,14 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-around mt-3" [hidden]="thereQuestions || !questionsFilled">
+    <div class="row justify-content-around mt-4" [hidden]="thereQuestions || !questionsFilled">
         <div class="col-10">
             <div class="alert alert-danger" role="alert">
             <h5 class="mt-2">Lo sentimos, no hay preguntas para este tipo de herramental</h5>
             </div>
         </div>
     </div>
-    <div class="row justify-content-around mt-3" [hidden]="questionsFilled">
+    <div class="row justify-content-around mt-4" [hidden]="questionsFilled">
         <div class="col-10">
             <div class="alert alert-info" role="alert">
             <h5 class="mt-2">Selecciona un tipo de  herramental</h5>
@@ -73,3 +77,60 @@
         </div>
     </div>
 </div>
+
+<ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Insertar nueva pregunta </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()" style="padding-top: 23px; padding-right: 23px;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body modal-lg">
+      <div class="row justify-content-center mt-2">
+        <div class="col-11">
+          <p>
+            <mat-form-field appearance="outline">
+              <mat-label style="font-size: 14pt;">Pregunta</mat-label>
+              <input matInput  [(ngModel)]="questionNew" style="font-size: 12pt;">
+              <span matPrefix>¿&nbsp;</span>
+              <span matSuffix>?</span>
+            </mat-form-field>
+          </p>
+        </div>
+      </div>
+      <div class="row justify-content-center mt-n3">
+        <div class="col-8">
+            <div class="row justify-content-center">
+                <div class="col-12"><label style="font-size: 14pt;">Respuesta correcta</label></div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12" >
+                    <mat-radio-group aria-label="Select an option" (change)="changeAnswer($event)">
+                        <mat-radio-button value="Yes" [checked]="true">SI</mat-radio-button>
+                        <mat-radio-button value="NO" class="radio-answer">NO</mat-radio-button>
+                        <mat-radio-button value="N/A" class="radio-answer">NA</mat-radio-button>
+                    </mat-radio-group>    
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="row justify-content-center">
+                <div class="col-12"><label style="font-size: 14pt;">Status</label></div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <mat-checkbox [checked]="true" disabled></mat-checkbox>
+                </div>
+            </div>
+        </div>
+      </div>
+     
+      <div class="row justify-content-center">
+        <div class="col-11">
+            <button (click)="saveNewQuestion()" class="btn btn-success btn-lg btn-block mt-4">
+                <span class="content"><i class="fas fa-save"></i>&nbsp;&nbsp;Guardar</span>
+            </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
