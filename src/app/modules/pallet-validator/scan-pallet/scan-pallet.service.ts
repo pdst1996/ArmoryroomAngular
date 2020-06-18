@@ -12,6 +12,7 @@ export class ScanPalletService {
 
   urlStations = `${Constants.SERVER}stations`;
   urlValidator = `${Constants.SERVER}palletValidatorActions`;
+  urlTool = `${Constants.SERVER}tools`;
  
   constructor(private httpClient : HttpClient) {
    
@@ -21,9 +22,18 @@ export class ScanPalletService {
     return this.httpClient.get<GeneralResponse>(`${this.urlStations}/all`).pipe();
   }
 
-  getPalletValidation(serialNumber:string, station:number): Observable<GeneralResponse>{
-    console.log(`${this.urlValidator}/validateStation?serialNumber=${serialNumber}&station=${station}`)
+  getSerialValidation(serialNumber:string, station:number): Observable<GeneralResponse>{
     return this.httpClient.get<GeneralResponse>(`${this.urlValidator}/validateStation?serialNumber=${serialNumber}&station=${station}`).pipe();
   }
+
+  getToolValidation(tool:string, type:string): Observable<GeneralResponse>{
+    console.log(`${this.urlTool}/validateTooling/${tool}/${type}`)
+    return this.httpClient.get<GeneralResponse>(`${this.urlTool}/validateTooling/${tool}/${type}`).pipe();
+  }
+
+  getCMNumber(station:number): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.urlStations}/getById/${station}`).pipe();
+  }
+  
   
 }

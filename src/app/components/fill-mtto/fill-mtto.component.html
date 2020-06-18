@@ -6,13 +6,13 @@
             <p>
               <mat-form-field appearance="outline">
                 <mat-label style="font-size: 15pt;">Herramental</mat-label>
-                <input matInput [(ngModel)]="tooling" style="font-size: 13pt;"id="txtTooling">
+                <input matInput [(ngModel)]="tooling" style="font-size: 13pt;"id="txtTooling" (change)="focusButton()">
                 <mat-icon matSuffix>vpn_key</mat-icon>
               </mat-form-field>
             </p>
           </div>
           <div class="col-4">
-            <button (click)="fillModalChecklist(template)" class="btn btn-success btn-lg btn-block mt-2 zoom"  [disabled]="toolingToAskMaintance=='' || commentToAskMaintance==''">
+            <button (click)="fillModalChecklist(template)" class="btn btn-success btn-lg btn-block mt-2 zoom"  [disabled]="tooling==''" id="btnSubmit">
                 <i class="fas fa-pen-square"></i> Llenar checklist
             </button>
           </div>

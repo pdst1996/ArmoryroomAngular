@@ -1,5 +1,6 @@
 export interface Project {
     pkProject?: number,
-    project_name: string,
-    sfdcpc: string
+    projectname: string,
+    sfdcpc: string,
+    corpConduit:string
 }

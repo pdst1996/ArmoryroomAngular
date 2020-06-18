@@ -1,0 +1,39 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+import { Pipe } from "@angular/core";
+var ArraySortPipe = /** @class */ (function () {
+    function ArraySortPipe() {
+    }
+    ArraySortPipe.prototype.transform = function (array, field) {
+        if (array) {
+            array.sort(function (a, b) {
+                if (parseInt(a[field]) < parseInt(b[field])) {
+                    return -1;
+                }
+                else if (parseInt(a[field]) > parseInt(b[field])) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            });
+            return array;
+        }
+        else {
+            return [];
+        }
+    };
+    ArraySortPipe = __decorate([
+        Pipe({
+            name: "sort",
+            pure: false
+        })
+    ], ArraySortPipe);
+    return ArraySortPipe;
+}());
+export { ArraySortPipe };
+//# sourceMappingURL=orderMenu.js.map

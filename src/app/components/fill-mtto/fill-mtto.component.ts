@@ -62,6 +62,10 @@ export class FillMttoComponent implements OnInit {
     }
   }
 
+  focusButton(){
+    this.element.nativeElement.querySelector("#btnSubmit").focus();
+  }
+
   changeAnswer(radio:MatRadioChange, question:Question){
     var isNew = true;
     var index = 0;

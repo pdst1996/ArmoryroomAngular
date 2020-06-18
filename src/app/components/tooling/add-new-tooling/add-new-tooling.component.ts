@@ -85,6 +85,7 @@ export class AddNewToolingComponent implements OnInit {
   }
 
   saveNewTooling(toolingObj: objTooling){
+    console.log(toolingObj)
     this.toolingService.saveNewTooling(toolingObj).subscribe(
       results =>{
         if(results.success == null){
@@ -96,7 +97,6 @@ export class AddNewToolingComponent implements OnInit {
           this.notify.setNotification("ERROR", results.message, "error");
           this.buttonDisabled = false;
         }
-        
       },
       (err: HttpErrorResponse) => {
         if (err.error instanceof Error) {
@@ -150,7 +150,7 @@ export class AddNewToolingComponent implements OnInit {
       obj.mtceMagazine = this.cantMaintance;
       obj.mtcePallet = this.cantPasses;
       obj.fkType = Number(this.typeSelected);
-      obj.fkStatus = 1;
+      obj.fkStatus = 5;
       this.saveNewTooling(obj);
       
     }

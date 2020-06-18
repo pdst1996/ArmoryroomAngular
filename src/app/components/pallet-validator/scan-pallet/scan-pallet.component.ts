@@ -1,9 +1,11 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import { ScanPalletService } from 'src/app/modules/pallet-validator/scan-pallet/scan-pallet.service';
 import { ApplicationData } from 'src/app/models/home/home.model';
 import { Station } from '../../../models/stations/stations.model';
 import { Constants } from 'src/app/helpers/constats';
 import { Notify } from 'src/app/modules/notify/notify';
+import { ToolingService } from 'src/app/modules/tooling/tooling.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-scan-pallet',
@@ -18,10 +20,17 @@ export class ScanPalletComponent implements OnInit {
   selectedStation : number;
   stationCookie : number;
   pallet : string;
-
+  palletFine : boolean;
+  ngModelCM : string[];
+  numberOfCounterMasks : number;
+  inputsCM : number[];
+  inputsCMHidden : boolean[];
+  inputsCMFine : boolean[];
+  
   constructor(private scanPalletService: ScanPalletService, 
     private element : ElementRef,
-    private notify : Notify) { }
+    private notify : Notify,
+    private toolingService: ToolingService) { }
 
   ngOnInit() {
     this.stationCookie = Number(this.getCookie("Station"));
@@ -31,23 +40,84 @@ export class ScanPalletComponent implements OnInit {
     this.imgSrc = "http://plant8.sanmina.com:8080/SanmAPI/getImageUser/?employee="+this.applicationData.userInfo.userName;
     this.getAllStations();
     this.pallet = "";
+    this.palletFine = false;
+    this.ngModelCM = new Array<string>();
+    this.getCountermasksNumber();
+  }
+
+
+  validateCounterMask(cmNumber: number){
+    let auxCM = this.ngModelCM[cmNumber];
+    this.scanPalletService.getToolValidation(auxCM,"Contramascara").subscribe(
+      results =>{
+        if(results.success){
+          this.ngModelCM[cmNumber] = auxCM;
+          this.element.nativeElement.querySelector("#txtCounterMask_"+cmNumber).setAttribute("disabled","true");
+        }else{
+          this.notify.setNotification("Error", results.message,"error");
+          this.ngModelCM[cmNumber] = '';
+        }
+      }
+    );
+  }
+
+  createFields(){
+    this.inputsCM  = new Array<number>();
+    this.inputsCMFine = new Array<boolean>();
+    this.inputsCMHidden = new Array<boolean>();
+    for (let index = 0; index < this.numberOfCounterMasks; index++) {
+      if(index==0)
+        this.inputsCMHidden.push(false);
+      else
+        this.inputsCMHidden.push(true);
+      this.inputsCM.push(index);
+      this.inputsCMFine.push(false);
+    }
+    setTimeout(() => {
+      this.element.nativeElement.querySelector("#txtCounterMask_0").focus();
+    }, 100);
+    
+  }
+
+  clearFieldCM(cmNumber: number){
+    setTimeout(() => {
+      this.ngModelCM[cmNumber] = '';
+    }, 0);
+  }
+
+  clearField(event: KeyboardEvent){
+      setTimeout(() => {
+        this.pallet = '';
+      }, 0);
   }
 
   validatePallet(){
+    
     if(this.selectedStation != 0){
-      this.scanPalletService.getPalletValidation(this.pallet,this.selectedStation).subscribe(
+      let auxPallet = this.pallet;
+      this.scanPalletService.getToolValidation(this.pallet, "Pallet").subscribe(
         results =>{
           if(results.success){
-            
+            this.palletFine = true;
+            this.pallet = auxPallet;
+            if(this.numberOfCounterMasks > 0){
+              this.createFields();
+            }else{
+              this.notify.setNotification("Error","La estación seleccionada no tiene qty de contramascaras","error");
+            }
           }else{
-            this.notify.setNotification("Error",results.message,"error")
+            this.notify.setNotification("Error",results.message,"error");
+            this.pallet = '';
+            this.palletFine = false;
           }
+          console.log(results)
         }
-      )
-      
+      );
     }else{
       this.notify.setNotification("Error","Seleccione una estación","error");
       this.pallet = '';
+      this.palletFine = false;
+      this.stations.length
     }
   }
 
@@ -65,6 +135,7 @@ export class ScanPalletComponent implements OnInit {
     d.setTime(d.getTime() + (30*24*60*60*1000));
     document.cookie = `Station=${this.selectedStation}; expires= ${d.toUTCString()}; path=/`;
     this.stationCookie = Number(this.getCookie("Station"));
+    this.getCountermasksNumber();
   }
 
   getCookie(cname:string) {
@@ -81,6 +152,15 @@ export class ScanPalletComponent implements OnInit {
       }
     }
     return "0";
+  }
+
+  getCountermasksNumber(){
+    this.scanPalletService.getCMNumber(this.selectedStation).subscribe(
+      results =>{
+        if(results.success)
+        this.numberOfCounterMasks = results.data.contramascaraQty;
+      }
+    );
   }
 
 }

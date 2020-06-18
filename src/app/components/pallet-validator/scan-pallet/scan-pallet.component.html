@@ -21,11 +21,24 @@
                 <div class="col-12">
                     <p>
                         <mat-form-field appearance="outline">
-                          <mat-label style="font-size: 15pt;">PALLET</mat-label>
-                          <input matInput [(ngModel)]="pallet" id="txtPallet" style="font-size: 13pt;" placeholder="Escanea pallet" (change)="validatePallet()">
-                          <mat-icon matSuffix>vpn_key</mat-icon>
+                            <mat-label style="font-size: 15pt;">PALLET</mat-label>
+                            <input matInput [(ngModel)]="pallet" id="txtPallet" style="font-size: 13pt;" placeholder="Escanea pallet" (change)="validatePallet()" 
+                            (drop)="clearField($event)" autocomplete="off" (keypress)="clearField($event)" (paste)="clearField($event)" [disabled]="palletFine">
+                            <mat-icon matSuffix>vpn_key</mat-icon>
                         </mat-form-field>
                     </p>
+                </div>
+            </div>
+            <div class="row justify-content-start" [hidden]="!palletFine">
+                <label style="margin-left: 17px;">Contramascaras</label>
+                <div class="col-12" *ngFor="let v of inputsCM" >
+                    <div class="input-group mb-3" [hidden]="inputsCMHidden[v]">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">{{(v+1)}}</span>
+                      </div>
+                      <input  type="text" class="form-control" placeholder="Contramascara" id="txtCounterMask_{{v}}" (drop)="clearFieldCM(v)" [readonly]="inputsCMFine[v]"
+                      autocomplete="off" (keypress)="clearFieldCM(v)" (paste)="clearFieldCM(v)" [(ngModel)]="ngModelCM[v]" (change)="validateCounterMask(v)" >
+                    </div>
                 </div>
             </div>
           </div>

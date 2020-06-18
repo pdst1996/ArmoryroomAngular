@@ -9,7 +9,7 @@
                     </div>
                     <select class="custom-select" [(ngModel)]="projectSelected" (change)="loadPartnumbers()" id="slProject">
                         <option selected value="0">Elige...</option>
-                        <option *ngFor="let project of projects" value="{{project.pkProject}}">{{project.project_name}}</option>
+                        <option *ngFor="let project of projects" value="{{project.pkProject}}">{{project.projectname}}</option>
                     </select>
                 </div>
             </div>
@@ -22,8 +22,7 @@
                         <option [hidden]="partNumbers != undefined && partNumbers.length != 0" value="0.1" selected>No hay opciones...</option>
                         <option [hidden]="partNumbers == undefined || partNumbers.length == 0" value="0" selected>Elige...</option>
                         <option *ngFor="let partNumber of partNumbers" value="{{partNumber.pkPartnumber}}">{{partNumber.partnumber}}</option>               
-                    </select>
-                    
+                    </select>  
                 </div>
             </div>
         </div>
