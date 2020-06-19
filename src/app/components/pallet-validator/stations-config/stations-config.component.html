@@ -1,0 +1,63 @@
+<div class="">
+    <div class="row justify-content-around">
+        <div class="col-11">
+            <div class="row justify-content-right ">
+                <div class="offset-md-9 col-3 mt-1">
+                    <mat-form-field>
+                        <mat-label><i class="fas fa-search"></i> Buscar en toda la tabla</mat-label>
+                        <input matInput (keyup)="applyFilter($event)" placeholder="Clave">
+                    </mat-form-field>
+                </div>
+            </div>
+            <table mat-table [dataSource]="dataSource">
+                <ng-container matColumnDef="pkstation">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> ID </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.pkstation}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="station">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> ESTACIÓN </th>    
+                    <td mat-cell *matCellDef="let element"> 
+                        {{element.stationName}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="project">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PROYECTO </th>
+                    <td mat-cell *matCellDef="let element"> 
+                        {{element.fkProject.projectname}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="correctVariable">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> VARIABLE </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.correctVariable}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="unit">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> UNIT </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.unit}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="contramascaraQty">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> CONTRAMASCARAS QTY </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.contramascaraQty}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> STATUS </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button type="button" class="btn btn-primary btn-sm" title="Editar" (click)=" openStationModal(template, element.pkstation)">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

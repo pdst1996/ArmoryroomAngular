@@ -1,0 +1,11 @@
+table{
+    width:100%;
+}
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+.center-mat-cell {
+    text-align:center;
+    font-weight: 600;
+}

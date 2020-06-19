@@ -125,13 +125,13 @@ export class ScanPalletComponent implements OnInit {
     
   }
 
-  clearFieldCMf(cmNumber: number){
+  clearFieldCM(cmNumber: number){
     setTimeout(() => {
       this.ngModelCM[cmNumber] = '';
     }, 0);
   }
 
-  clearFieldf(event: KeyboardEvent){
+  clearField(event: KeyboardEvent){
       setTimeout(() => {
         this.pallet = '';
       }, 0);
@@ -149,7 +149,7 @@ export class ScanPalletComponent implements OnInit {
       if(word == array[index])
         cont++;
     }
-    if(cont >= 2)
+    if(cont >= 1)
     return true;
     else
     return false;
