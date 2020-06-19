@@ -26,6 +26,12 @@ export class ScanPalletComponent implements OnInit {
   inputsCM : number[];
   inputsCMHidden : boolean[];
   inputsCMFine : boolean[];
+  counterCM : number;
+  serialDivHidden = true;
+  serialFine = false;
+  serial : string;
+  currentCM : number;
+  fillingCMs : boolean;
   
   constructor(private scanPalletService: ScanPalletService, 
     private element : ElementRef,
@@ -43,16 +49,56 @@ export class ScanPalletComponent implements OnInit {
     this.palletFine = false;
     this.ngModelCM = new Array<string>();
     this.getCountermasksNumber();
+    this.counterCM = 0;
+    this.serial = '';
+    this.inputsCM  = new Array<number>();
+    this.currentCM = 1;
+    this.fillingCMs = false;
   }
 
+  validateSerial(){
+    let auxSerial = this.serial;
+    this.scanPalletService.getSerialValidation(auxSerial,this.selectedStation).subscribe(
+      results =>{
+        if(results.success){
+          this.serialFine = true;
+          this.serial = auxSerial;
+          this.notify.setNotification("Listo", "Serial en orden","success");
+        }else{
+          this.notify.setNotification("Error", results.message,"error");
+          this.serial = '';
+        }
+      }
+    );
+  }
 
   validateCounterMask(cmNumber: number){
     let auxCM = this.ngModelCM[cmNumber];
     this.scanPalletService.getToolValidation(auxCM,"Contramascara").subscribe(
       results =>{
         if(results.success){
-          this.ngModelCM[cmNumber] = auxCM;
-          this.element.nativeElement.querySelector("#txtCounterMask_"+cmNumber).setAttribute("disabled","true");
+          if(!this.checkIfExists(this.ngModelCM,auxCM)){
+            this.ngModelCM[cmNumber] = auxCM;
+            this.element.nativeElement.querySelector("#txtCounterMask_"+cmNumber).setAttribute("disabled","true");
+            this.inputsCMFine[cmNumber] = true;
+            if((cmNumber+1) < this.numberOfCounterMasks){
+              this.inputsCMHidden[cmNumber+1] = false;
+              setTimeout(() => {
+                this.element.nativeElement.querySelector("#txtCounterMask_"+(cmNumber+1)).focus();
+              }, 100);
+              this.currentCM ++;
+            }else{
+              this.serialDivHidden = false;
+              setTimeout(() => {
+                this.element.nativeElement.querySelector("#txtSerial").focus();
+              }, 100);
+            }
+            this.notify.setNotification("Listo", "Contramascara en orden","success");
+            
+          }else{
+            this.notify.setNotification("Error", "No se puede asignar la misma contramascara 2 veces","error");
+            this.ngModelCM[cmNumber] = '';
+          }
         }else{
           this.notify.setNotification("Error", results.message,"error");
           this.ngModelCM[cmNumber] = '';
@@ -79,16 +125,34 @@ export class ScanPalletComponent implements OnInit {
     
   }
 
-  clearFieldCM(cmNumber: number){
+  clearFieldCMf(cmNumber: number){
     setTimeout(() => {
       this.ngModelCM[cmNumber] = '';
     }, 0);
   }
 
-  clearField(event: KeyboardEvent){
+  clearFieldf(event: KeyboardEvent){
       setTimeout(() => {
         this.pallet = '';
       }, 0);
+  }
+
+  clearFieldSerial(){
+    setTimeout(() => {
+      this.serial = '';
+    }, 0);
+  }
+
+  checkIfExists(array:Array<String>, word: string){
+    let cont = 0;
+    for (let index = 0; index < array.length; index++) {
+      if(word == array[index])
+        cont++;
+    }
+    if(cont >= 2)
+    return true;
+    else
+    return false;
   }
 
   validatePallet(){
@@ -102,6 +166,8 @@ export class ScanPalletComponent implements OnInit {
             this.pallet = auxPallet;
             if(this.numberOfCounterMasks > 0){
               this.createFields();
+              this.notify.setNotification("Listo", "Pallet en orden","success");
+              this.fillingCMs = true;
             }else{
               this.notify.setNotification("Error","La estación seleccionada no tiene qty de contramascaras","error");
             }
@@ -110,7 +176,6 @@ export class ScanPalletComponent implements OnInit {
             this.pallet = '';
             this.palletFine = false;
           }
-          console.log(results)
         }
       );
     }else{

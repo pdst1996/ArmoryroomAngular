@@ -2,47 +2,76 @@
     <div class="row justify-content-center">
       <div class="col-12 mt-4">
         <div class="row justify-content-center mb-5 mt-5">
-          <div class="col-5 offset-sm-2 ">
+          <div class="col-5 offset-sm-2">
             <div class="row justify-content-end">
                 <div class="col-6">
                     <div class="input-group form-group">
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="inputGroupSelect01">Estación</label>
                         </div>
-                        <select class="custom-select" [(ngModel)]="selectedStation" (change)="changeStation()">
+                        <select class="custom-select" [(ngModel)]="selectedStation" (change)="changeStation()" [disabled]="fillingCMs">
                           <option *ngFor="let station of stations" value="{{station.pkstation}}" [selected]="stationCookie == station.pkstation">
                             {{station.stationName}}
                           </option>
                         </select>
                     </div>
                 </div>
+                <div class="col-1"></div>
             </div>
             <div class="row justify-content-center">
-                <div class="col-12">
+                <div class="col-11">
                     <p>
                         <mat-form-field appearance="outline">
                             <mat-label style="font-size: 15pt;">PALLET</mat-label>
                             <input matInput [(ngModel)]="pallet" id="txtPallet" style="font-size: 13pt;" placeholder="Escanea pallet" (change)="validatePallet()" 
-                            (drop)="clearField($event)" autocomplete="off" (keypress)="clearField($event)" (paste)="clearField($event)" [disabled]="palletFine">
+                            (drop)="clearField($event)" autocomplete="off" (keypress)="clearField($event)" (paste)="clearField($event)" [readonly]="palletFine">
                             <mat-icon matSuffix>vpn_key</mat-icon>
                         </mat-form-field>
                     </p>
                 </div>
+                <div class="col-1">
+                  <i class="fas fa-check-circle" style="color: #41d075; font-size: 28pt; margin-top: 11px;" [hidden]="!palletFine"></i>
+                </div>
             </div>
             <div class="row justify-content-start" [hidden]="!palletFine">
-                <label style="margin-left: 17px;">Contramascaras</label>
-                <div class="col-12" *ngFor="let v of inputsCM" >
-                    <div class="input-group mb-3" [hidden]="inputsCMHidden[v]">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">{{(v+1)}}</span>
+              <div class="col-12">
+                <div class="row justify-content-start">
+                  <div class="col-6 justify-content-start" style="text-align: left;">
+                    <label style="text-align: left; margin-left: 2px;">Contramascaras {{currentCM}} de {{inputsCM.length}}</label>
+                  </div>
+                </div>
+                <div *ngFor="let v of inputsCM" class="row">
+                  <div class="col-11">
+                      <div class="input-group mb-3" [hidden]="inputsCMHidden[v]">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">{{(v+1)}}</span>
+                        </div>
+                        <input  type="text" class="form-control" placeholder="Contramascara" id="txtCounterMask_{{v}}" (drop)="clearFieldCM(v)" [readonly]="inputsCMFine[v]"
+                        autocomplete="off" (keypress)="clearFieldCM(v)" (paste)="clearFieldCM(v)" [(ngModel)]="ngModelCM[v]" (change)="validateCounterMask(v)" >
                       </div>
-                      <input  type="text" class="form-control" placeholder="Contramascara" id="txtCounterMask_{{v}}" (drop)="clearFieldCM(v)" [readonly]="inputsCMFine[v]"
-                      autocomplete="off" (keypress)="clearFieldCM(v)" (paste)="clearFieldCM(v)" [(ngModel)]="ngModelCM[v]" (change)="validateCounterMask(v)" >
+                  </div>
+                  <div class="col-1" [hidden]="!inputsCMFine[v]">
+                    <i class="fas fa-check-circle" style="color: #41d075; font-size: 20pt; margin-top: 5px; margin-left: -20px;" ></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-start" [hidden]="serialDivHidden">
+                <div class="col-11">
+                    <div class="input-group mt-2">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">SERIAL</span>
+                      </div>
+                      <input  type="text" class="form-control" placeholder="Serial number" id="txtSerial" (drop)="clearFieldSerial()" [readonly]="serialFine"
+                      autocomplete="off" (keypress)="clearFieldSerial()" (paste)="clearFieldSerial()" [(ngModel)]="serial" (change)="validateSerial()" >
                     </div>
+                </div>
+                <div class="col-1" [hidden]="!serialFine">
+                  <i class="fas fa-check-circle" style="color: #41d075; font-size: 20pt; margin-top: 5px; margin-left: -20px;" ></i>
                 </div>
             </div>
           </div>
-          <div class="col-3 justify-content-center mt-3">
+          <div class="col-2 justify-content-center mt-3">
             <img class="img-employee ml-3 " [src]="imgSrc">
           </div>
         </div>
