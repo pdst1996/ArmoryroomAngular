@@ -14,6 +14,9 @@ import { Notify } from "./modules/notify/notify";
 import { AppRoutingModule } from "./routes.module";
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProjectsModule } from './modules/projects/projects.module';
+
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,7 +28,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     PopoverModule.forRoot(),
     ModalModule.forRoot(),
     BrowserAnimationsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ProjectsModule,
+    
 
   ],
   providers: [

@@ -55,6 +55,10 @@ const routes: Routes = [
             {
                 path: 'pallet-validator/stations-config',
                 loadChildren: 'src/app/modules/pallet-validator/stations-config/stations-config.module#StationsConfigModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'config/stations',
+                loadChildren: 'src/app/modules/stations/stations.module#StationsModule', canActivate: [LoginAct]
             }
            
         ]
