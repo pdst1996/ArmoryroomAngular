@@ -7,6 +7,13 @@ import { Notify } from 'src/app/modules/notify/notify';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+export class mpassdata{
+  serial:string;
+  pallet:string;
+  contramascaras : string[];
+  idStation:number;
+}
+
 @Component({
   selector: 'app-scan-pallet',
   templateUrl: './scan-pallet.component.html',
@@ -32,6 +39,13 @@ export class ScanPalletComponent implements OnInit {
   serial : string;
   currentCM : number;
   fillingCMs : boolean;
+  arrayCounterMaskCurrentPasses : number[];
+  arrayCounterMaskPassesToMaintenance : number[];
+  serialReadonly = false;
+  allFine = false;
+  alertShow = "none";
+  stationWrong = "";
+  palletResponse = "";
   
   constructor(private scanPalletService: ScanPalletService, 
     private element : ElementRef,
@@ -54,27 +68,77 @@ export class ScanPalletComponent implements OnInit {
     this.inputsCM  = new Array<number>();
     this.currentCM = 1;
     this.fillingCMs = false;
+    this.arrayCounterMaskCurrentPasses = new Array<number>();
+    this.arrayCounterMaskPassesToMaintenance = new Array<number>();
   }
 
   validateSerial(){
-    let auxSerial = this.serial;
+    let auxSerial = this.serial;mpassdata
+    let comilla = /\'/gi;
+    let ene = /\Ñ/gi;
+    this.serialReadonly = true;
+    auxSerial = auxSerial.replace(comilla,"-").replace(ene,":")
     this.scanPalletService.getSerialValidation(auxSerial,this.selectedStation).subscribe(
       results =>{
         if(results.success){
-          this.serialFine = true;
-          this.serial = auxSerial;
-          this.notify.setNotification("Listo", "Serial en orden","success");
+
+          if(results.data.valid){
+            this.serialFine = true;
+            this.serial = auxSerial;
+            this.notify.setNotification("Listo", "Serial en orden","success");
+            this.allFine = true;
+            this.alertShow = "success";
+            this.cazarContramascaras();
+          }else{
+            this.allFine = false;
+            this.stationWrong = results.data.station;
+            this.alertShow = "error";
+          }
+          
         }else{
           this.notify.setNotification("Error", results.message,"error");
           this.serial = '';
         }
+        this.serialReadonly = false;
+        console.log(results)
+      }
+    );
+  }
+
+  cazarContramascaras(){
+    
+    let obj = new mpassdata();
+    obj.idStation = this.selectedStation;
+    obj.pallet = this.pallet;
+    obj.serial = this.serial;
+    obj.contramascaras = this.ngModelCM;
+   
+    this.scanPalletService.cazar(obj).subscribe(
+      results =>{
+        if(results.success){
+
+  
+            this.allFine = true;
+            this.alertShow = "success";
+            this.palletResponse = results.data;
+            
+          
+          
+        }else{
+          this.allFine = false;
+          this.palletResponse = results.data;
+          this.alertShow = "error";
+        }
+
+        console.log(results)
       }
     );
   }
 
   validateCounterMask(cmNumber: number){
     let auxCM = this.ngModelCM[cmNumber];
-    this.scanPalletService.getToolValidation(auxCM,"Contramascara").subscribe(
+    auxCM = auxCM.replace("'","-").replace("Ñ",":")
+    this.scanPalletService.getToolValidation(auxCM,"Contramascara", this.getSelectedStation()).subscribe(
       results =>{
         if(results.success){
           if(!this.checkIfExists(this.ngModelCM,auxCM)){
@@ -94,7 +158,8 @@ export class ScanPalletComponent implements OnInit {
               }, 100);
             }
             this.notify.setNotification("Listo", "Contramascara en orden","success");
-            
+            this.arrayCounterMaskCurrentPasses.push(results.data.currentQty);
+            this.arrayCounterMaskPassesToMaintenance.push(results.data.maintenanceQty);
           }else{
             this.notify.setNotification("Error", "No se puede asignar la misma contramascara 2 veces","error");
             this.ngModelCM[cmNumber] = '';
@@ -159,7 +224,7 @@ export class ScanPalletComponent implements OnInit {
     
     if(this.selectedStation != 0){
       let auxPallet = this.pallet;
-      this.scanPalletService.getToolValidation(this.pallet, "Pallet").subscribe(
+      this.scanPalletService.getToolValidation(this.pallet, "Pallet", this.getSelectedStation()).subscribe(
         results =>{
           if(results.success){
             this.palletFine = true;
@@ -201,6 +266,11 @@ export class ScanPalletComponent implements OnInit {
     document.cookie = `Station=${this.selectedStation}; expires= ${d.toUTCString()}; path=/`;
     this.stationCookie = Number(this.getCookie("Station"));
     this.getCountermasksNumber();
+  }
+
+  getSelectedStation(): string {
+    let station: Station = this.stations.find(s => s.pkstation == this.selectedStation);
+    return station.stationName;
   }
 
   getCookie(cname:string) {

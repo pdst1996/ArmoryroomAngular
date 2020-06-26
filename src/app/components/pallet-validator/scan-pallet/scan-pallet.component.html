@@ -41,14 +41,23 @@
                   </div>
                 </div>
                 <div *ngFor="let v of inputsCM" class="row">
-                  <div class="col-11">
-                      <div class="input-group mb-3" [hidden]="inputsCMHidden[v]">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1">{{(v+1)}}</span>
+                  <div class="col-11" [hidden]="inputsCMHidden[v]">
+                    <div class="row justify-content-center">
+                      <div class="col-12">
+                        <div class="input-group mb-3" >
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">{{(v+1)}}</span>
+                          </div>
+                          <input  type="text" class="form-control" placeholder="Contramascara" id="txtCounterMask_{{v}}" (drop)="clearFieldCM(v)" [readonly]="inputsCMFine[v]"
+                          autocomplete="off" (keypress)="clearFieldCM(v)" (paste)="clearFieldCM(v)" [(ngModel)]="ngModelCM[v]" (change)="validateCounterMask(v)" >
                         </div>
-                        <input  type="text" class="form-control" placeholder="Contramascara" id="txtCounterMask_{{v}}" (drop)="clearFieldCM(v)" [readonly]="inputsCMFine[v]"
-                        autocomplete="off" (keypress)="clearFieldCM(v)" (paste)="clearFieldCM(v)" [(ngModel)]="ngModelCM[v]" (change)="validateCounterMask(v)" >
                       </div>
+                    </div>
+                    <div class="row justify-content-start mt-n3 mb-2">
+                      <div class="col-11" style="text-align: left;" [hidden]="!inputsCMFine[v]">
+                        <mat-hint style="font-size: 9pt; color:#84878a;">&nbsp;Pasadas actuales: <b>{{arrayCounterMaskCurrentPasses[v]}}</b>&nbsp;&nbsp;Pasadas para mtto: <b>{{arrayCounterMaskPassesToMaintenance[v]}}</b></mat-hint>
+                      </div>
+                    </div>
                   </div>
                   <div class="col-1" [hidden]="!inputsCMFine[v]">
                     <i class="fas fa-check-circle" style="color: #41d075; font-size: 20pt; margin-top: 5px; margin-left: -20px;" ></i>
@@ -62,7 +71,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">SERIAL</span>
                       </div>
-                      <input  type="text" class="form-control" placeholder="Serial number" id="txtSerial" (drop)="clearFieldSerial()" [readonly]="serialFine"
+                      <input  type="text" class="form-control" placeholder="Serial number" id="txtSerial" (drop)="clearFieldSerial()" [readonly]="serialFine  || serialReadonly"
                       autocomplete="off" (keypress)="clearFieldSerial()" (paste)="clearFieldSerial()" [(ngModel)]="serial" (change)="validateSerial()" >
                     </div>
                 </div>
@@ -70,6 +79,14 @@
                   <i class="fas fa-check-circle" style="color: #41d075; font-size: 20pt; margin-top: 5px; margin-left: -20px;" ></i>
                 </div>
             </div>
+            <div class="row justify-content-start mt-4" [hidden]="alertShow == 'none'">
+              <div class="col-11">
+                <div role="alert" [class]="(allFine) ? 'alert alert-success' : 'alert alert-danger'">
+                  <p [hidden]="alertShow != 'error'">El serial se encuentra en una estacion incorrecta: {{stationWrong}}</p>
+                  <p [hidden]="alertShow != 'success'">{{palletResponse}}</p>
+                </div>
+              </div>
+          </div>
           </div>
           <div class="col-2 justify-content-center mt-3">
             <img class="img-employee ml-3 " [src]="imgSrc">

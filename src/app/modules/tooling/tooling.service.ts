@@ -8,6 +8,7 @@ import { PartNumber } from "src/app/models/part-number/part-number.model";
 import { Project } from "src/app/models/project/project.model";
 import { RequestMaintance } from "src/app/models/request-maintance/request-maintance.model";
 import { Type } from "src/app/models/type/type.model";
+import { Station } from "src/app/models/stations/stations.model";
 
 
 @Injectable({
@@ -22,6 +23,7 @@ export class ToolingService {
   private statusUrl = `${Constants.SERVER}status`;
   private rmUrl = `${Constants.SERVER}RequestMaintenance`;
   private intranetUrl = `${Constants.SERVER}Auth/EmployeeNumber`;
+  private stationsUrl = `${Constants.SERVER}stations`;
   
   constructor(private httpClient : HttpClient) {
    
@@ -62,6 +64,10 @@ export class ToolingService {
   
   findAllTypes(): Observable<Type[]>{
     return this.httpClient.get<Type[]>(`${this.typeUrl}/all`).pipe();
+  }
+
+  findAllStations(): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.stationsUrl}/all`).pipe();
   }
 
   findAllStatus(): Observable<Status[]>{

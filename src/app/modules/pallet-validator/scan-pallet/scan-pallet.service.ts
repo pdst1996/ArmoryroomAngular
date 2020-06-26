@@ -23,16 +23,21 @@ export class ScanPalletService {
   }
 
   getSerialValidation(serialNumber:string, station:number): Observable<GeneralResponse>{
+    console.log(`${this.urlValidator}/validateStation?serialNumber=${serialNumber}&station=${station}`)
     return this.httpClient.get<GeneralResponse>(`${this.urlValidator}/validateStation?serialNumber=${serialNumber}&station=${station}`).pipe();
   }
 
-  getToolValidation(tool:string, type:string): Observable<GeneralResponse>{
-    console.log(`${this.urlTool}/validateTooling/${tool}/${type}`)
-    return this.httpClient.get<GeneralResponse>(`${this.urlTool}/validateTooling/${tool}/${type}`).pipe();
+  getToolValidation(tool:string, type:string, station:string): Observable<GeneralResponse>{
+    console.log(`${this.urlTool}/validateTooling/${tool}/${type}/${station}`)
+    return this.httpClient.get<GeneralResponse>(`${this.urlTool}/validateTooling/${tool}/${type}/${station}`).pipe();
   }
 
   getCMNumber(station:number): Observable<GeneralResponse>{
     return this.httpClient.get<GeneralResponse>(`${this.urlStations}/getById/${station}`).pipe();
+  }
+
+  cazar(obj:any): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.urlValidator}/mPassSerial`,obj).pipe();
   }
   
   

@@ -8,7 +8,7 @@ export class Constants {
 
   public static SERVER: string = Constants.PRODUCTION
     ? "/" + Constants.application + "/"
-    : "http://172.24.183.8:8080/" + Constants.application + "/";
+    : "http://localhost:8080/" + Constants.application + "/";
 
   public static masterPageVersion: String = "1.2.0.1";
 

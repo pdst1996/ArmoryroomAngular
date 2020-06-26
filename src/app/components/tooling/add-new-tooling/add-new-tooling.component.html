@@ -2,7 +2,7 @@
 <div class="container mb-5">
     <!-- <form focusInvalidInput [formGroup]="form" (ngSubmit)="submit()"> -->
         <div class="row justify-content-around mt-4">
-            <div class="col-5">
+            <div class="col-10">
                 <div class="input-group form-group">
                     <div class="input-group-prepend">
                         <label class="input-group-text">PROYECTO:</label>
@@ -13,16 +13,29 @@
                     </select>
                 </div>
             </div>
-            <div class="col-5">
+           
+        </div>
+        <div class="row justify-content-center mt-4">
+            <div class="col-4">
+                <div id="slPartNumber">
+                    <mat-form-field >
+                        <mat-label style="font-size: 12pt;">Numeros de parte</mat-label>
+                        <mat-select [(ngModel)]="partNumberSelected" multiple>
+                        <mat-option [hidden]="partNumbers != undefined && partNumbers.length != 0" value="0.1" selected disabled>No hay opciones...</mat-option>
+                        <mat-option [hidden]="partNumbers == undefined || partNumbers.length == 0" value="0" selected disabled>Elige...</mat-option>    
+                          <mat-option *ngFor="let partNumber of partNumbers" [value]="partNumber.pkPartnumber">{{partNumber.partnumber}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="col-4">
                 <div class="input-group form-group">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text">NUMERO DE PARTE:</label>
-                    </div>
-                    <select class="custom-select" [(ngModel)]="partNumberSelected" [disabled]="projectSelected == 0 || projectSelected == null" id="slPartNumber">
-                        <option [hidden]="partNumbers != undefined && partNumbers.length != 0" value="0.1" selected>No hay opciones...</option>
-                        <option [hidden]="partNumbers == undefined || partNumbers.length == 0" value="0" selected>Elige...</option>
-                        <option *ngFor="let partNumber of partNumbers" value="{{partNumber.pkPartnumber}}">{{partNumber.partnumber}}</option>               
-                    </select>  
+                    <mat-form-field>
+                        <mat-label style="font-size: 12pt;">Estaciones (opcional)</mat-label>
+                        <mat-select [(value)]="stationSelected" multiple>
+                          <mat-option *ngFor="let station of stations" [value]="station.pkstation">{{station.stationName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
             </div>
         </div>

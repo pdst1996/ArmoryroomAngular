@@ -53,22 +53,25 @@ export class objTooling {
     tool: string;
     fkStatus: number;
     fkType: number;
-    fkPartNumber:  number;
+    fkPartNumbers: number[];
     rack: string;
     position: string;
     mtcePallet: number;
     mtceMagazine: number;
+    fkStations: number[];
 }
 
 export class objTooling2 {
     tooling: string;
     fkStatus: number;
     fkType: number;
-    fkPartNumber:  number;
+    fkPartNumbers: number[];
     rack: string;
     position: string;
     mtcePallet: number;
     mtceMagazine: number;
+    fkStations: number[];
+
 }
 
 export class ToolingValidation {
