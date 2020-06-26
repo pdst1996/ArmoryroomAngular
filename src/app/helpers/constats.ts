@@ -7,8 +7,7 @@ export class Constants {
   public static applicationName: String = "Armory Room";
 
   public static SERVER: string = Constants.PRODUCTION
-    ? "/" + Constants.application + "/"
-    : "http://localhost:8080/" + Constants.application + "/";
+    ? "/" + Constants.application + "/" : "http://172.24.183.77:8080/" + Constants.application + "/";
 
   public static masterPageVersion: String = "1.2.0.1";
 

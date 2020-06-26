@@ -35,6 +35,9 @@ export class StationsService {
     updateStation(obj: any): Observable<GeneralResponse>{
       return this.httpClient.post<GeneralResponse>(`${this.stationsUrl}/insert`, obj).pipe();
     }
+    deleteStation(id: number): Observable<GeneralResponse>{
+      return this.httpClient.delete<GeneralResponse>(`${this.stationsUrl}/delete/${id}`).pipe();
+    }
   
   }
   

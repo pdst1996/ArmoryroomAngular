@@ -10,6 +10,7 @@ import { ProjectsService } from 'src/app/modules/projects/projects.service';
 import { HistoryService } from 'src/app/modules/history/history.service';
 import { ApplicationData } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
+import { Status } from 'src/app/models/tooling/tooling.model';
 @Component({
   selector: 'app-stations-config',
   templateUrl: './stations-config.component.html',
@@ -26,10 +27,11 @@ export class StationsConfigComponent implements OnInit {
   referencePallet:string;
   referenceContramascara:string;
   contramascaraQty:number;
-  statusProjectEdit=0;
+  modalRef2: BsModalRef;
   projectsArray: Project[];
   projectStationEdit:number;
   public applicationData: ApplicationData;
+  stationToDelete:Station;
 
   displayedColumns: string[] = ['pkstation','station','project', 'correctVariable', 'unit', 'contramascaraQty', 'action'];
   dataSource :any;
@@ -65,15 +67,15 @@ export class StationsConfigComponent implements OnInit {
       this.openModal(template);
       this.correctVariable = this.stationData.correctVariable;
       this.unit = this.stationData.unit;
-      this.statusProjectEdit=this.stationData.fkProject.pkProject;
       this.stationName = this.stationData.stationName;
       this.referencePallet = this.stationData.referencePallet;
       this.referenceContramascara = this.stationData.referenceContramascara;
+      this.projectStationEdit=this.stationData.fkProject.pkProject;
       this.contramascaraQty = this.stationData.contramascaraQty;
       this.notifyLoading = this.notify.setLoadingDone("Listo", this.notifyLoading);
       this.getAllProjects();
-      this.projectStationEdit=this.stationData.fkProject.pkProject;
-      console.log(this.statusProjectEdit);
+     
+  
     },
     (err: HttpErrorResponse) => {
       if (err.error instanceof Error) {
@@ -92,10 +94,17 @@ openModal(template: TemplateRef<any>) {
   this.modalRef.setClass('modal-lg');
 }
 
+closeModal() {
+this.modalService.hide(1);
+}
+openModal2(template: TemplateRef<any>) {
+  this.modalRef2 = this.modalService.show(template);
+  this.modalRef2.setClass('modal-md');
+}
 getAllProjects(){
   this.projectService.findAllProjects().subscribe(pprojects =>{
     this.projectsArray = pprojects;
-
+    console.log(pprojects);
   });
 }
 
@@ -104,7 +113,7 @@ chargeStationChanges(){
   this.notify.setNotification("Error","Favor de llenar los campos requeridos", "error");
 }else{
   if(this.contramascaraQty<1){
-  this.notify.setNotification("Error","Favor de llenar los campos requeridos", "error");
+  this.notify.setNotification("Error","El numero de contramascaras debe ser mayor a cero", "error");
 }else{
   if(this.projectStationEdit<1){
   this.notify.setNotification("Error","Favor de seleccionar el proyecto", "error");
@@ -136,7 +145,13 @@ saveStationChanges(objUpdate:Station ){
 this.stationService.updateStation(objUpdate).subscribe(
   results =>{
     this.notifyLoading = this.notify.setLoadingDone(" Actualizado", this.notifyLoading);
+    if(objUpdate.pkstation==0){
+      this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Insertó la estacion (${objUpdate.pkstation})`);
+    }else{
     this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Modificó la estacion (${objUpdate.pkstation})`);
+  }
+  this.closeModal();
+this.getAllStations();
   },
   (err: HttpErrorResponse) => {
     if (err.error instanceof Error) {
@@ -145,9 +160,58 @@ this.stationService.updateStation(objUpdate).subscribe(
       console.log("Server-side error");
     }
     this.notifyLoading = this.notify.setLoadingError(" Ocurrio un error", this.notifyLoading);
-    this.getAllStations();
+   
   }
 );
+
+}
+openModalDelete(modal:any, objStation:Station){
+  this.stationToDelete=objStation;
+  this.openModal2(modal);
+}
+
+deleteStation(){
+  this.notifyLoading=this.notify.setLoading("Eliminando",this.notifyLoading);
+  this.stationService.deleteStation(this.stationToDelete.pkstation).subscribe(
+    results =>{
+     
+      this.notifyLoading = this.notify.setLoadingDone(" Eliminado", this.notifyLoading);
+      this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Eliminó la estacion (${this.stationToDelete.stationName})`);
+    this.closeModalDelete();
+  this.getAllStations();
+    },
+    (err: HttpErrorResponse) => {
+      if (err.error instanceof Error) {
+        console.log("Client-side error");
+      } else {
+        console.log("Server-side error");
+      }
+      this.notifyLoading = this.notify.setLoadingError(" Ocurrio un error", this.notifyLoading);
+     
+    }
+  );
+  
+
+
+}
+
+closeModalDelete(){
+  this.modalService.hide(1);
+}
+
+openStationModalEmpty(template:any){
+  this.idStationEdit =0;
+  this.openModal(template);
+  this.correctVariable = "";
+  this.unit = "";
+  this.stationName = "";
+  this.referencePallet = "";
+  this.referenceContramascara = "";
+
+  this.projectStationEdit=0;
+  this.contramascaraQty = 1;
+  this.getAllProjects();
+  
 
 }
 }
