@@ -1,0 +1,38 @@
+<div class="mt-5 mb-5" style="width: 99%;">
+
+    <div class="btn-group" btnRadioGroup [(ngModel)]="radioModel">
+        <label class="btn btn-primary btn-md" btnRadio="partNumberMode" tabindex="0" role="button" (click)="cleanFields()">NUMERO DE PARTE</label>
+        <label class="btn btn-primary btn-md" btnRadio="toolingMode" tabindex="0" role="button" (click)="cleanFields()">HERRAMENTAL</label>
+    </div>
+    <br><br>
+    <div [hidden]="radioModel!='partNumberMode'" >
+        <label style="font-weight: bold; ">NUMERO DE PARTE:</label>
+        <br>
+        <select [(ngModel)]="partNumber" style="width: 50%;" (change)="fillToolingsByPartNumber()" class="custom-select">
+            <option value="0" selected>Elige...</option>
+            <option *ngFor="let item of partNumbers " value="{{item.pkPartnumber}}">
+                {{item.partnumber}}</option>
+        </select>
+        <br><br>
+    </div>
+    <div  [hidden]="radioModel!='toolingMode'">
+        <label style="font-weight: bold; ">HERRAMENTAL:</label>
+        <br>
+        <select [(ngModel)]="tooling" style="width: 50%;" (change)="fillPartNumbersByTooling()" class="custom-select">
+            <option value="0" selected>Elige...</option>
+            <option *ngFor="let item of toolings"  value="{{item.pkTooling}}">
+                {{item.tooling}}</option>
+        </select>
+        <br><br>
+    </div>
+    <div class="row justify-content-center">
+        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel == 'partNumberMode') ? 'los numeros de parte' : 'los herramantales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" [disabled]="partNumber==0&&tooling==0" id="txtElements"> </textarea>
+        <div class="col-sm-2 mt-4">
+            <button class="btn btn-success btn-md mt-5"  (click)="insertElements()" alt="" [hidden]="(radioModel == 'partNumberMode' && partNumber==0) || (radioModel == 'toolingMode' && tooling==0) || txtElementsToSave == ''">&nbsp;<i class="fas fa-save"></i>&nbsp;&nbsp;Insertar&nbsp;</button><br>
+            <button class="btn btn-danger btn-md mt-3"  (click)="deleteElements()" alt="" [hidden]="(radioModel == 'partNumberMode' && partNumber==0) || (radioModel == 'toolingMode' && tooling==0)  || (elementsSelected.length == 0)"><i class="fas fa-backspace"></i>&nbsp;&nbsp;Eliminar</button>
+        </div>
+        <select class="col-sm-4 form-control" [(ngModel)]="elementsSelected" multiple>
+            <option *ngFor="let item of elements" value="{{item.id}}">{{item.result}}</option>
+        </select>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="mt-5 mb-5" style="width: 99%;">
+
+    <div class="btn-group" btnRadioGroup [(ngModel)]="radioModel">
+        <label class="btn btn-primary btn-md" btnRadio="stationMode" tabindex="0" role="button" (click)="cleanFields()">ESTACIÓN</label>
+        <label class="btn btn-primary btn-md" btnRadio="toolingMode" tabindex="0" role="button" (click)="cleanFields()">HERRAMENTAL</label>
+    </div>
+    <br><br>
+    <div [hidden]="radioModel!='stationMode'" >
+        <label style="font-weight: bold; ">ESTACIÓN:</label>
+        <br>
+        <select [(ngModel)]="station" style="width: 50%;" (change)="fillToolingsByStation()" class="custom-select">
+            <option value="0" selected>Elige...</option>
+            <option *ngFor="let item of stations" value="{{item.pkstation}}">
+                {{item.stationName}}</option>
+        </select>
+        <br><br>
+    </div>
+    <div  [hidden]="radioModel!='toolingMode'">
+        <label style="font-weight: bold; ">HERRAMENTAL:</label>
+        <br>
+        <select [(ngModel)]="tooling" style="width: 50%;" (change)="fillStationsByTooling()" class="custom-select">
+            <option value="0" selected>Elige...</option>
+            <option *ngFor="let item of toolings"  value="{{item.pkTooling}}">
+                {{item.tooling}}</option>
+        </select>
+        <br><br>
+    </div>
+    <div class="row justify-content-center">
+        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel == 'stationMode') ? ' las estaciones' : 'los herramantales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" [disabled]="station==0&&tooling==0" id="txtElements"> </textarea>
+        <div class="col-sm-2 mt-4">
+            <button class="btn btn-success btn-md mt-5"  (click)="insertElements()" alt="" [hidden]="(radioModel == 'stationMode' && station==0) || (radioModel == 'toolingMode' && tooling==0) || txtElementsToSave == ''">&nbsp;<i class="fas fa-save"></i>&nbsp;&nbsp;Insertar&nbsp;</button><br>
+            <button class="btn btn-danger btn-md mt-3"  (click)="deleteElements()" alt="" [hidden]="(radioModel == 'stationMode' && station==0) || (radioModel == 'toolingMode' && tooling==0)  || (elementsSelected.length == 0)"><i class="fas fa-backspace"></i>&nbsp;&nbsp;Eliminar</button>
+        </div>
+        <select class="col-sm-4 form-control" [(ngModel)]="elementsSelected" multiple>
+            <option *ngFor="let item of elements" value="{{item.id}}">{{item.result}}</option>
+        </select>
+    </div>
+</div>

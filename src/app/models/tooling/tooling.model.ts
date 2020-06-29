@@ -79,3 +79,8 @@ export class ToolingValidation {
     existe: boolean;
     status: string;
 }
+
+export interface EspecificDataTool{
+    id:number,
+    result: string
+}

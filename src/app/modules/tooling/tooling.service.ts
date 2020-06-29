@@ -7,8 +7,8 @@ import { GeneralResponse } from "src/app/models/login/login.model";
 import { PartNumber } from "src/app/models/part-number/part-number.model";
 import { Project } from "src/app/models/project/project.model";
 import { RequestMaintance } from "src/app/models/request-maintance/request-maintance.model";
+import { CounterMask } from '../../models/countermask/countermask.model'
 import { Type } from "src/app/models/type/type.model";
-import { Station } from "src/app/models/stations/stations.model";
 
 
 @Injectable({
@@ -24,6 +24,9 @@ export class ToolingService {
   private rmUrl = `${Constants.SERVER}RequestMaintenance`;
   private intranetUrl = `${Constants.SERVER}Auth/EmployeeNumber`;
   private stationsUrl = `${Constants.SERVER}stations`;
+  private counterMaskUrl = `${Constants.SERVER}tools`
+  private groupsUrl = `${Constants.SERVER}groups`
+  urlStations = `${Constants.SERVER}stations`;
   
   constructor(private httpClient : HttpClient) {
    
@@ -85,4 +88,60 @@ export class ToolingService {
   getEmployeeValidation(employee:string): Observable<GeneralResponse>{
     return this.httpClient.get<GeneralResponse>(`${this.intranetUrl}/${employee}`).pipe();
   }
+
+
+  //TOOLINGS PART NUMBERS
+  getPartNumbers(): Observable<PartNumber[]>{
+    return this.httpClient.get<PartNumber[]>(`${this.partNumberUrl}/all`).pipe();
+  }
+
+  getCounterMask():Observable<CounterMask[]>{
+    return this.httpClient.get<CounterMask[]>(`${this.counterMaskUrl}/all`).pipe();
+  }
+  
+  findToolingsByPartNumber(id:number): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByPartNumber/${id}`).pipe();
+  }
+  findPartNumbersByTooling(id:number): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByTooling/${id}`).pipe();
+  }
+  insertToolingsToPartNumber(id:number, values:string): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByPartNumber/${id}`,values).pipe();
+  }
+  insertPartNumbersToTooling(id:number, values:string): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByTooling/${id}`,values).pipe();
+  }
+  deleteToolingFromPartNumber(id:number, values:string[]): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/deleteGroupsByPartNumbers/${id}`,values).pipe();
+  }
+  deletePartNumbersFromTooling(id:number, values:string[]): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/deleteGroupsByTooling/${id}`,values).pipe();
+  }
+
+
+  findStations(): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.urlStations}/all`).pipe();
+  }
+
+  findToolingsByStation(id:number): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByPartNumber/${id}`).pipe();
+  }
+  findStationsByTooling(id:number): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByTooling/${id}`).pipe();
+  }
+
+  
+  insertToolingsToStation(id:number, values:string): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByPartNumber/${id}`,values).pipe();
+  }
+  insertStationsToTooling(id:number, values:string): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByTooling/${id}`,values).pipe();
+  }
+  deleteToolingFromStation(id:number, values:string[]): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/deleteGroupsByPartNumbers/${id}`,values).pipe();
+  }
+  deleteStationsFromTooling(id:number, values:string[]): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/deleteGroupsByTooling/${id}`,values).pipe();
+  }
+
 }

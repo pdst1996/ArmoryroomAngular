@@ -1,13 +1,13 @@
 export interface Project {
-    pk_project?: number,
-    project_name: string,
+    pkProject?: number,
+    projectName: string,
     sfdcpc: string
 }
 
 export interface PartNumber {
-    pk_partnumber?: number,
+    pkPartnumber?: number,
     partnumber: string,
-    fk_project: number
+    fkProject: number
 }
 
 export interface CounterMask
@@ -33,3 +33,8 @@ export interface CounterMask
     project: string
 }
 
+export interface CounterMaskData
+{
+    id:number,
+    result: string
+}

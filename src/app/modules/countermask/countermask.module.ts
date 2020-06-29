@@ -5,6 +5,7 @@ import { CountermaskComponent } from '../../components/countermask/countermask.c
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule } from '@angular/forms';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 @NgModule({
   declarations: [CountermaskComponent],
@@ -14,6 +15,7 @@ import { FormsModule } from '@angular/forms';
     PopoverModule.forRoot(),
     ModalModule.forRoot(),
     FormsModule,
+    ButtonsModule
   ]
 })
 export class CountermaskModule { }

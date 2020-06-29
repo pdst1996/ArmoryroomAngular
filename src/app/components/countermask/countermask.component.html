@@ -1,38 +1,43 @@
 <div class="p-3 bg-white  rounded shadow-md card--z-5"
     style="margin-left:auto; margin-right:auto; margin-top: 2%; width: 80%;">
 
-    <button type="button" class="btn btn-primary" (click)="bVisibleNP='npdiv'">No.Parte</button>
-    <button type="button" class="btn btn-success " (click)="bVisibleNP='cmdiv'">ConMasc</button>
+    <div class="btn-group" btnRadioGroup [(ngModel)]="bVisibleNP">
+        <label class="btn btn-primary btn-md" btnRadio="npdiv" tabindex="0" role="button" (click)="cleanFields()">NUMERO DE PARTE</label>
+        <label class="btn btn-primary btn-md" btnRadio="cmdiv" tabindex="0" role="button" (click)="cleanFields()">HERRAMENTAL</label>
+    </div>
+
+    <!-- <button type="button" class="btn btn-primary" (click)="bVisibleNP='npdiv'">No.Parte</button>
+    <button type="button" class="btn btn-success " (click)="bVisibleNP='cmdiv'">ConMasc</button> -->
     <br><br>
    
     <div id="Npart" [hidden]="bVisibleNP!='npdiv'" >
         <label style="font-weight: bold; ">NUMERO DE PARTE:</label>
         <br>
-        <select [(ngModel)]="pNParte" style="width: 50%;" class="custom-select">
+        <select [(ngModel)]="pNParte" style="width: 50%;" (change)="mFillCMPN()" class="custom-select">
             <option value="0" selected>Elige...</option>
-            <option *ngFor="let PartNumber of PartNumbers " value="{{PartNumber.pk_partnumber}}">
+            <option *ngFor="let PartNumber of PartNumbers " value="{{PartNumber.pkPartnumber}}">
                 {{PartNumber.partnumber}}</option>
         </select>
         <br><br>
     </div>
     <div  [hidden]="bVisibleNP!='cmdiv'">
-        <label style="font-weight: bold; ">CONTRAMASCARA:</label>
+        <label style="font-weight: bold; ">HERRAMENTAL:</label>
         <br>
-        <select [(ngModel)]="pkCMask" style="width: 50%;" class="custom-select">
+        <select [(ngModel)]="pkCMask" style="width: 50%;" (change)="mFillPNCM()" class="custom-select">
             <option value="0" selected>Elige...</option>
-            <option *ngFor="let CounterMask of nCounterMasks "  value="{{CounterMask.pk_tooling}}">
+            <option *ngFor="let CounterMask of nCounterMasks "  value="{{CounterMask.pkTooling}}">
                 {{CounterMask.tooling}}</option>
         </select>
         <br><br>
     </div>
-    
-    <div class="row col-sm-12">
-        <textarea class="col-sm-4" placeholder="writing someone" #txtAinput style="margin-left: 6%;" [(ngModel)]="textValue" required > </textarea>
-        <img type="button" class="col-sm-3" src="/assets/sanmina/application/flags.png" (click)="mInsert(txtAinput.value)" alt="">
-        <select class="col-sm-4" placeholder="writing someone" id="txtAoutput" multiple>
-            <option>cosa</option>
-            <option>cosa2</option>
-            <option>cosa3</option>
+    <div class="row justify-content-center">
+        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (bVisibleNP == 'npdiv') ? 'los numeros de parte' : 'los herramantales'}} a insertar" rows="10" [(ngModel)]="textValue" [disabled]="pNParte==0&&pkCMask==0" id="txtElements"> </textarea>
+        <div class="col-sm-2 mt-4">
+            <button class="btn btn-success btn-md mt-5"  (click)="mInsert()" alt="" [hidden]="(bVisibleNP == 'npdiv' && pNParte==0) || (bVisibleNP == 'cmdiv' && pkCMask==0) || textValue == ''">&nbsp;<i class="fas fa-save"></i>&nbsp;&nbsp;Insertar&nbsp;</button><br>
+            <button class="btn btn-danger btn-md mt-3"  (click)="mDelete()" alt="" [hidden]="(bVisibleNP == 'npdiv' && pNParte==0) || (bVisibleNP == 'cmdiv' && pkCMask==0)  || (ngtxtAfill.length == 0)"><i class="fas fa-backspace"></i>&nbsp;&nbsp;Eliminar</button>
+        </div>
+        <select class="col-sm-4 form-control" placeholder="writing someone"   [(ngModel)]="ngtxtAfill" id="txtAoutput" multiple>
+            <option *ngFor="let item of txtAfill" value="{{item.id}}">{{item.result}}</option>
         </select>
     </div>
 </div>

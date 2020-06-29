@@ -81,9 +81,9 @@
             </div>
             <div class="row justify-content-start mt-4" [hidden]="alertShow == 'none'">
               <div class="col-11">
-                <div role="alert" [class]="(allFine) ? 'alert alert-success' : 'alert alert-danger'">
-                  <p [hidden]="alertShow != 'error'">El serial se encuentra en una estacion incorrecta: {{stationWrong}}</p>
-                  <p [hidden]="alertShow != 'success'">{{palletResponse}}</p>
+                <div role="alert" [class]="(allFine) ? 'alert alert-success' : 'alert alert-danger pb-n4'">
+                  <span [hidden]="alertShow != 'error'">El serial se encuentra en una estacion incorrecta:<br> {{stationWrong}}</span>
+                  <span [hidden]="alertShow != 'success'">{{palletResponse}}m</span>
                 </div>
               </div>
           </div>

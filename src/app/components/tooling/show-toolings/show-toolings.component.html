@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+<div class="mat-elevation-z8 mt-5">
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> ID </th>
@@ -53,10 +53,14 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
   <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
-  <mat-form-field>
-    <mat-label>Buscar en toda la tabla</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Clave">
-  </mat-form-field>
+  <div class="row justify-content-right" style="width: 100%;">
+    <div class="offset-md-8 col-4 mt-n2">
+        <mat-form-field>
+            <mat-label>Buscar en toda la tabla</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Clave">
+        </mat-form-field>
+    </div>
+  </div>
 </div>
 
 

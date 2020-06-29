@@ -1,19 +1,22 @@
 <div class="p-3 bg-white center rounded shadow-md card--z-5 card-tooling">
     <mat-tab-group>
-        <mat-tab label="AGREGAR NUEVO">
-            <h3 class="mt-4">Nuevo herramental</h3>
+        <mat-tab label="NUEVO">
             <app-add-new-tooling></app-add-new-tooling>
         </mat-tab>
         <mat-tab label="EXISTENTES">
-            <h3 class="mt-4"><mat-card>Herramentales</mat-card></h3>
             <app-show-toolings></app-show-toolings>
         </mat-tab>
-        <mat-tab label="SOLICITUDES DE MANTENIMIENTO">
-            <h3 class="mt-4"><mat-card>Solicitudes en proceso</mat-card></h3>
+        <mat-tab label="SOLICITUDES DE MTTO">
             <app-maintance-requests></app-maintance-requests>
         </mat-tab>
         <mat-tab label="ENTRADAS/SALIDAS">
             <app-in-out-toolings></app-in-out-toolings>
+        </mat-tab>
+        <mat-tab label="AGREGAR/QUITAR Numeros de parte">
+            <app-tooling-partnumber></app-tooling-partnumber>
+        </mat-tab>
+        <mat-tab label="AGREGAR/QUITAR Estaciones">
+            <app-tooling-stations></app-tooling-stations>
         </mat-tab>
     </mat-tab-group>
 </div>

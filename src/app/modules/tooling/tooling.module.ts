@@ -7,6 +7,8 @@ import { AddNewToolingComponent } from '../../components/tooling/add-new-tooling
 import { ShowToolingsComponent } from '../../components/tooling/show-toolings/show-toolings.component';
 import { MaintanceRequestsComponent } from '../../components/tooling/maintance-requests/maintance-requests.component';
 import { InOutToolingsComponent } from '../../components/tooling/in-out-toolings/in-out-toolings.component';
+import { ToolingPartnumberComponent } from '../../components/tooling/tooling-partnumber/tooling-partnumber.component';
+import { ToolingStationsComponent } from '../../components/tooling/tooling-stations/tooling-stations.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule } from '@angular/forms';
@@ -45,6 +47,8 @@ import { MatSelectModule } from '@angular/material/select';
     AddNewToolingComponent, 
     ShowToolingsComponent, 
     MaintanceRequestsComponent, 
-    InOutToolingsComponent]
+    InOutToolingsComponent,
+    ToolingPartnumberComponent,
+    ToolingStationsComponent]
 })
 export class ToolingModule { }
