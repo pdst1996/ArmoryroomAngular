@@ -59,7 +59,12 @@ const routes: Routes = [
             {
                 path: 'config/stations',
                 loadChildren: 'src/app/modules/stations/stations.module#StationsModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'tutorials',
+                loadChildren: 'src/app/modules/tutorials/tutorials.module#TutorialsModule', canActivate: [LoginAct]
             }
+           
            
         ]
     }

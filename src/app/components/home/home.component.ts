@@ -138,6 +138,10 @@ export class HomeComponent implements OnInit {
           this.currentRoute = "contact us";
           break;
         }
+        case "/tutorials": {
+          this.currentRoute = "tutorials";
+          break;
+        }
         case "/pallet-validator/scan-pallet": {
           this.currentRoute = "scan pallet";
           break;
