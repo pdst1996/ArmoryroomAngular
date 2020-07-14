@@ -7,6 +7,7 @@ import { RequestMaintance } from 'src/app/models/request-maintance/request-maint
 import { RequimttoService } from 'src/app/modules/requimtto/requimtto.service';
 import { ApplicationData } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
+import { HistoryService } from 'src/app/modules/history/history.service';
 
 @Component({
   selector: 'app-requimtto',
@@ -25,9 +26,12 @@ export class RequimttoComponent implements OnInit {
   pktool = 0;
   dataApplication : ApplicationData;
 
-  constructor(private toolingService : ToolingService, private notify : Notify, private element : ElementRef, private requimttoService:RequimttoService) { }
+  constructor(private toolingService : ToolingService, private notify : Notify, private element : ElementRef, private requimttoService:RequimttoService, private historyService : HistoryService) { }
 
   ngOnInit() {
+    this.dataApplication = JSON.parse(
+      localStorage.getItem(Constants.localStorage)
+    );
     this.getAllToolings();
   }
 
@@ -65,10 +69,12 @@ export class RequimttoComponent implements OnInit {
       if(results.success){
         this.notifyLoader = this.notify.setLoadingDone("Listo", this.notifyLoader);
         this.pktool = 0;
+        this.historyService.insertNewHistory(this.dataApplication.userInfo.userName,  `Insertó una requisición para el herramental (${this.toolingToAskMaintance})`);
         this.toolingToAskMaintance = "";
         this.commentToAskMaintance = "";
       }
       else{
+        this.notify.setNotification("Error", results.message.replace("null",this.toolingToAskMaintance),"error")
         this.notifyLoader = this.notify.setLoadingError("Error", this.notifyLoader);
       }
     });

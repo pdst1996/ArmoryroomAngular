@@ -192,6 +192,11 @@ export class QuestionnaireComponent implements OnInit {
     this.modalRef.setClass('modal-lg');
   }
 
+  closeModal(){
+    this.modalRef.hide();
+    this.getAllQuestionnaires();
+  }
+
   openModalConfirm(template: TemplateRef<any>) {
     this.modalRef2 = this.modalService.show(template);
     this.modalRef2.setClass('modal-md');

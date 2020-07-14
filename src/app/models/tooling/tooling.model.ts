@@ -84,3 +84,10 @@ export interface EspecificDataTool{
     id:number,
     result: string
 }
+
+export class ioTool{
+    userDelivery:string;
+    userReceive:string;
+    newStatus:number;
+    toolings:string;
+}

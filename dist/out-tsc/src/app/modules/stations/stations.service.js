@@ -13,7 +13,10 @@ import { Constants } from '../../helpers/constats';
 var StationsService = /** @class */ (function () {
     function StationsService(httpClient) {
         this.httpClient = httpClient;
+        this.projectUrl = Constants.SERVER + "projects";
         this.stationsUrl = Constants.SERVER + "stations";
+        this.typeUrl = Constants.SERVER + "types";
+        this.intranetUrl = Constants.SERVER + "Auth/EmployeeNumber";
     }
     StationsService.prototype.findAllStations = function () {
         return this.httpClient.get(this.stationsUrl + "/all").pipe();

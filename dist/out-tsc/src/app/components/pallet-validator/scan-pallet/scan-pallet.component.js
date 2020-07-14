@@ -12,6 +12,7 @@ import { ScanPalletService } from 'src/app/modules/pallet-validator/scan-pallet/
 import { Constants } from 'src/app/helpers/constats';
 import { Notify } from 'src/app/modules/notify/notify';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
+import { HistoryService } from 'src/app/modules/history/history.service';
 var mpassdata = /** @class */ (function () {
     function mpassdata() {
     }
@@ -19,11 +20,12 @@ var mpassdata = /** @class */ (function () {
 }());
 export { mpassdata };
 var ScanPalletComponent = /** @class */ (function () {
-    function ScanPalletComponent(scanPalletService, element, notify, toolingService) {
+    function ScanPalletComponent(scanPalletService, element, notify, toolingService, historyService) {
         this.scanPalletService = scanPalletService;
         this.element = element;
         this.notify = notify;
         this.toolingService = toolingService;
+        this.historyService = historyService;
         this.serialDivHidden = true;
         this.serialFine = false;
         this.serialReadonly = false;
@@ -31,10 +33,10 @@ var ScanPalletComponent = /** @class */ (function () {
         this.alertShow = "none";
         this.stationWrong = "";
         this.palletResponse = "";
+        this.panelClass = "";
     }
     ScanPalletComponent.prototype.ngOnInit = function () {
         this.stationCookie = Number(this.getCookie("Station"));
-        this.selectedStation = this.stationCookie;
         this.element.nativeElement.querySelector("#txtPallet").focus();
         this.applicationData = JSON.parse(localStorage.getItem(Constants.localStorage));
         this.imgSrc = "http://plant8.sanmina.com:8080/SanmAPI/getImageUser/?employee=" + this.applicationData.userInfo.userName;
@@ -64,7 +66,7 @@ var ScanPalletComponent = /** @class */ (function () {
                 if (results.data.valid) {
                     _this.serialFine = true;
                     _this.serial = auxSerial;
-                    _this.notify.setNotification("Listo", "Serial en orden", "success");
+                    _this.notify.setNotification("Listo", "Se casaron las contramascaras con éxito", "success");
                     _this.allFine = true;
                     _this.alertShow = "success";
                     _this.cazarContramascaras();
@@ -73,7 +75,11 @@ var ScanPalletComponent = /** @class */ (function () {
                     _this.allFine = false;
                     _this.stationWrong = results.data.station;
                     _this.alertShow = "error";
+                    setTimeout(function () {
+                        _this.panelClass += ' panel-hide';
+                    }, 2000);
                 }
+                _this.panelClass = (_this.allFine) ? 'alert alert-success' : 'alert alert-danger pb-n4';
             }
             else {
                 _this.notify.setNotification("Error", results.message, "error");
@@ -82,6 +88,22 @@ var ScanPalletComponent = /** @class */ (function () {
             _this.serialReadonly = false;
             console.log(results);
         });
+    };
+    ScanPalletComponent.prototype.clearFields = function () {
+        this.arrayCounterMaskCurrentPasses = new Array();
+        this.arrayCounterMaskPassesToMaintenance = new Array();
+        this.inputsCM = new Array();
+        this.ngModelCM = new Array();
+        this.counterCM = 0;
+        this.serial = '';
+        this.currentCM = 1;
+        this.fillingCMs = false;
+        this.pallet = "";
+        this.palletFine = false;
+        this.allFine = false;
+        this.element.nativeElement.querySelector("#txtPallet").focus();
+        this.serialDivHidden = true;
+        this.serialFine = false;
     };
     ScanPalletComponent.prototype.cazarContramascaras = function () {
         var _this = this;
@@ -95,6 +117,7 @@ var ScanPalletComponent = /** @class */ (function () {
                 _this.allFine = true;
                 _this.alertShow = "success";
                 _this.palletResponse = results.data;
+                _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Cas\u00F3 las contramascaras (" + _this.ngModelCM + ") al pallet (" + _this.pallet + " con el serial (" + _this.serial + ")");
             }
             else {
                 _this.allFine = false;
@@ -224,6 +247,7 @@ var ScanPalletComponent = /** @class */ (function () {
         this.scanPalletService.findStations().subscribe(function (results) {
             _this.stations = results.data;
             _this.stationCookie = Number(_this.getCookie("Station"));
+            _this.selectedStation = _this.stationCookie;
         });
     };
     ScanPalletComponent.prototype.changeStation = function () {
@@ -231,6 +255,7 @@ var ScanPalletComponent = /** @class */ (function () {
         d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
         document.cookie = "Station=" + this.selectedStation + "; expires= " + d.toUTCString() + "; path=/";
         this.stationCookie = Number(this.getCookie("Station"));
+        this.selectedStation = this.stationCookie;
         this.getCountermasksNumber();
     };
     ScanPalletComponent.prototype.getSelectedStation = function () {
@@ -255,7 +280,7 @@ var ScanPalletComponent = /** @class */ (function () {
     };
     ScanPalletComponent.prototype.getCountermasksNumber = function () {
         var _this = this;
-        this.scanPalletService.getCMNumber(this.selectedStation).subscribe(function (results) {
+        this.scanPalletService.getCMNumber(this.stationCookie).subscribe(function (results) {
             if (results.success)
                 _this.numberOfCounterMasks = results.data.contramascaraQty;
         });
@@ -269,7 +294,7 @@ var ScanPalletComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [ScanPalletService,
             ElementRef,
             Notify,
-            ToolingService])
+            ToolingService, HistoryService])
     ], ScanPalletComponent);
     return ScanPalletComponent;
 }());

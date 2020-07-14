@@ -10,11 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Component, ElementRef } from '@angular/core';
 import { Notify } from 'src/app/modules/notify/notify';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
+import { HistoryService } from 'src/app/modules/history/history.service';
+import { Constants } from 'src/app/helpers/constats';
 var ToolingPartnumberComponent = /** @class */ (function () {
-    function ToolingPartnumberComponent(toolingService, notify, elementRef) {
+    function ToolingPartnumberComponent(toolingService, notify, elementRef, historyService) {
         this.toolingService = toolingService;
         this.notify = notify;
         this.elementRef = elementRef;
+        this.historyService = historyService;
         this.radioModel = 'partNumberMode';
         this.txtElementsToSave = '';
     }
@@ -24,6 +27,7 @@ var ToolingPartnumberComponent = /** @class */ (function () {
         this.elementsSelected = new Array();
         this.getCounterMask();
         this.getPartNumbers();
+        this.applicationData = JSON.parse(localStorage.getItem(Constants.localStorage));
     };
     ToolingPartnumberComponent.prototype.cleanFields = function () {
         this.txtElementsToSave = '';
@@ -77,6 +81,7 @@ var ToolingPartnumberComponent = /** @class */ (function () {
                         _this.txtElementsToSave = _this.txtElementsToSave.replace(iterator, "");
                     }
                     _this.fillToolingsByPartNumber();
+                    _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Le agreg\u00F3 los herramentales (" + _this.elementsToInsert + ") al numero de parte (" + _this.partNumber + ")");
                 }
                 if (results.data.rechazados.length != 0) {
                     _this.notify.setNotification("Erroneas", "Las contramascaras del recuadro fueron rechazadas", "error");
@@ -95,6 +100,7 @@ var ToolingPartnumberComponent = /** @class */ (function () {
                         _this.txtElementsToSave = _this.txtElementsToSave.replace(iterator + "\n", "");
                         _this.txtElementsToSave = _this.txtElementsToSave.replace(iterator, "");
                     }
+                    _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Le agreg\u00F3 los numeros de parte(" + _this.elementsToInsert + ") al herramental (" + _this.tooling + ")");
                     _this.fillPartNumbersByTooling();
                 }
                 if (results.data.rechazados.length != 0) {
@@ -110,12 +116,14 @@ var ToolingPartnumberComponent = /** @class */ (function () {
         if (this.radioModel == "partNumberMode") {
             this.toolingService.deleteToolingFromPartNumber(this.partNumber, this.elementsSelected).subscribe(function (results) {
                 _this.loader = _this.notify.setLoadingDone("Completado", _this.loader);
+                _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Le quit\u00F3 (" + _this.elementsSelected + ") al numero de parte (" + _this.partNumber + ")");
                 _this.fillToolingsByPartNumber();
             });
         }
         else {
             this.toolingService.deletePartNumbersFromTooling(this.tooling, this.elementsSelected).subscribe(function (results) {
                 _this.loader = _this.notify.setLoadingDone("Completado", _this.loader);
+                _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Le quit\u00F3 (" + _this.elementsSelected + ") al herramental (" + _this.tooling + ")");
                 _this.fillPartNumbersByTooling();
             });
         }
@@ -126,7 +134,7 @@ var ToolingPartnumberComponent = /** @class */ (function () {
             templateUrl: './tooling-partnumber.component.html',
             styleUrls: ['./tooling-partnumber.component.css']
         }),
-        __metadata("design:paramtypes", [ToolingService, Notify, ElementRef])
+        __metadata("design:paramtypes", [ToolingService, Notify, ElementRef, HistoryService])
     ], ToolingPartnumberComponent);
     return ToolingPartnumberComponent;
 }());

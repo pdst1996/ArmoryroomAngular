@@ -8,10 +8,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Component } from '@angular/core';
+import Reveal from 'reveal.js';
+import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
 var TutorialsComponent = /** @class */ (function () {
     function TutorialsComponent() {
     }
     TutorialsComponent.prototype.ngOnInit = function () {
+        var deck = new Reveal({
+            plugins: [Markdown]
+        });
+        deck.initialize();
     };
     TutorialsComponent = __decorate([
         Component({

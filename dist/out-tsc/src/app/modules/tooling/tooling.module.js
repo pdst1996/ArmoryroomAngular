@@ -10,7 +10,6 @@ import { ToolingRoutingModule } from './tooling-routing.module';
 import { ToolingComponent } from '../../components/tooling/tooling.component';
 import { AddNewToolingComponent } from '../../components/tooling/add-new-tooling/add-new-tooling.component';
 import { ShowToolingsComponent } from '../../components/tooling/show-toolings/show-toolings.component';
-import { MaintanceRequestsComponent } from '../../components/tooling/maintance-requests/maintance-requests.component';
 import { InOutToolingsComponent } from '../../components/tooling/in-out-toolings/in-out-toolings.component';
 import { ToolingPartnumberComponent } from '../../components/tooling/tooling-partnumber/tooling-partnumber.component';
 import { ToolingStationsComponent } from '../../components/tooling/tooling-stations/tooling-stations.component';
@@ -54,7 +53,6 @@ var ToolingModule = /** @class */ (function () {
                 ToolingComponent,
                 AddNewToolingComponent,
                 ShowToolingsComponent,
-                MaintanceRequestsComponent,
                 InOutToolingsComponent,
                 ToolingPartnumberComponent,
                 ToolingStationsComponent

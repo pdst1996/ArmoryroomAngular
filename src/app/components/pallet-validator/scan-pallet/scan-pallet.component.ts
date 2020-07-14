@@ -6,12 +6,14 @@ import { Constants } from 'src/app/helpers/constats';
 import { Notify } from 'src/app/modules/notify/notify';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { HistoryService } from 'src/app/modules/history/history.service';
 
 export class mpassdata{
   serial:string;
   pallet:string;
   contramascaras : string[];
   idStation:number;
+  employeeNumber:string;
 }
 
 @Component({
@@ -46,15 +48,16 @@ export class ScanPalletComponent implements OnInit {
   alertShow = "none";
   stationWrong = "";
   palletResponse = "";
+  panelClass = "";
+  panelClassFine = "";
   
   constructor(private scanPalletService: ScanPalletService, 
     private element : ElementRef,
     private notify : Notify,
-    private toolingService: ToolingService) { }
+    private toolingService: ToolingService, private historyService : HistoryService) { }
 
   ngOnInit() {
     this.stationCookie = Number(this.getCookie("Station"));
-    this.selectedStation = this.stationCookie;
     this.element.nativeElement.querySelector("#txtPallet").focus();
     this.applicationData = JSON.parse(localStorage.getItem(Constants.localStorage));
     this.imgSrc = "http://plant8.sanmina.com:8080/SanmAPI/getImageUser/?employee="+this.applicationData.userInfo.userName;
@@ -85,7 +88,7 @@ export class ScanPalletComponent implements OnInit {
           if(results.data.valid){
             this.serialFine = true;
             this.serial = auxSerial;
-            this.notify.setNotification("Listo", "Serial en orden","success");
+            this.notify.setNotification("Listo", "Se casaron las contramascaras con éxito","success");
             this.allFine = true;
             this.alertShow = "success";
             this.cazarContramascaras();
@@ -93,7 +96,11 @@ export class ScanPalletComponent implements OnInit {
             this.allFine = false;
             this.stationWrong = results.data.station;
             this.alertShow = "error";
+            setTimeout(()=>{
+              this.panelClass += ' panel-hide';
+            },2000)
           }
+          this.panelClass = (this.allFine) ? 'alert alert-success' : 'alert alert-danger pb-n4'
           
         }else{
           this.notify.setNotification("Error", results.message,"error");
@@ -105,6 +112,23 @@ export class ScanPalletComponent implements OnInit {
     );
   }
 
+  clearFields(){
+    this.arrayCounterMaskCurrentPasses = new Array<number>();
+    this.arrayCounterMaskPassesToMaintenance = new Array<number>();
+    this.inputsCM  = new Array<number>();
+    this.ngModelCM = new Array<string>();
+    this.counterCM = 0;
+    this.serial = '';
+    this.currentCM = 1;
+    this.fillingCMs = false;
+    this.pallet = "";
+    this.palletFine = false;
+    this.allFine = false;
+    this.element.nativeElement.querySelector("#txtPallet").focus();
+    this.serialDivHidden = true;
+    this.serialFine = false;
+  }
+
   cazarContramascaras(){
     
     let obj = new mpassdata();
@@ -112,24 +136,24 @@ export class ScanPalletComponent implements OnInit {
     obj.pallet = this.pallet;
     obj.serial = this.serial;
     obj.contramascaras = this.ngModelCM;
+    obj.employeeNumber = this.applicationData.userInfo.employeeNumber+"";
    
     this.scanPalletService.cazar(obj).subscribe(
       results =>{
         if(results.success){
-
-  
             this.allFine = true;
             this.alertShow = "success";
             this.palletResponse = results.data;
-            
-          
-          
+            this.clearFields();
+            setTimeout(()=>{
+              this.panelClass += ' panel-hide';
+            },7000)
+            this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Casó las contramascaras (${this.ngModelCM}) al pallet (${this.pallet} con el serial (${this.serial})`);
         }else{
           this.allFine = false;
           this.palletResponse = results.data;
           this.alertShow = "error";
         }
-
         console.log(results)
       }
     );
@@ -256,6 +280,7 @@ export class ScanPalletComponent implements OnInit {
       results =>{
         this.stations = results.data;
         this.stationCookie = Number(this.getCookie("Station"));
+        this.selectedStation = this.stationCookie;
       }
     );
   }
@@ -265,6 +290,7 @@ export class ScanPalletComponent implements OnInit {
     d.setTime(d.getTime() + (30*24*60*60*1000));
     document.cookie = `Station=${this.selectedStation}; expires= ${d.toUTCString()}; path=/`;
     this.stationCookie = Number(this.getCookie("Station"));
+    this.selectedStation = this.stationCookie;
     this.getCountermasksNumber();
   }
 
@@ -290,11 +316,12 @@ export class ScanPalletComponent implements OnInit {
   }
 
   getCountermasksNumber(){
-    this.scanPalletService.getCMNumber(this.selectedStation).subscribe(
+    this.scanPalletService.getCMNumber(this.stationCookie).subscribe(
       results =>{
         if(results.success)
         this.numberOfCounterMasks = results.data.contramascaraQty;
       }
     );
   }
+
 }

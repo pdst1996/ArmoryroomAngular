@@ -1,11 +1,11 @@
 import { Component, OnInit,ViewChild, TemplateRef, ElementRef } from '@angular/core';
 import { MatPaginator,MatTableDataSource } from '@angular/material';
-import { ApplicationData, Profile, User } from 'src/app/models/home/home.model';
-import { Constants } from 'src/app/helpers/constats';
-import { ToolingService } from 'src/app/modules/tooling/tooling.service';
-import { HistoryService } from 'src/app/modules/history/history.service';
-import { RequestMaintance } from 'src/app/models/request-maintance/request-maintance.model';
-import { Notify } from 'src/app/modules/notify/notify';
+import { ApplicationData, Profile, User } from '../../models/home/home.model';
+import { Constants } from '../../helpers/constats';
+import { MaintenanceRequestsService } from '../../modules/maintenance-requests/maintenance-requests.service';
+import { HistoryService } from '../../modules/history/history.service';
+import { RequestMaintance } from '../../models/request-maintance/request-maintance.model';
+import { Notify } from '../../modules/notify/notify';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -32,7 +32,7 @@ export class MaintenanceRequestsComponent implements OnInit {
   valueSign = "";
   thereRequests = false;
 
-  constructor(private toolingService: ToolingService, 
+  constructor(private mrService: MaintenanceRequestsService, 
               private notify:Notify, 
               private modalService: BsModalService,
               private element : ElementRef,
@@ -60,15 +60,16 @@ export class MaintenanceRequestsComponent implements OnInit {
   }
 
   getAllRequestMaintance(){
-    this.toolingService.findAllRequestMaintance().subscribe(prequests =>{
+    
+    this.mrService.findAllRequestMaintance().subscribe(prequests =>{
       this.requests = new Array<RequestMaintance>();
+      this.thereRequests = false;
       for (const iterator of prequests) {
         if(iterator.aproved == null){
           this.requests.push(iterator);
         } 
       }
-  
-      if(this.requests.length != 0)
+      if(this.requests.length != 0 || this.requests == null)
         this.thereRequests = true;
       
       this.dataSource = new MatTableDataSource <RequestMaintance>(this.requests);
@@ -83,7 +84,6 @@ export class MaintenanceRequestsComponent implements OnInit {
     this.pkRequest = pkRequest;
   }
 
-
   signRequest(){
     let value = "";
     let value2 = "";
@@ -96,7 +96,7 @@ export class MaintenanceRequestsComponent implements OnInit {
     }
 
     this.notifyLoading = this.notify.setLoading(" "+value, this.notifyLoading);
-    this.toolingService.aproveRejectRequestMaintance(this.action, this.pkRequest, this.user.userName).subscribe(
+    this.mrService.aproveRejectRequestMaintance(this.action, this.pkRequest, this.user.userName).subscribe(
       results =>{
         if(results.success){
           this.notifyLoading = this.notify.setLoadingDone(" Listo", this.notifyLoading);

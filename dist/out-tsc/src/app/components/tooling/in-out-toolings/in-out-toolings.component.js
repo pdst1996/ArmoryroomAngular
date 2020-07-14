@@ -7,8 +7,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Notify } from 'src/app/modules/notify/notify';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { ToolingService } from 'src/app/modules/tooling/tooling.service';
+import { HistoryService } from 'src/app/modules/history/history.service';
+import { ioTool } from '../../../models/tooling/tooling.model';
 import { Constants } from 'src/app/helpers/constats';
 var ValidationResults = /** @class */ (function () {
     function ValidationResults(serial, message) {
@@ -18,19 +22,6 @@ var ValidationResults = /** @class */ (function () {
     return ValidationResults;
 }());
 export { ValidationResults };
-var IOTool = /** @class */ (function () {
-    function IOTool() {
-    }
-    IOTool = __decorate([
-        Component({
-            selector: 'app-in-out-toolings',
-            templateUrl: './in-out-toolings.component.html',
-            styleUrls: ['./in-out-toolings.component.css']
-        })
-    ], IOTool);
-    return IOTool;
-}());
-export { IOTool };
 var InOutToolingsComponent = /** @class */ (function () {
     function InOutToolingsComponent(notify, element, toolingService, historyService) {
         this.notify = notify;
@@ -61,12 +52,12 @@ var InOutToolingsComponent = /** @class */ (function () {
         var _this = this;
         this.notifyLoading = this.notify.setLoading("Guadando " + ((this.radioModel == 'in') ? "entradas" : "salidas"), this.notifyLoading);
         var toolingsToInOut = this.getToolingsSerialsFormated();
-        var ioTool = new IOTool();
-        ioTool.newStatus = (this.radioModel == 'in') ? 5 : 2;
-        ioTool.toolings = toolingsToInOut;
-        ioTool.userDelivery = this.delieveringEmployee;
-        ioTool.userReceive = this.receivingEmployee;
-        this.toolingService.ioToolings(ioTool).subscribe(function (results) {
+        var tool = new ioTool();
+        tool.newStatus = (this.radioModel == 'in') ? 5 : 2;
+        tool.toolings = toolingsToInOut;
+        tool.userDelivery = this.delieveringEmployee;
+        tool.userReceive = this.receivingEmployee;
+        this.toolingService.inOutToolings(tool).subscribe(function (results) {
             _this.notifyLoading = _this.notify.setLoadingDone(" Cambios guardados", _this.notifyLoading);
             _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Se les dio " + ((_this.radioModel == 'in') ? "entrada" : "salida") + " a los herramentales (" + toolingsToInOut + ") entreg\u00F3: " + _this.delieveringEmployee + " y recibi\u00F3: " + _this.receivingEmployee);
         }, function (err) {
@@ -274,6 +265,14 @@ var InOutToolingsComponent = /** @class */ (function () {
         ViewChild(MatPaginator, { static: true }),
         __metadata("design:type", MatPaginator)
     ], InOutToolingsComponent.prototype, "paginator", void 0);
+    InOutToolingsComponent = __decorate([
+        Component({
+            selector: 'app-in-out-toolings',
+            templateUrl: './in-out-toolings.component.html',
+            styleUrls: ['./in-out-toolings.component.css']
+        }),
+        __metadata("design:paramtypes", [Notify, ElementRef, ToolingService, HistoryService])
+    ], InOutToolingsComponent);
     return InOutToolingsComponent;
 }());
 export { InOutToolingsComponent };

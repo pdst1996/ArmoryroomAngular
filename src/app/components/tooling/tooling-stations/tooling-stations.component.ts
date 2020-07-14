@@ -4,6 +4,9 @@ import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { PartNumber } from 'src/app/models/part-number/part-number.model';
 import { Tooling, EspecificDataTool } from 'src/app/models/tooling/tooling.model';
 import { Station } from 'src/app/models/stations/stations.model';
+import { ApplicationData } from 'src/app/models/home/home.model';
+import { HistoryService } from 'src/app/modules/history/history.service';
+import { Constants } from 'src/app/helpers/constats';
 
 @Component({
   selector: 'app-tooling-stations',
@@ -21,8 +24,9 @@ export class ToolingStationsComponent implements OnInit {
   public tooling:number;
   public elementsToInsert:string;
   public toolings:Tooling[];
+  applicationData: ApplicationData;
   public loader: any;
-  constructor(private toolingService: ToolingService, private notify: Notify, private elementRef : ElementRef) { }
+  constructor(private toolingService: ToolingService, private notify: Notify, private elementRef : ElementRef, private historyService : HistoryService) { }
 
   ngOnInit() {
     this.station=0;
@@ -30,6 +34,9 @@ export class ToolingStationsComponent implements OnInit {
     this.elementsSelected = new Array<string>();
     this.getCounterMask();
     this.getStations();
+    this.applicationData = JSON.parse(
+      localStorage.getItem(Constants.localStorage)
+    );
   }
 
   cleanFields(){
@@ -71,10 +78,10 @@ export class ToolingStationsComponent implements OnInit {
 
   insertElements(){
     this.elementsToInsert = this.txtElementsToSave.trim().replace(/\r?\n/g,",");
-    this.loader = this.notify.setLoading(`Insertando ${(this.radioModel=="stationMode")?' contramascaras':' numeros de parte'}`,this.loader);
+    this.loader = this.notify.setLoading(`Insertando ${(this.radioModel=="stationMode")?' herramentales':' estaciones'}`,this.loader);
     
     if(this.radioModel=="stationMode"){
-      this.toolingService.insertToolingsToPartNumber(this.station,this.elementsToInsert).subscribe(results=>{
+      this.toolingService.insertToolingsToStation(this.station,this.elementsToInsert).subscribe(results=>{
         this.loader = this.notify.setLoadingDone("Completado",this.loader);
         if(results.data.aceptados.length!=0){
           let aux = new Array<string>();
@@ -83,6 +90,7 @@ export class ToolingStationsComponent implements OnInit {
             this.txtElementsToSave = this.txtElementsToSave.replace(iterator + "\n","");
             this.txtElementsToSave = this.txtElementsToSave.replace(iterator,"");
           }
+          this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Le agregó los herramentales (${this.elementsToInsert}) a la estacion (${this.station})`);
           this.fillToolingsByStation();
         }
         if(results.data.rechazados.length!=0){
@@ -93,7 +101,7 @@ export class ToolingStationsComponent implements OnInit {
     }
     else
     {
-      this.toolingService.insertPartNumbersToTooling(this.tooling,this.elementsToInsert).subscribe(results=>{
+      this.toolingService.insertStationsToTooling(this.tooling,this.elementsToInsert).subscribe(results=>{
         this.loader = this.notify.setLoadingDone("Completado",this.loader);
         if(results.data.aceptados.length!=0){
           let aux = new Array<string>();
@@ -102,10 +110,11 @@ export class ToolingStationsComponent implements OnInit {
             this.txtElementsToSave = this.txtElementsToSave.replace(iterator + "\n","");
             this.txtElementsToSave = this.txtElementsToSave.replace(iterator,"");
           }
+          this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Le agregó las estaciones (${this.elementsToInsert}) al herramental (${this.tooling})`);
           this.fillStationsByTooling();
         }
         if(results.data.rechazados.length!=0){
-          this.notify.setNotification("Erroneas","Los numeros de narte del recuadro fueron rechazados","error");
+          this.notify.setNotification("Erroneas","Las estaciones del recuadro fueron rechazadas","error");
           this.elementRef.nativeElement.querySelector("#txtElements").focus();
         }
       });
@@ -113,17 +122,19 @@ export class ToolingStationsComponent implements OnInit {
   }
 
   deleteElements(){
-    this.loader = this.notify.setLoading(`Eliminando ${(this.radioModel=="stationMode")?' herramantales':' numeros de parte'}`,this.loader);
+    this.loader = this.notify.setLoading(`Eliminando ${(this.radioModel=="stationMode")?' herramantales':' estaciones'}`,this.loader);
     if(this.radioModel=="stationMode") {
-      this.toolingService.deleteToolingFromPartNumber(this.station,this.elementsSelected).subscribe(results=>{
+      this.toolingService.deleteToolingFromStation(this.station,this.elementsSelected).subscribe(results=>{
         this.loader = this.notify.setLoadingDone("Completado",this.loader);
         this.fillToolingsByStation();
+        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Le quitó los herramentales (${this.elementsSelected}) a la estación (${this.station})`);
       })
     }
     else{
-      this.toolingService.deletePartNumbersFromTooling(this.tooling,this.elementsSelected).subscribe(results=>{
+      this.toolingService.deleteStationsFromTooling(this.tooling,this.elementsSelected).subscribe(results=>{
         this.loader = this.notify.setLoadingDone("Completado",this.loader);
         this.fillStationsByTooling();
+        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Le quitó las estaciones (${this.elementsSelected}) al herramental (${this.station})`);
       })
     }
     

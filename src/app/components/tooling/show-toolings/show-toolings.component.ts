@@ -66,7 +66,7 @@ export class ShowToolingsComponent implements OnInit {
 
   saveNewStatus(){
     this.notifyLoading = this.notify.setLoading(`${(this.newStatus == 9) ? "Scrapeando" : `${(this.newStatus == 2) ? 'Sacando de' : 'Poniendo en'} cuarentena`}`, this.notifyLoading);
-    this.toolingService.changeStatusTool(this.toolingToChangeStatus.tooling,this.newStatus).subscribe(
+    this.toolingService.changeStatus(this.toolingToChangeStatus.tooling,this.newStatus).subscribe(
       results =>{
         this.notifyLoading = this.notify.setLoadingDone(" Cambios guardados", this.notifyLoading);
         this.modalRef2.hide();

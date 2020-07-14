@@ -114,16 +114,16 @@ var HomeComponent = /** @class */ (function () {
                     this.currentRoute = "contact us";
                     break;
                 }
-                case "/tutorials": {
-                    this.currentRoute = "tutorials";
-                    break;
-                }
                 case "/pallet-validator/scan-pallet": {
                     this.currentRoute = "scan pallet";
                     break;
                 }
                 case "/pallet-validator/liberate-pallet": {
                     this.currentRoute = "liberate pallet";
+                    break;
+                }
+                case "/maintenance-requests": {
+                    this.currentRoute = "MAINTENANCE REQUESTS";
                     break;
                 }
             }
@@ -209,6 +209,10 @@ var HomeComponent = /** @class */ (function () {
                 this.currentRoute = "liberate pallet";
                 break;
             }
+            case "/maintenance-requests": {
+                this.currentRoute = "MAINTENANCE REQUESTS";
+                break;
+            }
         }
     };
     HomeComponent.prototype.back = function () {
@@ -258,6 +262,10 @@ var HomeComponent = /** @class */ (function () {
                 }
                 case "/pallet-validator/liberate-pallet": {
                     _this.currentRoute = "liberate pallet";
+                    break;
+                }
+                case "/maintenance-requests": {
+                    _this.currentRoute = "MAINTENANCE REQUESTS";
                     break;
                 }
             }

@@ -6,6 +6,7 @@ import { MatTableDataSource, MatRadioChange } from '@angular/material';
 import { Question, Answer, MaintenanceInsert } from '../../models/questions/questions.model';
 import { ApplicationData } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
+import { HistoryService } from 'src/app/modules/history/history.service';
 
 @Component({
   selector: 'app-fill-mtto',
@@ -28,7 +29,7 @@ export class FillMttoComponent implements OnInit {
   constructor(private element : ElementRef, 
     private modalService : BsModalService, 
     private fillmttoService: FillMttoService,
-    private notify : Notify) { }
+    private notify : Notify, private historyService : HistoryService) { }
 
   ngOnInit() {
     this.element.nativeElement.querySelector("#txtTooling").focus();
@@ -50,8 +51,10 @@ export class FillMttoComponent implements OnInit {
         results => {
           if(results.success){
             this.notifyLoader = this.notify.setLoadingDone("Listo", this.notifyLoader);
-            this.notify.setNotification("LISTO","Se ha enviado tu cuestionario a revisión","success");
+            this.notify.setNotification("LISTO", "Se ha enviado tu cuestionario a revisión", "success");
             this.modalRef.hide();
+            this.modalRef.hide();
+            this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Llenó el cuestionario para el tool (${objMaintenance.tooling})`);
           }else{
             this.notify.setNotification("Error",results.message,"error");
             this.notifyLoader = this.notify.setLoadingError("Error", this.notifyLoader);

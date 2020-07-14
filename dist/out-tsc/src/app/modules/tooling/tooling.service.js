@@ -24,6 +24,7 @@ var ToolingService = /** @class */ (function () {
         this.counterMaskUrl = Constants.SERVER + "tools";
         this.groupsUrl = Constants.SERVER + "groups";
         this.urlStations = Constants.SERVER + "stations";
+        this.urlToolStations = Constants.SERVER + "StationsTooling";
     }
     ToolingService.prototype.findAllProjects = function () {
         return this.httpClient.get(this.projectUrl + "/all").pipe();
@@ -43,12 +44,12 @@ var ToolingService = /** @class */ (function () {
     ToolingService.prototype.getToolingsValidation = function (data) {
         return this.httpClient.post(this.toolingUrl + "/getToolStatus", data);
     };
-    ToolingService.prototype.changeStatusTool = function (data, pkNewStatus) {
+    ToolingService.prototype.inOutToolings = function (data) {
+        return this.httpClient.post(this.toolingUrl + "/ioTools", data);
+    };
+    ToolingService.prototype.changeStatus = function (data, pkNewStatus) {
         console.log(data + ":" + pkNewStatus);
         return this.httpClient.post(this.toolingUrl + "/changeStatusTools/" + pkNewStatus, data);
-    };
-    ToolingService.prototype.ioToolings = function (data) {
-        return this.httpClient.post(this.toolingUrl + "/ioTools", data);
     };
     ToolingService.prototype.getToolingById = function (id) {
         return this.httpClient.get(this.toolingUrl + "/getToolById/" + id).pipe();
@@ -79,6 +80,7 @@ var ToolingService = /** @class */ (function () {
         return this.httpClient.get(this.counterMaskUrl + "/all").pipe();
     };
     ToolingService.prototype.findToolingsByPartNumber = function (id) {
+        console.log(this.groupsUrl + "/findByPartNumber/" + id);
         return this.httpClient.get(this.groupsUrl + "/findByPartNumber/" + id).pipe();
     };
     ToolingService.prototype.findPartNumbersByTooling = function (id) {
@@ -96,26 +98,27 @@ var ToolingService = /** @class */ (function () {
     ToolingService.prototype.deletePartNumbersFromTooling = function (id, values) {
         return this.httpClient.post(this.groupsUrl + "/deleteGroupsByTooling/" + id, values).pipe();
     };
+    //TOOLINGS STATIONS
     ToolingService.prototype.findStations = function () {
         return this.httpClient.get(this.urlStations + "/all").pipe();
     };
     ToolingService.prototype.findToolingsByStation = function (id) {
-        return this.httpClient.get(this.groupsUrl + "/findByPartNumber/" + id).pipe();
+        return this.httpClient.get(this.urlToolStations + "/findByStation/" + id).pipe();
     };
     ToolingService.prototype.findStationsByTooling = function (id) {
-        return this.httpClient.get(this.groupsUrl + "/findByTooling/" + id).pipe();
+        return this.httpClient.get(this.urlToolStations + "/findByTooling/" + id).pipe();
     };
     ToolingService.prototype.insertToolingsToStation = function (id, values) {
-        return this.httpClient.post(this.groupsUrl + "/insertByPartNumber/" + id, values).pipe();
+        return this.httpClient.post(this.urlToolStations + "/insertByStation/" + id, values).pipe();
     };
     ToolingService.prototype.insertStationsToTooling = function (id, values) {
-        return this.httpClient.post(this.groupsUrl + "/insertByTooling/" + id, values).pipe();
+        return this.httpClient.post(this.urlToolStations + "/insertByTooling/" + id, values).pipe();
     };
     ToolingService.prototype.deleteToolingFromStation = function (id, values) {
-        return this.httpClient.post(this.groupsUrl + "/deleteGroupsByPartNumbers/" + id, values).pipe();
+        return this.httpClient.post(this.urlToolStations + "/deleteByStation/" + id, values).pipe();
     };
     ToolingService.prototype.deleteStationsFromTooling = function (id, values) {
-        return this.httpClient.post(this.groupsUrl + "/deleteGroupsByTooling/" + id, values).pipe();
+        return this.httpClient.post(this.urlToolStations + "/deleteByTooling/" + id, values).pipe();
     };
     ToolingService = __decorate([
         Injectable({

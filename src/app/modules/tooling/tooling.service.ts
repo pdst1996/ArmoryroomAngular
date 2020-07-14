@@ -26,7 +26,8 @@ export class ToolingService {
   private stationsUrl = `${Constants.SERVER}stations`;
   private counterMaskUrl = `${Constants.SERVER}tools`
   private groupsUrl = `${Constants.SERVER}groups`
-  urlStations = `${Constants.SERVER}stations`;
+  private urlStations = `${Constants.SERVER}stations`;
+  private urlToolStations = `${Constants.SERVER}StationsTooling`;
   
   constructor(private httpClient : HttpClient) {
    
@@ -56,14 +57,15 @@ export class ToolingService {
     return this.httpClient.post<ToolingValidation[]>(`${this.toolingUrl}/getToolStatus`,data);
   }
 
-  changeStatusTool(data:string, pkNewStatus:number): Observable<ToolingValidation[]>{
+  inOutToolings(data:any): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.toolingUrl}/ioTools`,data);
+  }
+
+  changeStatus(data:string, pkNewStatus:number): Observable<ToolingValidation[]>{
     console.log(data+":"+pkNewStatus)
     return this.httpClient.post<ToolingValidation[]>(`${this.toolingUrl}/changeStatusTools/${pkNewStatus}`,data);
   }
 
-  ioToolings(data:any): Observable<GeneralResponse>{
-    return this.httpClient.post<GeneralResponse>(`${this.toolingUrl}/ioTools`,data);
-  }
 
   getToolingById(id:number): Observable<Tooling>{
     return this.httpClient.get<Tooling>(`${this.toolingUrl}/getToolById/${id}`).pipe();
@@ -95,15 +97,15 @@ export class ToolingService {
 
 
   //TOOLINGS PART NUMBERS
+
   getPartNumbers(): Observable<PartNumber[]>{
     return this.httpClient.get<PartNumber[]>(`${this.partNumberUrl}/all`).pipe();
   }
-
   getCounterMask():Observable<CounterMask[]>{
     return this.httpClient.get<CounterMask[]>(`${this.counterMaskUrl}/all`).pipe();
   }
-  
   findToolingsByPartNumber(id:number): Observable<GeneralResponse>{
+    console.log(`${this.groupsUrl}/findByPartNumber/${id}`)
     return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByPartNumber/${id}`).pipe();
   }
   findPartNumbersByTooling(id:number): Observable<GeneralResponse>{
@@ -122,30 +124,32 @@ export class ToolingService {
     return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/deleteGroupsByTooling/${id}`,values).pipe();
   }
 
+  //TOOLINGS STATIONS
 
   findStations(): Observable<GeneralResponse>{
     return this.httpClient.get<GeneralResponse>(`${this.urlStations}/all`).pipe();
   }
-
   findToolingsByStation(id:number): Observable<GeneralResponse>{
-    return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByPartNumber/${id}`).pipe();
+    return this.httpClient.get<GeneralResponse>(`${this.urlToolStations}/findByStation/${id}`).pipe();
   }
   findStationsByTooling(id:number): Observable<GeneralResponse>{
-    return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByTooling/${id}`).pipe();
+    return this.httpClient.get<GeneralResponse>(`${this.urlToolStations}/findByTooling/${id}`).pipe();
   }
 
   
   insertToolingsToStation(id:number, values:string): Observable<GeneralResponse>{
-    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByPartNumber/${id}`,values).pipe();
+    return this.httpClient.post<GeneralResponse>(`${this.urlToolStations}/insertByStation/${id}`,values).pipe();
   }
   insertStationsToTooling(id:number, values:string): Observable<GeneralResponse>{
-    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByTooling/${id}`,values).pipe();
+    return this.httpClient.post<GeneralResponse>(`${this.urlToolStations}/insertByTooling/${id}`,values).pipe();
   }
+
+
   deleteToolingFromStation(id:number, values:string[]): Observable<GeneralResponse>{
-    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/deleteGroupsByPartNumbers/${id}`,values).pipe();
+    return this.httpClient.post<GeneralResponse>(`${this.urlToolStations}/deleteByStation/${id}`,values).pipe();
   }
   deleteStationsFromTooling(id:number, values:string[]): Observable<GeneralResponse>{
-    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/deleteGroupsByTooling/${id}`,values).pipe();
+    return this.httpClient.post<GeneralResponse>(`${this.urlToolStations}/deleteByTooling/${id}`,values).pipe();
   }
 
 }

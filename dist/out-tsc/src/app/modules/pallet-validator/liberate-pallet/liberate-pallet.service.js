@@ -9,10 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Constants } from "src/app/helpers/constats";
 var LiberatePalletService = /** @class */ (function () {
     function LiberatePalletService(httpClient) {
         this.httpClient = httpClient;
+        this.urlLiberate = Constants.SERVER + "stations";
+        this.urlToolings = Constants.SERVER + "tools";
     }
+    LiberatePalletService.prototype.getPalletsBlocked = function () {
+        return this.httpClient.get(this.urlToolings + "/getToolingsBlocked").pipe();
+    };
+    LiberatePalletService.prototype.liberatePallet = function (idpallet) {
+        return this.httpClient.post(this.urlToolings + "/changeBlocked/" + idpallet + "/false", "").pipe();
+    };
     LiberatePalletService = __decorate([
         Injectable({
             providedIn: "root"

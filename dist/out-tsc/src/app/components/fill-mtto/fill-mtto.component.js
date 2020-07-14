@@ -14,12 +14,14 @@ import { Notify } from '../../modules/notify/notify';
 import { MatTableDataSource } from '@angular/material';
 import { Answer, MaintenanceInsert } from '../../models/questions/questions.model';
 import { Constants } from 'src/app/helpers/constats';
+import { HistoryService } from 'src/app/modules/history/history.service';
 var FillMttoComponent = /** @class */ (function () {
-    function FillMttoComponent(element, modalService, fillmttoService, notify) {
+    function FillMttoComponent(element, modalService, fillmttoService, notify, historyService) {
         this.element = element;
         this.modalService = modalService;
         this.fillmttoService = fillmttoService;
         this.notify = notify;
+        this.historyService = historyService;
         this.tooling = '';
         this.comments = '';
         this.displayedColumns = ['question', 'answer'];
@@ -47,6 +49,7 @@ var FillMttoComponent = /** @class */ (function () {
                     _this.notifyLoader = _this.notify.setLoadingDone("Listo", _this.notifyLoader);
                     _this.notify.setNotification("LISTO", "Se ha enviado tu cuestionario a revisión", "success");
                     _this.modalRef.hide();
+                    _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Llen\u00F3 el cuestionario para el tool (" + objMaintenance.tooling + ")");
                 }
                 else {
                     _this.notify.setNotification("Error", results.message, "error");
@@ -105,7 +108,7 @@ var FillMttoComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [ElementRef,
             BsModalService,
             FillMttoService,
-            Notify])
+            Notify, HistoryService])
     ], FillMttoComponent);
     return FillMttoComponent;
 }());

@@ -53,7 +53,7 @@ var ShowToolingsComponent = /** @class */ (function () {
     ShowToolingsComponent.prototype.saveNewStatus = function () {
         var _this = this;
         this.notifyLoading = this.notify.setLoading("" + ((this.newStatus == 9) ? "Scrapeando" : ((this.newStatus == 2) ? 'Sacando de' : 'Poniendo en') + " cuarentena"), this.notifyLoading);
-        this.toolingService.changeStatusTool(this.toolingToChangeStatus.tooling, this.newStatus).subscribe(function (results) {
+        this.toolingService.changeStatus(this.toolingToChangeStatus.tooling, this.newStatus).subscribe(function (results) {
             _this.notifyLoading = _this.notify.setLoadingDone(" Cambios guardados", _this.notifyLoading);
             _this.modalRef2.hide();
             _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Se puso en " + ((_this.newStatus == 9) ? "scrap" : "cuarentena") + " al herramental (" + _this.toolingToChangeStatus.tooling + ")");

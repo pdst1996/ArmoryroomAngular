@@ -44,7 +44,7 @@ import { MatSelectModule } from '@angular/material/select';
   declarations: [
     ToolingComponent, 
     AddNewToolingComponent, 
-    ShowToolingsComponent, 
+    ShowToolingsComponent,
     InOutToolingsComponent,
     ToolingPartnumberComponent,
     ToolingStationsComponent]

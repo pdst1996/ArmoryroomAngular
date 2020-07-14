@@ -23,4 +23,10 @@ var ToolingValidation = /** @class */ (function () {
     return ToolingValidation;
 }());
 export { ToolingValidation };
+var ioTool = /** @class */ (function () {
+    function ioTool() {
+    }
+    return ioTool;
+}());
+export { ioTool };
 //# sourceMappingURL=tooling.model.js.map

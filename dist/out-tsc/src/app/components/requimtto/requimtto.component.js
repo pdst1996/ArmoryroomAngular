@@ -15,18 +15,21 @@ import { Notify } from 'src/app/modules/notify/notify';
 import { RequestMaintance } from 'src/app/models/request-maintance/request-maintance.model';
 import { RequimttoService } from 'src/app/modules/requimtto/requimtto.service';
 import { Constants } from 'src/app/helpers/constats';
+import { HistoryService } from 'src/app/modules/history/history.service';
 var RequimttoComponent = /** @class */ (function () {
-    function RequimttoComponent(toolingService, notify, element, requimttoService) {
+    function RequimttoComponent(toolingService, notify, element, requimttoService, historyService) {
         this.toolingService = toolingService;
         this.notify = notify;
         this.element = element;
         this.requimttoService = requimttoService;
+        this.historyService = historyService;
         this.displayedColumns = ['id', 'project', 'serial', 'type', 'qtyPasses', 'qtyMtto', 'proxMtto', 'status'];
         this.commentToAskMaintance = "";
         this.toolingToAskMaintance = "";
         this.pktool = 0;
     }
     RequimttoComponent.prototype.ngOnInit = function () {
+        this.dataApplication = JSON.parse(localStorage.getItem(Constants.localStorage));
         this.getAllToolings();
     };
     RequimttoComponent.prototype.getAllToolings = function () {
@@ -61,10 +64,12 @@ var RequimttoComponent = /** @class */ (function () {
             if (results.success) {
                 _this.notifyLoader = _this.notify.setLoadingDone("Listo", _this.notifyLoader);
                 _this.pktool = 0;
+                _this.historyService.insertNewHistory(_this.dataApplication.userInfo.userName, "Insert\u00F3 una requisici\u00F3n para el herramental (" + _this.toolingToAskMaintance + ")");
                 _this.toolingToAskMaintance = "";
                 _this.commentToAskMaintance = "";
             }
             else {
+                _this.notify.setNotification("Error", results.message.replace("null", _this.toolingToAskMaintance), "error");
                 _this.notifyLoader = _this.notify.setLoadingError("Error", _this.notifyLoader);
             }
         });
@@ -79,7 +84,7 @@ var RequimttoComponent = /** @class */ (function () {
             templateUrl: './requimtto.component.html',
             styleUrls: ['./requimtto.component.css']
         }),
-        __metadata("design:paramtypes", [ToolingService, Notify, ElementRef, RequimttoService])
+        __metadata("design:paramtypes", [ToolingService, Notify, ElementRef, RequimttoService, HistoryService])
     ], RequimttoComponent);
     return RequimttoComponent;
 }());

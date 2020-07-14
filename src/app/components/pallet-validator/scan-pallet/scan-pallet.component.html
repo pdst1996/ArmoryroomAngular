@@ -16,10 +16,10 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-1"></div>
+                <div class="col-2"></div>
             </div>
             <div class="row justify-content-center">
-                <div class="col-11">
+                <div class="col-10">
                     <p>
                         <mat-form-field appearance="outline">
                             <mat-label style="font-size: 15pt;">PALLET</mat-label>
@@ -28,6 +28,11 @@
                             <mat-icon matSuffix>vpn_key</mat-icon>
                         </mat-form-field>
                     </p>
+                </div>
+                <div class="col-1">
+                  <button type="button" class="btn btn-warning btn-sm mt-3" title="Limpiar campos" (click)="clearFields()" [hidden]="!palletFine">
+                    <i class="fas fa-trash"></i>
+                  </button>
                 </div>
                 <div class="col-1">
                   <i class="fas fa-check-circle" style="color: #41d075; font-size: 28pt; margin-top: 11px;" [hidden]="!palletFine"></i>
@@ -81,9 +86,9 @@
             </div>
             <div class="row justify-content-start mt-4" [hidden]="alertShow == 'none'">
               <div class="col-11">
-                <div role="alert" [class]="(allFine) ? 'alert alert-success' : 'alert alert-danger pb-n4'">
+                <div role="alert" [class]="panelClass">
                   <span [hidden]="alertShow != 'error'">El serial se encuentra en una estacion incorrecta:<br> {{stationWrong}}</span>
-                  <span [hidden]="alertShow != 'success'">{{palletResponse}}m</span>
+                  <span [hidden]="alertShow != 'success'">{{palletResponse}}</span>
                 </div>
               </div>
           </div>
@@ -95,60 +100,3 @@
       </div>
     </div>
 </div>
-
-<ng-template #template>
-    <div class="modal-header">
-      <h4 class="modal-title pull-left">Llenar checklist de mantenimiento</h4>
-      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()" style="padding-top: 23px; padding-right: 23px;">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body modal-lg center" style="text-align: center;">
-        <div class="row justify-content-center mt-2">
-            <div class="col-11 alert alert-info">
-                <h5 class="mb-3 mt-1">
-                  <b>Herramental: </b>
-                  <span class="badge badge-pill badge-primary" style="padding-top:4px; font-size: 17pt;">{{tooling}}</span>
-                </h5>
-                <table mat-table [dataSource]="dataSource">
-                    <ng-container matColumnDef="question">
-                        <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PREGUNTA </th>
-                        <td mat-cell *matCellDef="let element">
-                            <span>{{element.question}}</span>
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="answer">
-                        <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> TU RESPUESTA </th>
-                        <td mat-cell *matCellDef="let element"> 
-                            <mat-radio-group aria-label="Select an option" (change)="changeAnswer($event, element)">
-                                <mat-radio-button value="Yes">SI</mat-radio-button>
-                                <mat-radio-button value="NO" class="radio-answer">NO</mat-radio-button>
-                                <mat-radio-button value="N/A" class="radio-answer">NA</mat-radio-button>
-                            </mat-radio-group>    
-                        </td>
-                    </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                </table>
-                <div class="row justify-content-center mt-3">
-                  <div class="col-12">
-                    <p>
-                      <mat-form-field appearance="outline">
-                        <mat-label style="font-size: 15pt;">Comentario</mat-label>
-                        <textarea matInput placeholder="Comentario" rows="2" style="font-size: 13pt;" id="txtComments" [(ngModel)]="comments"></textarea>
-                        <mat-icon matSuffix>comment</mat-icon>
-                      </mat-form-field>
-                    </p>
-                  </div>
-                </div>
-                <div class="row justify-content-center mt-n5">
-                  <div class="col-12">
-                      <button (click)="saveChecklist()" class="btn btn-success btn-lg btn-block mt-4" [disabled]="btnDisabled">
-                          <span class="content"><i class="far fa-paper-plane"></i>&nbsp;&nbsp;Enviar a revisión</span>
-                      </button>
-                  </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</ng-template>

@@ -10,11 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Component, ElementRef } from '@angular/core';
 import { Notify } from 'src/app/modules/notify/notify';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
+import { HistoryService } from 'src/app/modules/history/history.service';
+import { Constants } from 'src/app/helpers/constats';
 var ToolingStationsComponent = /** @class */ (function () {
-    function ToolingStationsComponent(toolingService, notify, elementRef) {
+    function ToolingStationsComponent(toolingService, notify, elementRef, historyService) {
         this.toolingService = toolingService;
         this.notify = notify;
         this.elementRef = elementRef;
+        this.historyService = historyService;
         this.radioModel = 'stationMode';
         this.txtElementsToSave = '';
     }
@@ -24,6 +27,7 @@ var ToolingStationsComponent = /** @class */ (function () {
         this.elementsSelected = new Array();
         this.getCounterMask();
         this.getStations();
+        this.applicationData = JSON.parse(localStorage.getItem(Constants.localStorage));
     };
     ToolingStationsComponent.prototype.cleanFields = function () {
         this.txtElementsToSave = '';
@@ -64,9 +68,9 @@ var ToolingStationsComponent = /** @class */ (function () {
     ToolingStationsComponent.prototype.insertElements = function () {
         var _this = this;
         this.elementsToInsert = this.txtElementsToSave.trim().replace(/\r?\n/g, ",");
-        this.loader = this.notify.setLoading("Insertando " + ((this.radioModel == "stationMode") ? ' contramascaras' : ' numeros de parte'), this.loader);
+        this.loader = this.notify.setLoading("Insertando " + ((this.radioModel == "stationMode") ? ' herramentales' : ' estaciones'), this.loader);
         if (this.radioModel == "stationMode") {
-            this.toolingService.insertToolingsToPartNumber(this.station, this.elementsToInsert).subscribe(function (results) {
+            this.toolingService.insertToolingsToStation(this.station, this.elementsToInsert).subscribe(function (results) {
                 _this.loader = _this.notify.setLoadingDone("Completado", _this.loader);
                 if (results.data.aceptados.length != 0) {
                     var aux = new Array();
@@ -76,6 +80,7 @@ var ToolingStationsComponent = /** @class */ (function () {
                         _this.txtElementsToSave = _this.txtElementsToSave.replace(iterator + "\n", "");
                         _this.txtElementsToSave = _this.txtElementsToSave.replace(iterator, "");
                     }
+                    _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Le agreg\u00F3 los herramentales (" + _this.elementsToInsert + ") a la estacion (" + _this.station + ")");
                     _this.fillToolingsByStation();
                 }
                 if (results.data.rechazados.length != 0) {
@@ -85,7 +90,7 @@ var ToolingStationsComponent = /** @class */ (function () {
             });
         }
         else {
-            this.toolingService.insertPartNumbersToTooling(this.tooling, this.elementsToInsert).subscribe(function (results) {
+            this.toolingService.insertStationsToTooling(this.tooling, this.elementsToInsert).subscribe(function (results) {
                 _this.loader = _this.notify.setLoadingDone("Completado", _this.loader);
                 if (results.data.aceptados.length != 0) {
                     var aux = new Array();
@@ -95,10 +100,11 @@ var ToolingStationsComponent = /** @class */ (function () {
                         _this.txtElementsToSave = _this.txtElementsToSave.replace(iterator + "\n", "");
                         _this.txtElementsToSave = _this.txtElementsToSave.replace(iterator, "");
                     }
+                    _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Le agreg\u00F3 las estaciones (" + _this.elementsToInsert + ") al herramental (" + _this.tooling + ")");
                     _this.fillStationsByTooling();
                 }
                 if (results.data.rechazados.length != 0) {
-                    _this.notify.setNotification("Erroneas", "Los numeros de narte del recuadro fueron rechazados", "error");
+                    _this.notify.setNotification("Erroneas", "Las estaciones del recuadro fueron rechazadas", "error");
                     _this.elementRef.nativeElement.querySelector("#txtElements").focus();
                 }
             });
@@ -106,17 +112,19 @@ var ToolingStationsComponent = /** @class */ (function () {
     };
     ToolingStationsComponent.prototype.deleteElements = function () {
         var _this = this;
-        this.loader = this.notify.setLoading("Eliminando " + ((this.radioModel == "stationMode") ? ' herramantales' : ' numeros de parte'), this.loader);
+        this.loader = this.notify.setLoading("Eliminando " + ((this.radioModel == "stationMode") ? ' herramantales' : ' estaciones'), this.loader);
         if (this.radioModel == "stationMode") {
-            this.toolingService.deleteToolingFromPartNumber(this.station, this.elementsSelected).subscribe(function (results) {
+            this.toolingService.deleteToolingFromStation(this.station, this.elementsSelected).subscribe(function (results) {
                 _this.loader = _this.notify.setLoadingDone("Completado", _this.loader);
                 _this.fillToolingsByStation();
+                _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Le quit\u00F3 los herramentales (" + _this.elementsSelected + ") a la estaci\u00F3n (" + _this.station + ")");
             });
         }
         else {
-            this.toolingService.deletePartNumbersFromTooling(this.tooling, this.elementsSelected).subscribe(function (results) {
+            this.toolingService.deleteStationsFromTooling(this.tooling, this.elementsSelected).subscribe(function (results) {
                 _this.loader = _this.notify.setLoadingDone("Completado", _this.loader);
                 _this.fillStationsByTooling();
+                _this.historyService.insertNewHistory(_this.applicationData.userInfo.userName, "Le quit\u00F3 las estaciones (" + _this.elementsSelected + ") al herramental (" + _this.station + ")");
             });
         }
     };
@@ -126,7 +134,7 @@ var ToolingStationsComponent = /** @class */ (function () {
             templateUrl: './tooling-stations.component.html',
             styleUrls: ['./tooling-stations.component.css']
         }),
-        __metadata("design:paramtypes", [ToolingService, Notify, ElementRef])
+        __metadata("design:paramtypes", [ToolingService, Notify, ElementRef, HistoryService])
     ], ToolingStationsComponent);
     return ToolingStationsComponent;
 }());

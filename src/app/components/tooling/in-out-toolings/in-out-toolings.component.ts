@@ -5,6 +5,7 @@ import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HistoryService } from 'src/app/modules/history/history.service';
 import { ApplicationData } from 'src/app/models/home/home.model';
+import { ioTool } from '../../../models/tooling/tooling.model';
 import { Constants } from 'src/app/helpers/constats';
 
 export class ValidationResults {
@@ -21,14 +22,6 @@ export class ValidationResults {
   templateUrl: './in-out-toolings.component.html',
   styleUrls: ['./in-out-toolings.component.css']
 })
-
-export class IOTool{
-  userDelivery:string;
-  userReceive:string;
-  newStatus:number;
-  toolings:string;
-}
-
 export class InOutToolingsComponent implements OnInit {
 
   public radioModel = 'in';
@@ -66,15 +59,16 @@ export class InOutToolingsComponent implements OnInit {
   }
 
   saveInOut(){
-    this.notifyLoading = this.notify.setLoading(`Guardando ${(this.radioModel == 'in') ? "entradas" : "salidas"}`, this.notifyLoading);
+    this.notifyLoading = this.notify.setLoading(`Guadando ${(this.radioModel == 'in') ? "entradas" : "salidas"}`, this.notifyLoading);
     var toolingsToInOut = this.getToolingsSerialsFormated();
 
-    let ioTool = new IOTool();
-    ioTool.newStatus = (this.radioModel == 'in') ? 5 : 2;
-    ioTool.toolings = toolingsToInOut;
-    ioTool.userDelivery = this.delieveringEmployee;
-    ioTool.userReceive = this.receivingEmployee;
-    this.toolingService.ioToolings(ioTool).subscribe(
+    let tool = new ioTool();
+    tool.newStatus = (this.radioModel == 'in') ? 5 : 2;
+    tool.toolings = toolingsToInOut;
+    tool.userDelivery = this.delieveringEmployee;
+    tool.userReceive = this.receivingEmployee;
+
+    this.toolingService.inOutToolings(tool).subscribe(
       results =>{
         this.notifyLoading = this.notify.setLoadingDone(" Cambios guardados", this.notifyLoading);
         this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Se les dio ${(this.radioModel == 'in') ? "entrada" : "salida"} a los herramentales (${toolingsToInOut}) entregó: ${this.delieveringEmployee} y recibió: ${this.receivingEmployee}`);

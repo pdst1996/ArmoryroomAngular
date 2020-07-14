@@ -25,6 +25,7 @@ var StationsConfigComponent = /** @class */ (function () {
         this.notify = notify;
         this.historyService = historyService;
         this.idStationEdit = 0;
+        this.action = "save";
         this.displayedColumns = ['pkstation', 'station', 'project', 'correctVariable', 'unit', 'contramascaraQty', 'action'];
     }
     StationsConfigComponent.prototype.ngOnInit = function () {
@@ -41,6 +42,7 @@ var StationsConfigComponent = /** @class */ (function () {
     };
     StationsConfigComponent.prototype.openStationModal = function (template, pkStationEdit) {
         var _this = this;
+        this.action = "edit";
         this.notifyLoading = this.notify.setLoading("Cargando información", this.notifyLoading);
         this.stationService.getStationById(pkStationEdit).subscribe(function (pStation) {
             _this.stationData = pStation.data;
@@ -172,6 +174,11 @@ var StationsConfigComponent = /** @class */ (function () {
         this.projectStationEdit = 0;
         this.contramascaraQty = 1;
         this.getAllProjects();
+        this.action = "save";
+    };
+    StationsConfigComponent.prototype.applyFilter = function (event) {
+        var filterValue = event.target.value;
+        this.dataSource.filter = filterValue.trim().toLowerCase();
     };
     __decorate([
         ViewChild(MatPaginator, { static: true }),

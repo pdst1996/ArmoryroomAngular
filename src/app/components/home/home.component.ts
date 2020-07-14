@@ -138,16 +138,16 @@ export class HomeComponent implements OnInit {
           this.currentRoute = "contact us";
           break;
         }
-        case "/tutorials": {
-          this.currentRoute = "tutorials";
-          break;
-        }
         case "/pallet-validator/scan-pallet": {
           this.currentRoute = "scan pallet";
           break;
         }
         case "/pallet-validator/liberate-pallet": {
           this.currentRoute = "liberate pallet";
+          break;
+        }
+        case "/maintenance-requests": {
+          this.currentRoute = "MAINTENANCE REQUESTS";
           break;
         }
       }
@@ -244,6 +244,10 @@ export class HomeComponent implements OnInit {
         this.currentRoute = "liberate pallet";
         break;
       }
+      case "/maintenance-requests": {
+        this.currentRoute = "MAINTENANCE REQUESTS";
+        break;
+      }
     }
   }
 
@@ -294,6 +298,10 @@ export class HomeComponent implements OnInit {
         }
         case "/pallet-validator/liberate-pallet": {
           this.currentRoute = "liberate pallet";
+          break;
+        }
+        case "/maintenance-requests": {
+          this.currentRoute = "MAINTENANCE REQUESTS";
           break;
         }
       }

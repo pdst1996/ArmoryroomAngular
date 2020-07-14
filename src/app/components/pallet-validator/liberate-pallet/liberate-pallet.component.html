@@ -1,1 +1,76 @@
-<p>liberate-pallet works!</p>
+<div class="p-3 bg-white center rounded shadow-md card--z-5 card-stations">
+    <div class="row justify-content-around pt-4" [hidden]="toolingTable == null || toolingTable.length == 0">
+        <div class="col-11">
+            <div class="row justify-content-end">
+                <div class="col-3 mt-1">
+                    <mat-form-field>
+                        <mat-label><i class="fas fa-search"></i> Buscar en toda la tabla</mat-label>
+                        <input matInput (keyup)="applyFilter($event)" placeholder="Clave">
+                    </mat-form-field>
+                  </div>
+              </div>
+              <table mat-table [dataSource]="dataSource">
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> ID </th>
+                  <td mat-cell *matCellDef="let element"> {{element.pkTooling}} </td>
+                </ng-container>
+                <ng-container matColumnDef="project">
+                  <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PROYECTO </th>
+                  <td mat-cell *matCellDef="let element"> {{element.project.substring(0,element.project.length-1)}} </td>
+                </ng-container>
+                <ng-container matColumnDef="serial">
+                  <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> PALLET </th>
+                  <td mat-cell *matCellDef="let element"> {{element.tooling}} </td>
+                </ng-container>
+                <ng-container matColumnDef="qtyPasses">
+                  <th mat-header-cell *matHeaderCellDef  class="center-mat-cell"> PASADAS </th>
+                  <td mat-cell *matCellDef="let element"> {{(element.fkType.pktype == 3  || element.fkType.pktype == 5) ? element.actualQty : "NA"}} </td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> STATUS </th>
+                  <td mat-cell *matCellDef="let element"> {{element.fkStatus.status}} </td>
+                </ng-container>
+                <ng-container matColumnDef="liberate">
+                  <th mat-header-cell *matHeaderCellDef class="center-mat-cell"> LIBERAR </th>
+                  <td mat-cell *matCellDef="let element">
+                    <button type="button" class="btn btn-success btn-sm ml-2" title="Liberar pallet" (click)="liberate(element, template)">
+                      <i class="fas fa-check-square"></i>
+                    </button>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+    <div class="row justify-content-around pt-4" [hidden]="toolingTable.length != 0">
+      <div class="alert alert-info col-10" role="alert">
+        <h6 class="alert-heading mt-2">No hay pallets para liberar&nbsp;<span title="Refrescar" type="button" class="btn btn-link" (click)="getPalletsBlocked()"><i class="fas fa-redo-alt"></i></span></h6>
+      </div>
+    </div>
+</div>
+  
+<ng-template #template>
+    <div class="modal-body modal-lg">
+        <div class="row justify-content-center mt-2">
+        <div class="col-11">
+            <h3>¿Esta seguro que desea liberar el pallet <i>{{palletToLiberate.tooling}}</i> ?</h3>
+            <p>Recuerde que será permanente y no se podrá revertir</p>
+            <div class="row justify-content-end">
+            <div class="col-3">
+                <button type="button" class="btn btn-outline-danger mt-1" (click)="closeModal()">Cancelar</button>
+            </div>
+            <div class="col-3 form-group">
+                <input type="button" class="btn btn-success btn-lg" id="btnAccept" (click)="liberatePallet()" value="Aceptar">
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</ng-template>
+
+
+
+          
+  

@@ -13,4 +13,8 @@ export class ToolingComponent implements OnInit {
   ngOnInit() {
   }
 
+  reloadToolings(){
+    alert(2)
+  }
+
 }

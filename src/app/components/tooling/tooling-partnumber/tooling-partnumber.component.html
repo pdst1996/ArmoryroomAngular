@@ -26,7 +26,7 @@
         <br><br>
     </div>
     <div class="row justify-content-center">
-        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel == 'partNumberMode') ? 'los numeros de parte' : 'los herramantales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" [disabled]="partNumber==0&&tooling==0" id="txtElements"> </textarea>
+        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel != 'partNumberMode') ? 'los numeros de parte' : 'los herramantales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" [disabled]="partNumber==0&&tooling==0" id="txtElements"> </textarea>
         <div class="col-sm-2 mt-4">
             <button class="btn btn-success btn-md mt-5"  (click)="insertElements()" alt="" [hidden]="(radioModel == 'partNumberMode' && partNumber==0) || (radioModel == 'toolingMode' && tooling==0) || txtElementsToSave == ''">&nbsp;<i class="fas fa-save"></i>&nbsp;&nbsp;Insertar&nbsp;</button><br>
             <button class="btn btn-danger btn-md mt-3"  (click)="deleteElements()" alt="" [hidden]="(radioModel == 'partNumberMode' && partNumber==0) || (radioModel == 'toolingMode' && tooling==0)  || (elementsSelected.length == 0)"><i class="fas fa-backspace"></i>&nbsp;&nbsp;Eliminar</button>

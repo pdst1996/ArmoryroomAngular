@@ -32,6 +32,7 @@ export class StationsConfigComponent implements OnInit {
   projectStationEdit:number;
   public applicationData: ApplicationData;
   stationToDelete:Station;
+  action = "save";
 
   displayedColumns: string[] = ['pkstation','station','project', 'correctVariable', 'unit', 'contramascaraQty', 'action'];
   dataSource :any;
@@ -59,6 +60,7 @@ export class StationsConfigComponent implements OnInit {
 
 
   openStationModal(template: any, pkStationEdit: number){
+    this.action = "edit";
     this.notifyLoading = this.notify.setLoading("Cargando información", this.notifyLoading);
     
     this.stationService.getStationById(pkStationEdit).subscribe(pStation =>{
@@ -195,23 +197,27 @@ deleteStation(){
 
 }
 
-closeModalDelete(){
-  this.modalService.hide(1);
-}
+  closeModalDelete(){
+    this.modalService.hide(1);
+  }
 
-openStationModalEmpty(template:any){
-  this.idStationEdit =0;
-  this.openModal(template);
-  this.correctVariable = "";
-  this.unit = "";
-  this.stationName = "";
-  this.referencePallet = "";
-  this.referenceContramascara = "";
+  openStationModalEmpty(template:any){
+    this.idStationEdit =0;
+    this.openModal(template);
+    this.correctVariable = "";
+    this.unit = "";
+    this.stationName = "";
+    this.referencePallet = "";
+    this.referenceContramascara = "";
 
-  this.projectStationEdit=0;
-  this.contramascaraQty = 1;
-  this.getAllProjects();
-  
+    this.projectStationEdit=0;
+    this.contramascaraQty = 1;
+    this.getAllProjects();
+    this.action = "save";
+  }
 
-}
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

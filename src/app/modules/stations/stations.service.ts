@@ -2,6 +2,10 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Constants } from '../../helpers/constats'
+
+
+import { Project } from "src/app/models/project/project.model";
+import { Station } from "src/app/models/stations/stations.model";
 import { GeneralResponse } from "src/app/models/login/login.model";
 
 
@@ -10,8 +14,11 @@ import { GeneralResponse } from "src/app/models/login/login.model";
   providedIn: "root"
 })
 export class StationsService {
+ 
+    private projectUrl = `${Constants.SERVER}projects`;
     private stationsUrl = `${Constants.SERVER}stations`;
-  
+    private typeUrl = `${Constants.SERVER}types`;
+    private intranetUrl = `${Constants.SERVER}Auth/EmployeeNumber`;
     
     constructor(private httpClient : HttpClient) {
      
