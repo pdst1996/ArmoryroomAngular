@@ -20,6 +20,7 @@ import { Notify } from "./modules/notify/notify";
 import { AppRoutingModule } from "./routes.module";
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProjectsModule } from './modules/projects/projects.module';
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -34,7 +35,8 @@ var AppModule = /** @class */ (function () {
                 PopoverModule.forRoot(),
                 ModalModule.forRoot(),
                 BrowserAnimationsModule,
-                ReactiveFormsModule
+                ReactiveFormsModule,
+                ProjectsModule,
             ],
             providers: [
                 LoginService,

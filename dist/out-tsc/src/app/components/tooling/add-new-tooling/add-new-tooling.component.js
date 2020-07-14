@@ -22,7 +22,8 @@ var AddNewToolingComponent = /** @class */ (function () {
     }
     AddNewToolingComponent.prototype.ngOnInit = function () {
         this.projectSelected = 0;
-        this.partNumberSelected = 0.1;
+        this.stationSelected = new Array();
+        this.partNumberSelected = new Array();
         this.typeSelected = 0;
         this.cantMaintance = 0;
         this.cantPasses = 0;
@@ -32,6 +33,7 @@ var AddNewToolingComponent = /** @class */ (function () {
         this.rackTooling = "";
         this.getAllProjects();
         this.getAllTypes();
+        this.getAllStations();
         this.applicationData = JSON.parse(localStorage.getItem(Constants.localStorage));
     };
     AddNewToolingComponent.prototype.getAllProjects = function () {
@@ -45,10 +47,10 @@ var AddNewToolingComponent = /** @class */ (function () {
         this.toolingService.getPartNumbersByProject(pPkProject).subscribe(function (pPartNumbers) {
             _this.partNumbers = pPartNumbers;
             if (_this.partNumbers != undefined && _this.partNumbers.length != 0) {
-                _this.partNumberSelected = 0;
+                _this.partNumberSelected = [0];
             }
             else {
-                _this.partNumberSelected = 0.1;
+                _this.partNumberSelected = [0.1];
             }
             _this.notifyLoading = _this.notify.setLoadingDone("Listo", _this.notifyLoading);
         });
@@ -59,8 +61,16 @@ var AddNewToolingComponent = /** @class */ (function () {
             _this.types = ptypes;
         });
     };
+    AddNewToolingComponent.prototype.getAllStations = function () {
+        var _this = this;
+        this.toolingService.findAllStations().subscribe(function (results) {
+            _this.stations = results.data;
+            console.log(_this.stations);
+        });
+    };
     AddNewToolingComponent.prototype.saveNewTooling = function (toolingObj) {
         var _this = this;
+        console.log(toolingObj);
         this.toolingService.saveNewTooling(toolingObj).subscribe(function (results) {
             if (results.success == null) {
                 _this.notifyLoading = _this.notify.setLoadingDone(" Insertado", _this.notifyLoading);
@@ -86,13 +96,17 @@ var AddNewToolingComponent = /** @class */ (function () {
         this.getPartNumbersByProject(this.projectSelected);
     };
     AddNewToolingComponent.prototype.saveTooling = function () {
+        var _this = this;
         if (this.projectSelected == 0) {
             this.notify.setNotification("CAMPO VACIO", "Por favor selecciona un proyecto", "error");
             this.element.nativeElement.querySelector("#slProject").focus();
         }
-        else if (this.partNumberSelected == 0) {
-            this.notify.setNotification("CAMPO VACIO", "Por favor selecciona un numero de parte", "error");
-            this.element.nativeElement.querySelector("#slPartNumber").focus();
+        else if (this.partNumberSelected[0] == 0 || this.partNumberSelected[0] == 0.1) {
+            this.notify.setNotification("CAMPO VACIO", "Por favor selecciona al menos un numero de parte", "error");
+            this.element.nativeElement.querySelector("#slPartNumber").setAttribute("class", "shake-element");
+            setTimeout(function () {
+                _this.element.nativeElement.querySelector("#slPartNumber").setAttribute("class", "");
+            }, 1000);
         }
         else if (this.typeSelected == 0) {
             this.notify.setNotification("CAMPO VACIO", "Por favor selecciona un tipo de herramental", "error");
@@ -115,19 +129,22 @@ var AddNewToolingComponent = /** @class */ (function () {
             this.buttonDisabled = true;
             var obj = new objTooling();
             obj.tool = this.serialTooling;
-            obj.fkPartNumber = Number(this.partNumberSelected);
+            obj.fkPartNumbers = this.partNumberSelected;
             obj.position = this.positionTooling;
             obj.rack = this.rackTooling;
             obj.mtceMagazine = this.cantMaintance;
             obj.mtcePallet = this.cantPasses;
             obj.fkType = Number(this.typeSelected);
-            obj.fkStatus = 1;
+            obj.fkStatus = 5;
+            obj.fkStations = this.stationSelected;
+            console.log(obj);
             this.saveNewTooling(obj);
         }
     };
     AddNewToolingComponent.prototype.clearForm = function () {
         this.projectSelected = 0;
-        this.partNumberSelected = 0.1;
+        this.partNumberSelected = new Array();
+        this.stationSelected = new Array();
         this.typeSelected = 0;
         this.cantMaintance = 0;
         this.cantPasses = 0;
@@ -136,6 +153,7 @@ var AddNewToolingComponent = /** @class */ (function () {
         this.rackTooling = "";
         this.getAllProjects();
         this.getAllTypes();
+        this.getAllStations();
         this.buttonDisabled = false;
     };
     AddNewToolingComponent = __decorate([

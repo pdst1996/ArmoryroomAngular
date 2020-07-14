@@ -15,12 +15,32 @@ var CountermaskService = /** @class */ (function () {
         this.httpClient = httpClient;
         this.partNumberUrl = Constants.SERVER + "partnumbers";
         this.counterMaskUrl = Constants.SERVER + "tools";
+        this.groupsUrl = Constants.SERVER + "groups";
     }
+    //Armoryroom/groups/findByPartNumber/4
     CountermaskService.prototype.getPartNumbers = function () {
         return this.httpClient.get(this.partNumberUrl + "/all").pipe();
     };
     CountermaskService.prototype.getCounterMask = function () {
         return this.httpClient.get(this.counterMaskUrl + "/all").pipe();
+    };
+    CountermaskService.prototype.findCounterMaskByPartNumber = function (id) {
+        return this.httpClient.get(this.groupsUrl + "/findByPartNumber/" + id).pipe();
+    };
+    CountermaskService.prototype.findPartNumberByCounterMask = function (id) {
+        return this.httpClient.get(this.groupsUrl + "/findByTooling/" + id).pipe();
+    };
+    CountermaskService.prototype.insertCounterMaskToPartNumber = function (id, values) {
+        return this.httpClient.post(this.groupsUrl + "/insertByPartNumber/" + id, values).pipe();
+    };
+    CountermaskService.prototype.insertPartNumbersToCounterMask = function (id, values) {
+        return this.httpClient.post(this.groupsUrl + "/insertByTooling/" + id, values).pipe();
+    };
+    CountermaskService.prototype.deleteCounterMasksFromPartNumber = function (id, values) {
+        return this.httpClient.post(this.groupsUrl + "/deleteGroupsByPartNumbers/" + id, values).pipe();
+    };
+    CountermaskService.prototype.deletePartNumbersFromCounterMask = function (id, values) {
+        return this.httpClient.post(this.groupsUrl + "/deleteGroupsByTooling/" + id, values).pipe();
     };
     CountermaskService = __decorate([
         Injectable({

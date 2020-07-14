@@ -56,9 +56,13 @@ export class ToolingService {
     return this.httpClient.post<ToolingValidation[]>(`${this.toolingUrl}/getToolStatus`,data);
   }
 
-  inOutToolings(data:string, pkNewStatus:number): Observable<ToolingValidation[]>{
+  changeStatusTool(data:string, pkNewStatus:number): Observable<ToolingValidation[]>{
     console.log(data+":"+pkNewStatus)
     return this.httpClient.post<ToolingValidation[]>(`${this.toolingUrl}/changeStatusTools/${pkNewStatus}`,data);
+  }
+
+  ioToolings(data:any): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.toolingUrl}/ioTools`,data);
   }
 
   getToolingById(id:number): Observable<Tooling>{

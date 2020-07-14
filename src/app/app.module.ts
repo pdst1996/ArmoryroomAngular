@@ -14,7 +14,6 @@ import { Notify } from "./modules/notify/notify";
 import { AppRoutingModule } from "./routes.module";
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ProjectsModule } from './modules/projects/projects.module';
 
 
 
@@ -29,7 +28,6 @@ import { ProjectsModule } from './modules/projects/projects.module';
     ModalModule.forRoot(),
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    ProjectsModule,
     
 
   ],

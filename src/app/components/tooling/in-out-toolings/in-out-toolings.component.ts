@@ -21,6 +21,14 @@ export class ValidationResults {
   templateUrl: './in-out-toolings.component.html',
   styleUrls: ['./in-out-toolings.component.css']
 })
+
+export class IOTool{
+  userDelivery:string;
+  userReceive:string;
+  newStatus:number;
+  toolings:string;
+}
+
 export class InOutToolingsComponent implements OnInit {
 
   public radioModel = 'in';
@@ -58,9 +66,15 @@ export class InOutToolingsComponent implements OnInit {
   }
 
   saveInOut(){
-    this.notifyLoading = this.notify.setLoading(`Guadando ${(this.radioModel == 'in') ? "entradas" : "salidas"}`, this.notifyLoading);
+    this.notifyLoading = this.notify.setLoading(`Guardando ${(this.radioModel == 'in') ? "entradas" : "salidas"}`, this.notifyLoading);
     var toolingsToInOut = this.getToolingsSerialsFormated();
-    this.toolingService.inOutToolings(toolingsToInOut, (this.radioModel == 'in') ? 5 : 2).subscribe(
+
+    let ioTool = new IOTool();
+    ioTool.newStatus = (this.radioModel == 'in') ? 5 : 2;
+    ioTool.toolings = toolingsToInOut;
+    ioTool.userDelivery = this.delieveringEmployee;
+    ioTool.userReceive = this.receivingEmployee;
+    this.toolingService.ioToolings(ioTool).subscribe(
       results =>{
         this.notifyLoading = this.notify.setLoadingDone(" Cambios guardados", this.notifyLoading);
         this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Se les dio ${(this.radioModel == 'in') ? "entrada" : "salida"} a los herramentales (${toolingsToInOut}) entregó: ${this.delieveringEmployee} y recibió: ${this.receivingEmployee}`);

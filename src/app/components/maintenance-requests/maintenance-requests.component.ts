@@ -11,11 +11,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
-  selector: 'app-maintance-requests',
-  templateUrl: './maintance-requests.component.html',
-  styleUrls: ['./maintance-requests.component.css']
+  selector: 'app-maintenance-requests',
+  templateUrl: './maintenance-requests.component.html',
+  styleUrls: ['./maintenance-requests.component.css']
 })
-export class MaintanceRequestsComponent implements OnInit {
+export class MaintenanceRequestsComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   displayedColumns: string[] = ['id','tooling','requisitor', 'date', 'comment', 'auth'];
   public radioModel = 'in';

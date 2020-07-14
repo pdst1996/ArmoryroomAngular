@@ -63,6 +63,10 @@ const routes: Routes = [
             {
                 path: 'tutorials',
                 loadChildren: 'src/app/modules/tutorials/tutorials.module#TutorialsModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'maintenance-requests',
+                loadChildren: 'src/app/modules/maintenance-requests/maintenance-requests.module#MaintenanceRequestsModule', canActivate: [LoginAct]
             }
            
            

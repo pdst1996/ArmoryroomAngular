@@ -55,6 +55,18 @@ var routes = [
             {
                 path: 'pallet-validator/liberate-pallet',
                 loadChildren: 'src/app/modules/pallet-validator/liberate-pallet/liberate-pallet.module#LiberatePalletModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'pallet-validator/stations-config',
+                loadChildren: 'src/app/modules/pallet-validator/stations-config/stations-config.module#StationsConfigModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'config/stations',
+                loadChildren: 'src/app/modules/stations/stations.module#StationsModule', canActivate: [LoginAct]
+            },
+            {
+                path: 'tutorials',
+                loadChildren: 'src/app/modules/tutorials/tutorials.module#TutorialsModule', canActivate: [LoginAct]
             }
         ]
     }

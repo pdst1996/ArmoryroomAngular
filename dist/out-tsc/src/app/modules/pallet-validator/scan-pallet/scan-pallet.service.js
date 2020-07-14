@@ -15,13 +15,24 @@ var ScanPalletService = /** @class */ (function () {
         this.httpClient = httpClient;
         this.urlStations = Constants.SERVER + "stations";
         this.urlValidator = Constants.SERVER + "palletValidatorActions";
+        this.urlTool = Constants.SERVER + "tools";
     }
     ScanPalletService.prototype.findStations = function () {
         return this.httpClient.get(this.urlStations + "/all").pipe();
     };
-    ScanPalletService.prototype.getPalletValidation = function (serialNumber, station) {
+    ScanPalletService.prototype.getSerialValidation = function (serialNumber, station) {
         console.log(this.urlValidator + "/validateStation?serialNumber=" + serialNumber + "&station=" + station);
         return this.httpClient.get(this.urlValidator + "/validateStation?serialNumber=" + serialNumber + "&station=" + station).pipe();
+    };
+    ScanPalletService.prototype.getToolValidation = function (tool, type, station) {
+        console.log(this.urlTool + "/validateTooling/" + tool + "/" + type + "/" + station);
+        return this.httpClient.get(this.urlTool + "/validateTooling/" + tool + "/" + type + "/" + station).pipe();
+    };
+    ScanPalletService.prototype.getCMNumber = function (station) {
+        return this.httpClient.get(this.urlStations + "/getById/" + station).pipe();
+    };
+    ScanPalletService.prototype.cazar = function (obj) {
+        return this.httpClient.post(this.urlValidator + "/mPassSerial", obj).pipe();
     };
     ScanPalletService = __decorate([
         Injectable({

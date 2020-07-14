@@ -11,6 +11,7 @@ import { CountermaskComponent } from '../../components/countermask/countermask.c
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule } from '@angular/forms';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 var CountermaskModule = /** @class */ (function () {
     function CountermaskModule() {
     }
@@ -23,6 +24,7 @@ var CountermaskModule = /** @class */ (function () {
                 PopoverModule.forRoot(),
                 ModalModule.forRoot(),
                 FormsModule,
+                ButtonsModule
             ]
         })
     ], CountermaskModule);
