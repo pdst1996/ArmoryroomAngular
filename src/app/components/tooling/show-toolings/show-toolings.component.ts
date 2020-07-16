@@ -1,13 +1,16 @@
-import { Component, OnInit,ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit,ViewChild, TemplateRef, ElementRef } from '@angular/core';
 import { MatPaginator,MatTableDataSource } from '@angular/material';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Tooling, Status, objTooling, objTooling2} from 'src/app/models/tooling/tooling.model';
 import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { Notify } from 'src/app/modules/notify/notify';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { HistoryService } from 'src/app/modules/history/history.service';
 import { ApplicationData, Profile } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
+import { UploadService } from 'src/app/modules/tooling/upload.service';
+import { of } from 'rxjs';  
+import { catchError, map } from 'rxjs/operators';  
 
 
 @Component({
@@ -18,6 +21,7 @@ import { Constants } from 'src/app/helpers/constats';
 export class ShowToolingsComponent implements OnInit {
   modalRef: BsModalRef;
   modalRef2: BsModalRef;
+  modalRef3: BsModalRef;
   toolingTable : Tooling[];
   statusArray : Status[];
   displayedColumns: string[] = ['id','project','serial', 'type', 'qtyPasses', 'qtyMtto', 'proxMtto', 'status', 'controls'];
@@ -38,6 +42,7 @@ export class ShowToolingsComponent implements OnInit {
   public applicationData: ApplicationData;
   public newStatus : number;
   public toolingToChangeStatus : objTooling2;
+  public toolingToScrap : objTooling2;
   public valueStatus:string;
   public valueInOut = 'poner';
   public profileAdmin = false;
@@ -46,8 +51,11 @@ export class ShowToolingsComponent implements OnInit {
   tooling : Tooling;
   notifyLoading : any;
   
+  @ViewChild("fileUpload", {static: false}) fileUpload: ElementRef;files  = [];  
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  constructor(private modalService: BsModalService, private toolingService: ToolingService, private notify:Notify, private historyService: HistoryService) {}
+  constructor(private modalService: BsModalService, private toolingService: ToolingService, private notify:Notify, 
+    private historyService: HistoryService,
+    private uploadService: UploadService) {}
 
   ngOnInit() {
     this.getAllToolings();
@@ -67,11 +75,60 @@ export class ShowToolingsComponent implements OnInit {
     console.log(this.applicationData)
   }
 
+  scrapTool(modal:any, objTool:objTooling2){
+    this.toolingToScrap = new objTooling2();
+    this.toolingToScrap = objTool;
+    console.log(objTool)
+    this.openModal3(modal);
+  }
+
+  uploadFile(file) {  
+    const formData = new FormData();  
+    formData.append('file', file.data);  
+    file.inProgress = true;  
+    this.uploadService.upload(formData).pipe(  
+      map(event => {  
+        switch (event.type) {  
+          case HttpEventType.UploadProgress:  
+            file.progress = Math.round(event.loaded * 100 / event.total);  
+            break;  
+          case HttpEventType.Response:  
+            return event;  
+        }  
+      }),  
+      catchError((error: HttpErrorResponse) => {  
+        file.inProgress = false;  
+        return of(`${file.data.name} upload failed.`);  
+      })).subscribe((event: any) => {  
+        if (typeof (event) === 'object') {  
+          console.log(event.body);  
+        }  
+      });  
+  }
+
+  private uploadFiles() {  
+    this.fileUpload.nativeElement.value = '';  
+    this.files.forEach(file => {  
+      this.uploadFile(file);  
+    });  
+  }
+
+  onClick() {  
+    const fileUpload = this.fileUpload.nativeElement;fileUpload.onchange = () => {  
+    for (let index = 0; index < fileUpload.files.length; index++)  
+    {  
+     const file = fileUpload.files[index];  
+     this.files.push({ data: file, inProgress: false, progress: 0});  
+    }  
+      this.uploadFiles();  
+    };  
+    fileUpload.click();  
+  }
+
   changeStatus(modal:any, objTool:objTooling2,action:number){
     this.newStatus = action;
     this.toolingToChangeStatus = new objTooling2();
     this.toolingToChangeStatus = objTool;
-    console.log(objTool)
     this.valueStatus = (action == 9) ? 'scrap' : 'cuarentena';
     this.openModal2(modal);
     this.valueInOut = (action == 5) ? 'sacar de' : 'poner en';
@@ -197,6 +254,11 @@ export class ShowToolingsComponent implements OnInit {
   openModal2(template: TemplateRef<any>) {
     this.modalRef2 = this.modalService.show(template);
     this.modalRef2.setClass('modal-md');
+  }
+
+  openModal3(template: TemplateRef<any>) {
+    this.modalRef3 = this.modalService.show(template);
+    this.modalRef3.setClass('modal-lg');
   }
 
   applyFilter(event: Event) {

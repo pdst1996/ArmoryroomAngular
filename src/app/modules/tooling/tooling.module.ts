@@ -10,7 +10,7 @@ import { ToolingStationsComponent } from '../../components/tooling/tooling-stati
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatTabsModule, MatProgressBarModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule, MatPaginatorModule } from '@angular/material';
 import { MatCardModule } from '@angular/material/card';
@@ -45,6 +45,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     TabsModule.forRoot(),
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
+    MatProgressBarModule
     
   ],
   declarations: [
