@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ToolingRoutingModule } from './tooling-routing.module';
 import { ToolingComponent } from '../../components/tooling/tooling.component';
 import { AddNewToolingComponent } from '../../components/tooling/add-new-tooling/add-new-tooling.component';
@@ -10,7 +9,7 @@ import { ToolingPartnumberComponent } from '../../components/tooling/tooling-par
 import { ToolingStationsComponent } from '../../components/tooling/tooling-stations/tooling-stations.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule, MatPaginatorModule } from '@angular/material';
@@ -22,6 +21,8 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
   imports: [
@@ -41,7 +42,10 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     ButtonsModule,
     TooltipModule.forRoot(),
     MatSelectModule,
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    ReactiveFormsModule,
+    NgxMatSelectSearchModule,
+    
   ],
   declarations: [
     ToolingComponent, 
@@ -49,6 +53,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     ShowToolingsComponent,
     InOutToolingsComponent,
     ToolingPartnumberComponent,
-    ToolingStationsComponent]
+    ToolingStationsComponent,
+    ]
 })
 export class ToolingModule { }

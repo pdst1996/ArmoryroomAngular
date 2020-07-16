@@ -108,20 +108,20 @@ export class ToolingService {
   getCounterMask():Observable<CounterMask[]>{
     return this.httpClient.get<CounterMask[]>(`${this.counterMaskUrl}/all`).pipe();
   }
-  findToolingsByPartNumber(id:number): Observable<GeneralResponse>{
-    console.log(`${this.groupsUrl}/findByPartNumber/${id}`)
-    return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByPartNumber/${id}`).pipe();
+  findToolingsByPartNumber(partnumber:string): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByPartNumber/${partnumber}`).pipe();
   }
   findPartNumbersByTooling(id:number): Observable<GeneralResponse>{
     return this.httpClient.get<GeneralResponse>(`${this.groupsUrl}/findByTooling/${id}`).pipe();
   }
-  insertToolingsToPartNumber(id:number, values:string): Observable<GeneralResponse>{
-    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByPartNumber/${id}`,values).pipe();
+
+  insertToolingsToPartNumber(partnumber:string, values:string, idproject:number): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByPartNumber/${partnumber}/${idproject}`,values).pipe();
   }
-  insertPartNumbersToTooling(id:number, values:string): Observable<GeneralResponse>{
-    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByTooling/${id}`,values).pipe();
+  insertPartNumbersToTooling(id:number, values:string, idproject:number): Observable<GeneralResponse>{
+    return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/insertByTooling/${id}/${idproject}`,values).pipe();
   }
-  deleteToolingFromPartNumber(id:number, values:string[]): Observable<GeneralResponse>{
+  deleteToolingFromPartNumber(id:string, values:string[]): Observable<GeneralResponse>{
     return this.httpClient.post<GeneralResponse>(`${this.groupsUrl}/deleteGroupsByPartNumbers/${id}`,values).pipe();
   }
   deletePartNumbersFromTooling(id:number, values:string[]): Observable<GeneralResponse>{

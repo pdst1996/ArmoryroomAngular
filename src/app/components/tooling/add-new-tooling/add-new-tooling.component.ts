@@ -11,7 +11,10 @@ import { PartNumber, PartNumber42q } from 'src/app/models/part-number/part-numbe
 import { Type } from 'src/app/models/type/type.model';
 import { Station } from 'src/app/models/stations/stations.model';
 import { Slim } from 'src/app/modules/slim/slim';
-
+import { FormControl } from '@angular/forms';
+import { ReplaySubject, Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 
@@ -26,14 +29,12 @@ export class AddNewToolingComponent implements OnInit {
   
   project : Project;
   projects : Project[];
-  partNumbers : PartNumber42q[];
   partNumbersUniversal : PartNumber42q[];
   type : Type;
   types : Type[];
   stations : Station[];
   stationSelected : number[];
   public projectSelected : number;
-  public partNumberSelected : string;
   public typeSelected : number ;
   public cantMaintance : number;
   public cantPasses : number;
@@ -44,6 +45,11 @@ export class AddNewToolingComponent implements OnInit {
   public rackTooling : string;
   public applicationData: ApplicationData;
   public cantNotification :number;
+  public partNumbersSelected: FormControl = new FormControl();
+  public partNumbersFilterCtrl: FormControl = new FormControl();
+  public partNumbersFiltered: ReplaySubject<PartNumber42q[]> = new ReplaySubject<PartNumber42q[]>(1);
+  public filteredBanks: ReplaySubject<PartNumber42q[]> = new ReplaySubject<PartNumber42q[]>(1);
+  private _onDestroy = new Subject<void>();
 
   constructor(private toolingService: ToolingService, private notify : Notify, private element : ElementRef, private historyService:HistoryService, private slimService : Slim) {
    
@@ -52,7 +58,7 @@ export class AddNewToolingComponent implements OnInit {
   ngOnInit() {
     this.projectSelected = 0;
     this.stationSelected = new Array<number>();
-    this.partNumberSelected = "";
+    this.partNumbersUniversal =new Array<PartNumber42q>();
     this.typeSelected = 0;
     this.cantMaintance = 0;
     this.cantPasses = 0;
@@ -61,7 +67,6 @@ export class AddNewToolingComponent implements OnInit {
     this.positionTooling = "";
     this.rackTooling = "";
     this.cantNotification = 0;
-    this.partNumbers = new Array<PartNumber42q>();
     this.getAllProjects();
     this.getAllTypes();
     this.getAllStations();
@@ -71,25 +76,46 @@ export class AddNewToolingComponent implements OnInit {
    
   }
 
+  private filterBanksMulti() {
+    if (!this.partNumbersUniversal) {
+      return;
+    }
+    // get the search keyword
+    let search = this.partNumbersFilterCtrl.value;
+    if (!search) {
+      this.partNumbersFiltered.next(this.partNumbersUniversal.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    // filter the banks
+    this.partNumbersFiltered.next(
+      this.partNumbersUniversal.filter(part => part.part_number.toLowerCase().indexOf(search) > -1)
+    );
+  }
+
+
   getAllProjects(){
     this.toolingService.findAllProjects().subscribe(pprojects =>{
       this.projects = pprojects;
     });
   }
 
-  // searchPartNumbers(){
-   
-  //  for (const iterator of this.partNumbersUniversal) {
-  //    if(iterator.part_number.startsWith(this.partNumberSelected)){
-  //      this.partNumbers.push(iterator);
-  //    }
-  //  }
-  // }
-
+  
   getPartNumbersByProject(pPkProject: number){
+    this.partNumbersUniversal = new Array<PartNumber42q>();
+    this.partNumbersFiltered = new ReplaySubject<PartNumber42q[]>(1);
+
     this.toolingService.getPartNumbersByProject42q(pPkProject).subscribe(results =>{
-      this.partNumbers = results.data;
+      this.partNumbersUniversal = results.data;
       this.notifyLoading = this.notify.setLoadingDone("Listo", this.notifyLoading);
+
+      this.partNumbersFiltered.next(this.partNumbersUniversal.slice());
+      this.partNumbersFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterBanksMulti();
+        });
     });
   }
 
@@ -137,11 +163,12 @@ export class AddNewToolingComponent implements OnInit {
 
   saveTooling(){
 
+    console.log(this.partNumbersSelected.value)
     if(this.projectSelected == 0){
       this.notify.setNotification("CAMPO VACIO", "Por favor selecciona un proyecto", "error");
       this.element.nativeElement.querySelector("#slProject").focus();
     }
-    else if(this.partNumberSelected == ""){
+    else if(this.partNumbersSelected.value == null){
       this.notify.setNotification("CAMPO VACIO", "Por favor selecciona al menos un numero de parte", "error");
       this.element.nativeElement.querySelector("#slPartNumber").setAttribute("class","shake-element");
       setTimeout(()=>{
@@ -167,15 +194,24 @@ export class AddNewToolingComponent implements OnInit {
     else if(this.cantNotification <= 0){
       this.notify.setNotification("CAMPO VACIO", "Por favor escribe la cantidad para notificación", "error");
     }
-    else if(this.cantNotification > this.cantPasses){
-      this.notify.setNotification("CAMPO VACIO", "La notificcion debe ser menor que para mtto", "error");
+    else if((this.typeSelected == 3 || this.typeSelected == 5)  && this.cantNotification > this.cantPasses){
+      this.notify.setNotification("CAMPO VACIO", "La notificacion debe ser menor que para mtto", "error");
+      this.element.nativeElement.querySelector("#txtNotificationPallet").focus();
+    }
+    else if(this.typeSelected == 2 && this.cantNotification > this.cantMaintance){
+      this.notify.setNotification("CAMPO VACIO", "La notificacion debe ser menor que para mtto", "error");
+      this.element.nativeElement.querySelector("#txtNotificationMagazine").focus();
     }
     else{
       this.notifyLoading = this.notify.setLoading(" Guardando herramental", this.notifyLoading);
       this.buttonDisabled = true;
+      var pns = new Array<string>();
+      for (const pn of this.partNumbersSelected.value) {
+        pns.push(pn.part_number)
+      }
       const obj = new objTooling();
       obj.tool = this.serialTooling;
-      //obj.fkPartNumbers = this.partNumberSelected;
+      obj.partNumbers = pns;
       obj.position = this.positionTooling;
       obj.rack = this.rackTooling;
       obj.mtceMagazine = this.cantMaintance;
@@ -183,7 +219,8 @@ export class AddNewToolingComponent implements OnInit {
       obj.fkType = Number(this.typeSelected);
       obj.fkStatus = 5;
       obj.fkStations =  this.stationSelected;
-      obj.qtyNotification = this.cantNotification+""
+      obj.qtyNotification = this.cantNotification+"";
+      obj.idProject = Number(this.projectSelected);
       console.log(obj)
       this.saveNewTooling(obj);
       
@@ -192,7 +229,6 @@ export class AddNewToolingComponent implements OnInit {
 
   clearForm(){
     this.projectSelected = 0;
-    this.partNumberSelected = "";
     this.stationSelected = new Array<number>();
     this.typeSelected = 0;
     this.cantMaintance = 0;

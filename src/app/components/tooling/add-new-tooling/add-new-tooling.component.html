@@ -15,28 +15,37 @@
             </div>
            
         </div>
-        <div class="row justify-content-center mt-4">
+        <div class="row justify-content-center mt-2">
             <div class="col-5">
                 <div id="slPartNumber">
-                    <mat-form-field >
+                    <!-- <mat-form-field >
                         <mat-label style="font-size: 12pt;">Numeros de parte</mat-label>
                         <mat-select [(ngModel)]="partNumberSelected" multiple>
                         <mat-option [hidden]="partNumbers != undefined && partNumbers.length != 0" value="0.1" selected disabled>No hay opciones...</mat-option>
                         <mat-option [hidden]="partNumbers == undefined || partNumbers.length == 0" value="0" selected disabled>Elige...</mat-option>    
                           <mat-option *ngFor="let partNumber of partNumbers">{{partNumber.part_number}}</mat-option>
                         </mat-select>
-                    </mat-form-field>
+                    </mat-form-field> -->
                     <!-- <input type="text" class="form-control" list="lFiles" onchange="addPartNumber()" placeholder="Agrega un numero de parte" [(ngModel)]="partNumberSelected" autocomplete="off" (keydown)="searchPartNumbers()">
                     <div id="divDataListFiles">
                         <datalist id="lFiles" >
                             <option *ngFor="let partNumber of partNumbers" value="{{partNumber.part_number}}">
                         </datalist>
                     </div> -->
+
+                    <mat-form-field style="font-size: 12pt;">
+                        <mat-select [formControl]="partNumbersSelected" placeholder="Numeros de parte" [multiple]="true">
+                            <mat-option><ngx-mat-select-search [formControl]="partNumbersFilterCtrl"></ngx-mat-select-search></mat-option>
+                            <mat-option *ngFor="let partnumber of partNumbersFiltered | async" [value]="partnumber">
+                                {{partnumber.part_number}}
+                            </mat-option>
+                        </mat-select>
+                      </mat-form-field>
                 </div>
             </div>
             <div class="col-5">
                 <div class="input-group form-group">
-                    <mat-form-field>
+                    <mat-form-field style="font-size: 12pt;">
                         <mat-label style="font-size: 12pt;">Estaciones (opcional)</mat-label>
                         <mat-select [(value)]="stationSelected" multiple>
                           <mat-option *ngFor="let station of stations" [value]="station.pkstation">{{station.stationName}}</mat-option>

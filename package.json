@@ -30,6 +30,7 @@
     "hammerjs": "^2.0.8",
     "material-design-icons": "^3.0.1",
     "ngx-bootstrap": "^5.1.2",
+    "ngx-mat-select-search": "^3.0.1",
     "nonblockjs": "^1.0.8",
     "npm": "^6.11.3",
     "pnotify": "^4.0.0",

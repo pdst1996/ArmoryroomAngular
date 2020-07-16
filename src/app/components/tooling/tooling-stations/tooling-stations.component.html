@@ -16,20 +16,32 @@
         <br><br>
     </div>
     <div  [hidden]="radioModel!='toolingMode'">
-        <label style="font-weight: bold; ">HERRAMENTAL:</label>
+        <!-- <label style="font-weight: bold; ">HERRAMENTAL:</label>
         <br>
         <select [(ngModel)]="tooling" style="width: 50%;" (change)="fillStationsByTooling()" class="custom-select">
             <option value="0" selected>Elige...</option>
             <option *ngFor="let item of toolings"  value="{{item.pkTooling}}">
                 {{item.tooling}}</option>
         </select>
-        <br><br>
+        <br><br> -->
+        <div class="row justify-content-center mb-2">
+            <div class="col-sm-6">
+                <mat-form-field style="font-size: 12pt;">
+                    <mat-select [formControl]="tooling" placeholder="HERRAMENTAL" (selectionChange)="fillStationsByTooling()">
+                        <mat-option><ngx-mat-select-search [formControl]="toolingFilterCtrl"></ngx-mat-select-search></mat-option>
+                        <mat-option *ngFor="let tool of toolingsFiltered | async" [value]="tool.pkTooling">
+                            {{tool.tooling}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
     </div>
     <div class="row justify-content-center">
-        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel != 'stationMode') ? 'las estaciones' : 'los herramantales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" [disabled]="station==0&&tooling==0" id="txtElements"> </textarea>
+        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel != 'stationMode') ? 'las estaciones' : 'los herramantales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" [disabled]="station==0&&tooling.value==null" id="txtElements"> </textarea>
         <div class="col-sm-2 mt-4">
-            <button class="btn btn-success btn-md mt-5"  (click)="insertElements()" alt="" [hidden]="(radioModel == 'stationMode' && station==0) || (radioModel == 'toolingMode' && tooling==0) || txtElementsToSave == ''">&nbsp;<i class="fas fa-save"></i>&nbsp;&nbsp;Insertar&nbsp;</button><br>
-            <button class="btn btn-danger btn-md mt-3"  (click)="deleteElements()" alt="" [hidden]="(radioModel == 'stationMode' && station==0) || (radioModel == 'toolingMode' && tooling==0)  || (elementsSelected.length == 0)"><i class="fas fa-backspace"></i>&nbsp;&nbsp;Eliminar</button>
+            <button class="btn btn-success btn-md mt-5"  (click)="insertElements()" alt="" [hidden]="(radioModel == 'stationMode' && station==0) || (radioModel == 'toolingMode' && tooling.value==null) || txtElementsToSave == ''">&nbsp;<i class="fas fa-save"></i>&nbsp;&nbsp;Insertar&nbsp;</button><br>
+            <button class="btn btn-danger btn-md mt-3"  (click)="deleteElements()" alt="" [hidden]="(radioModel == 'stationMode' && station==0) || (radioModel == 'toolingMode' && tooling.value==null)  || (elementsSelected.length == 0)"><i class="fas fa-backspace"></i>&nbsp;&nbsp;Eliminar</button>
         </div>
         <select class="col-sm-4 form-control" [(ngModel)]="elementsSelected" multiple>
             <option *ngFor="let item of elements" value="{{item.id}}">{{item.result}}</option>

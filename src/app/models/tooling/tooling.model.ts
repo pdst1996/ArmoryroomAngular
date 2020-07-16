@@ -57,13 +57,14 @@ export class objTooling {
     tool: string;
     fkStatus: number;
     fkType: number;
-    fkPartNumbers: number[];
+    partNumbers: string[];
     rack: string;
     position: string;
     mtcePallet: number;
     mtceMagazine: number;
     fkStations: number[];
     qtyNotification : string;
+    idProject : number
 }
 
 export class objTooling2 {
