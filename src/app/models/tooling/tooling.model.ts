@@ -8,6 +8,7 @@ export interface Tooling {
     fkStatus: {
         pkstatus: number,
         status: string,
+        color: string
     },
     fkType: {
         pktype:number,
@@ -21,7 +22,8 @@ export interface Tooling {
     mtceQty: number,
     totalQty: number,
     lifeQty:number,
-    project: string
+    project: string,
+    qtyNotification : string
 }
 
 export class ToolingClass {
@@ -33,6 +35,7 @@ export class ToolingClass {
     fkStatus: {
         pkstatus: number;
         status: string;
+        color: string;
     }
     fkType: {
         pktype:number;
@@ -47,6 +50,7 @@ export class ToolingClass {
     totalQty: number;
     lifeQty:number;
     project: string;
+    qtyNotification : string;
 }
 
 export class objTooling {
@@ -59,6 +63,7 @@ export class objTooling {
     mtcePallet: number;
     mtceMagazine: number;
     fkStations: number[];
+    qtyNotification : string;
 }
 
 export class objTooling2 {
@@ -71,7 +76,7 @@ export class objTooling2 {
     mtcePallet: number;
     mtceMagazine: number;
     fkStations: number[];
-
+    qtyNotification : string;
 }
 
 export class ToolingValidation {

@@ -1,10 +1,14 @@
-<div class="p-3 bg-white center rounded shadow-md card--z-5 card-tooling">
+
+<div class="p-3 bg-white center rounded shadow-md card--z-5 card-tooling"  >
     <mat-tab-group>
         <mat-tab label="NUEVO">
             <app-add-new-tooling></app-add-new-tooling>
         </mat-tab>
-        <mat-tab label="EXISTENTES" (click)="reloadToolings()">
-            <app-show-toolings></app-show-toolings>
+        <mat-tab >
+            <ng-template mat-tab-label>
+                <a (click)="tableTools.getAllToolings()">EXISTENTES</a>
+              </ng-template>
+            <app-show-toolings #tableTools></app-show-toolings>
         </mat-tab>
         <mat-tab label="ENTRADAS/SALIDAS">
             <app-in-out-toolings></app-in-out-toolings>
@@ -15,16 +19,5 @@
         <mat-tab label="AGREGAR/QUITAR Estaciones">
             <app-tooling-stations></app-tooling-stations>
         </mat-tab>
-        <nav mat-tab-nav-bar [backgroundColor]="background">
-            <a mat-tab-link *ngFor="let link of links"
-               (click)="reloadToolings()" > {{reloadToolings()}} </a>
-            <a mat-tab-link disabled>Disabled Link</a>
-          </nav>
     </mat-tab-group>
 </div>
-
-<nav mat-tab-nav-bar>
-    <a mat-tab-link
-       (click)="reloadToolings()"> </a>
-    <a mat-tab-link (click)="reloadToolings()">Disabled Link</a>
-  </nav>

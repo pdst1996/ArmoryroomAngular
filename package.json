@@ -35,6 +35,7 @@
     "pnotify": "^4.0.0",
     "reveal.js": "^4.0.2",
     "rxjs": "^6.5.3",
+    "slim-select": "^1.26.0",
     "zone.js": "^0.10.2"
   },
   "devDependencies": {

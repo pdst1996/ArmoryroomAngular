@@ -24,6 +24,7 @@ export class QuestionnaireComponent implements OnInit {
   applicationData :ApplicationData;
   modalRef : BsModalRef;
   modalRef2 : BsModalRef;
+  modalRef3 : BsModalRef;
   questionnaires : Maintenance[];
   averageMaintenanceClass = '';
   userMaintenance = '';
@@ -35,6 +36,9 @@ export class QuestionnaireComponent implements OnInit {
   qualitySignDone = false;
   qualitySignPermission = false;
   qualitySignRejected = false;
+  pruebasSignDone = false;
+  pruebasSignPermission = false;
+  pruebasSignRejected = false;
   public profiles: Profile[];
   currentMaintenance : Maintenance;
   imgSrc = '';
@@ -43,6 +47,11 @@ export class QuestionnaireComponent implements OnInit {
   departmentSign = '';
   processSigner : string;
   qualitySigner : string;
+  pruebasSigner : string;
+  btnLoading = false;
+  userToApprove = "";
+  pwdToApprove = "";
+  isUnivPallet = false;
 
   constructor(private questionnaireService: QuestionnaireService, 
     private element: ElementRef, 
@@ -118,8 +127,14 @@ export class QuestionnaireComponent implements OnInit {
 
     this.questionnaireService.findSignaturesByMaintenance(this.currentMaintenance.pkMaintenance+"").subscribe(
       resultsSignatures =>{
-        console.log(resultsSignatures)
-        let array = new Array<Signature>();
+        console.log(this.applicationData.profiles)
+        
+        if(this.currentMaintenance.fkTooling.tooling.toUpperCase().startsWith("UNIV"))
+          this.isUnivPallet = true;
+        else
+          this.isUnivPallet = false;
+        
+          let array = new Array<Signature>();
         array = resultsSignatures.data;
         for (const iterator of array) {
           if(iterator.department.toLowerCase()=="procesos" && iterator.approved) {
@@ -127,18 +142,29 @@ export class QuestionnaireComponent implements OnInit {
             this.processSigner = iterator.username;
           }
           else if(iterator.department.toLowerCase()=="procesos" && !iterator.approved) this.processSignRejected = true ;
+
           if(iterator.department.toLowerCase()=="calidad" && iterator.approved) {
             this.qualitySignDone = true ;
             this.qualitySigner = iterator.username;
           }
           else if(iterator.department.toLowerCase()=="calidad" && !iterator.approved) this.qualitySignRejected = true ;
+
+          if(iterator.department.toLowerCase()=="pruebas" && iterator.approved) {
+            this.pruebasSignDone = true ;
+            this.pruebasSigner = iterator.username;
+          }
+          else if(iterator.department.toLowerCase()=="pruebas" && !iterator.approved) this.pruebasSignRejected = true ;
         }
+
         for (const profile of this.applicationData.profiles) {
           if(profile.idProfile==42){
             this.processSignPermission = true;
           }
           if(profile.idProfile==43){
             this.qualitySignPermission = true;
+          }
+          if(profile.idProfile==57){
+            this.pruebasSignPermission = true;
           }
         }
         this.notifyLoader = this.notify.setLoadingDone("Listo",this.notifyLoader)
@@ -155,22 +181,42 @@ export class QuestionnaireComponent implements OnInit {
     
   }
 
-  addSignMaintenance(){
+  addSignMaintenance(template3:any){
+    this.openModalCredentials(template3);
+    this.modalRef2.hide();
+  }
+
+  validateApproverCredentials(){
+    this.btnLoading = true;
+    this.questionnaireService.validateUserLDAP(this.userToApprove, this.pwdToApprove).subscribe(
+      results =>{
+        this.btnLoading = false;
+        if(results.success){
+          this.signMaintenanceFinal();
+        }else{
+          this.notify.setNotification("Error", results.message,"error");
+          return false;
+        }
+      }
+    );
+  }
+
+  signMaintenanceFinal(){
+    
     let objSign = new Maintenance2();
     objSign.approved= this.actionSign;
     objSign.department = this.departmentSign;
     objSign.username = this.applicationData.userInfo.userName;
     objSign.fkMaintenance = new Maintenance(Number(this.currentMaintenance.pkMaintenance));
-    objSign.comments = "xd";
+    objSign.comments = "";
     objSign.dateSign = "";
-
     this.notifyLoader = this.notify.setLoading("Firmando mantenimiento",this.notifyLoader);
     this.questionnaireService.signMaintenance(objSign).subscribe(
       resultsSignatures =>{
         if(resultsSignatures.success){
           this.notifyLoader = this.notify.setLoadingDone("Firmada", this.notifyLoader);
           this.loadSignsOfMaintenance();
-          this.modalRef2.hide();
+          this.modalRef3.hide();
           this.serviceHistory.insertNewHistory(this.applicationData.userInfo.userName, `Se ${(this.valueSign) ? 'aprobó' : 'denegó'} el mantenimiento ${this.currentMaintenance.pkMaintenance} por el dep. de ${this.departmentSign}`);
         }else{
           this.notifyLoader = this.notify.setLoadingError("Ocurrio un error",this.notifyLoader);
@@ -200,6 +246,13 @@ export class QuestionnaireComponent implements OnInit {
   openModalConfirm(template: TemplateRef<any>) {
     this.modalRef2 = this.modalService.show(template);
     this.modalRef2.setClass('modal-md');
+  }
+
+  openModalCredentials(template: TemplateRef<any>) {
+    this.modalRef3 = this.modalService.show(template);
+    this.modalRef3.setClass('modal-md');
+    this.userToApprove = '';
+    this.pwdToApprove = "";
   }
 
   applyFilter(event: Event) {

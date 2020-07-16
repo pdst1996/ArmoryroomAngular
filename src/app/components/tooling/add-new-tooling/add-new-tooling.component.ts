@@ -7,9 +7,13 @@ import { HistoryService } from 'src/app/modules/history/history.service';
 import { ApplicationData } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
 import { Project } from 'src/app/models/project/project.model';
-import { PartNumber } from 'src/app/models/part-number/part-number.model';
+import { PartNumber, PartNumber42q } from 'src/app/models/part-number/part-number.model';
 import { Type } from 'src/app/models/type/type.model';
 import { Station } from 'src/app/models/stations/stations.model';
+import { Slim } from 'src/app/modules/slim/slim';
+
+
+
 
 @Component({
   selector: 'app-add-new-tooling',
@@ -22,14 +26,14 @@ export class AddNewToolingComponent implements OnInit {
   
   project : Project;
   projects : Project[];
-  partNumber : PartNumber;
-  partNumbers : PartNumber[];
+  partNumbers : PartNumber42q[];
+  partNumbersUniversal : PartNumber42q[];
   type : Type;
   types : Type[];
   stations : Station[];
   stationSelected : number[];
   public projectSelected : number;
-  public partNumberSelected : number[];
+  public partNumberSelected : string;
   public typeSelected : number ;
   public cantMaintance : number;
   public cantPasses : number;
@@ -39,15 +43,16 @@ export class AddNewToolingComponent implements OnInit {
   public positionTooling : string;
   public rackTooling : string;
   public applicationData: ApplicationData;
+  public cantNotification :number;
 
-  constructor(private toolingService: ToolingService, private notify : Notify, private element : ElementRef, private historyService:HistoryService) {
-    
+  constructor(private toolingService: ToolingService, private notify : Notify, private element : ElementRef, private historyService:HistoryService, private slimService : Slim) {
+   
   }
 
   ngOnInit() {
     this.projectSelected = 0;
     this.stationSelected = new Array<number>();
-    this.partNumberSelected = new Array<number>();
+    this.partNumberSelected = "";
     this.typeSelected = 0;
     this.cantMaintance = 0;
     this.cantPasses = 0;
@@ -55,30 +60,35 @@ export class AddNewToolingComponent implements OnInit {
     this.buttonDisabled = false;
     this.positionTooling = "";
     this.rackTooling = "";
+    this.cantNotification = 0;
+    this.partNumbers = new Array<PartNumber42q>();
     this.getAllProjects();
     this.getAllTypes();
     this.getAllStations();
     this.applicationData = JSON.parse(
       localStorage.getItem(Constants.localStorage)
     );
+   
   }
 
   getAllProjects(){
     this.toolingService.findAllProjects().subscribe(pprojects =>{
       this.projects = pprojects;
-      
     });
   }
 
+  // searchPartNumbers(){
+   
+  //  for (const iterator of this.partNumbersUniversal) {
+  //    if(iterator.part_number.startsWith(this.partNumberSelected)){
+  //      this.partNumbers.push(iterator);
+  //    }
+  //  }
+  // }
+
   getPartNumbersByProject(pPkProject: number){
-    this.toolingService.getPartNumbersByProject(pPkProject).subscribe(pPartNumbers =>{
-      this.partNumbers = pPartNumbers;
-      if(this.partNumbers != undefined && this.partNumbers.length != 0){
-        this.partNumberSelected = [0];
-      }else{
-        this.partNumberSelected = [0.1];
-      }
-      
+    this.toolingService.getPartNumbersByProject42q(pPkProject).subscribe(results =>{
+      this.partNumbers = results.data;
       this.notifyLoading = this.notify.setLoadingDone("Listo", this.notifyLoading);
     });
   }
@@ -131,7 +141,7 @@ export class AddNewToolingComponent implements OnInit {
       this.notify.setNotification("CAMPO VACIO", "Por favor selecciona un proyecto", "error");
       this.element.nativeElement.querySelector("#slProject").focus();
     }
-    else if(this.partNumberSelected[0] == 0 || this.partNumberSelected[0] == 0.1){
+    else if(this.partNumberSelected == ""){
       this.notify.setNotification("CAMPO VACIO", "Por favor selecciona al menos un numero de parte", "error");
       this.element.nativeElement.querySelector("#slPartNumber").setAttribute("class","shake-element");
       setTimeout(()=>{
@@ -146,20 +156,26 @@ export class AddNewToolingComponent implements OnInit {
       this.notify.setNotification("CAMPO VACIO", "Por favor escribe un numero de serial", "error");
       this.element.nativeElement.querySelector("#txtSerialTooling").focus();
     }
-    else if(this.typeSelected == 2 && this.cantMaintance == 0){
+    else if(this.typeSelected == 2 && this.cantMaintance <= 0){
       this.notify.setNotification("CAMPO VACIO", "Por favor escribe las semanas para mantenimiento", "error");
       this.element.nativeElement.querySelector("#txtMaintance").focus();
     }
-    else if((this.typeSelected == 3 || this.typeSelected == 5) && this.cantPasses == 0){
+    else if((this.typeSelected == 3 || this.typeSelected == 5) && this.cantPasses <= 0){
       this.notify.setNotification("CAMPO VACIO", "Por favor escribe la cantidad de pasadas", "error");
       this.element.nativeElement.querySelector("#txtPasses").focus();
+    }
+    else if(this.cantNotification <= 0){
+      this.notify.setNotification("CAMPO VACIO", "Por favor escribe la cantidad para notificación", "error");
+    }
+    else if(this.cantNotification > this.cantPasses){
+      this.notify.setNotification("CAMPO VACIO", "La notificcion debe ser menor que para mtto", "error");
     }
     else{
       this.notifyLoading = this.notify.setLoading(" Guardando herramental", this.notifyLoading);
       this.buttonDisabled = true;
       const obj = new objTooling();
       obj.tool = this.serialTooling;
-      obj.fkPartNumbers = this.partNumberSelected;
+      //obj.fkPartNumbers = this.partNumberSelected;
       obj.position = this.positionTooling;
       obj.rack = this.rackTooling;
       obj.mtceMagazine = this.cantMaintance;
@@ -167,6 +183,7 @@ export class AddNewToolingComponent implements OnInit {
       obj.fkType = Number(this.typeSelected);
       obj.fkStatus = 5;
       obj.fkStations =  this.stationSelected;
+      obj.qtyNotification = this.cantNotification+""
       console.log(obj)
       this.saveNewTooling(obj);
       
@@ -175,7 +192,7 @@ export class AddNewToolingComponent implements OnInit {
 
   clearForm(){
     this.projectSelected = 0;
-    this.partNumberSelected = new Array<number>();
+    this.partNumberSelected = "";
     this.stationSelected = new Array<number>();
     this.typeSelected = 0;
     this.cantMaintance = 0;
@@ -183,6 +200,7 @@ export class AddNewToolingComponent implements OnInit {
     this.serialTooling = "";
     this.positionTooling = "";
     this.rackTooling = "";
+    this.cantNotification = 0;
     this.getAllProjects();
     this.getAllTypes();
     this.getAllStations();

@@ -41,6 +41,10 @@ export class ToolingService {
     return this.httpClient.get<PartNumber[]>(`${this.partNumberUrl}/byProject/${id}`).pipe();
   }
 
+  getPartNumbersByProject42q(id:number): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.partNumberUrl}/42q/${id}`).pipe();
+  }
+
   saveNewTooling(obj: any): Observable<GeneralResponse>{
     return this.httpClient.post<GeneralResponse>(`${this.toolingUrl}/insert`, obj).pipe();
   }

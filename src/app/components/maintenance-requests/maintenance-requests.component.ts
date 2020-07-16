@@ -31,6 +31,7 @@ export class MaintenanceRequestsComponent implements OnInit {
   modalRef: BsModalRef;
   valueSign = "";
   thereRequests = false;
+  commentToSign = "";
 
   constructor(private mrService: MaintenanceRequestsService, 
               private notify:Notify, 
@@ -82,6 +83,7 @@ export class MaintenanceRequestsComponent implements OnInit {
     this.openModal(template);
     this.action = action;
     this.pkRequest = pkRequest;
+    this.commentToSign = "";
   }
 
   signRequest(){
@@ -95,32 +97,37 @@ export class MaintenanceRequestsComponent implements OnInit {
       value2 = "denegó";
     }
 
-    this.notifyLoading = this.notify.setLoading(" "+value, this.notifyLoading);
-    this.mrService.aproveRejectRequestMaintance(this.action, this.pkRequest, this.user.userName).subscribe(
-      results =>{
-        if(results.success){
-          this.notifyLoading = this.notify.setLoadingDone(" Listo", this.notifyLoading);
-          this.modalRef.hide();
-          this.historyService.insertNewHistory(this.user.userName, `Se ${value2} la requisición ${this.pkRequest}`);
+    if(!this.action && this.commentToSign.trim() == ""){
+      this.notify.setNotification("ERROR", "Ingrese un comentario", "error");
+    }else{
+      this.notifyLoading = this.notify.setLoading(" "+value, this.notifyLoading);
+      this.mrService.aproveRejectRequestMaintance(this.action, this.pkRequest, this.user.userName, this.commentToSign).subscribe(
+        results =>{
+          if(results.success){
+            this.notifyLoading = this.notify.setLoadingDone(" Listo", this.notifyLoading);
+            this.modalRef.hide();
+            this.historyService.insertNewHistory(this.user.userName, `Se ${value2} la requisición ${this.pkRequest}`);
+            this.getAllRequestMaintance();
+          }else{
+            this.notifyLoading = this.notify.setLoadingError(" Error", this.notifyLoading);
+            this.notify.setNotification("ERROR", results.message +". Se recomiendo actualizar la pagina", "error");
+            this.modalRef.hide();
+          }
+        
+        },
+        (err: HttpErrorResponse) => {
+          if (err.error instanceof Error) {
+            console.log("Client-side error");
+          } else {
+            console.log("Server-side error");
+          }
+          this.notifyLoading = this.notify.setLoadingError(" Ocurrio un error", this.notifyLoading);
           this.getAllRequestMaintance();
-        }else{
-          this.notifyLoading = this.notify.setLoadingError(" Error", this.notifyLoading);
-          this.notify.setNotification("ERROR", results.message +". Se recomiendo actualizar la pagina", "error");
           this.modalRef.hide();
         }
-       
-      },
-      (err: HttpErrorResponse) => {
-        if (err.error instanceof Error) {
-          console.log("Client-side error");
-        } else {
-          console.log("Server-side error");
-        }
-        this.notifyLoading = this.notify.setLoadingError(" Ocurrio un error", this.notifyLoading);
-        this.getAllRequestMaintance();
-        this.modalRef.hide();
-      }
-    );
+      );
+    }
+    
   }
 
   applyFilter(event: Event) {

@@ -42,5 +42,9 @@ export class QuestionnaireService {
     return this.httpClient.get<GeneralResponse>(`${this.url}User/userInfo/${user}`);
   }
 
+  validateUserLDAP(user:string, pwd:string) : Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.url}User/validateUserLDAP/${user}/${pwd}`);
+  }
+
   
 }

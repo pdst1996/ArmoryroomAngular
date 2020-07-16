@@ -17,6 +17,7 @@ export interface CounterMask
     fkStatus: {
         pkstatus: number,
         status: string,
+        color: string
     },
     fkType: {
         pktype:number,
@@ -30,7 +31,8 @@ export interface CounterMask
     mtceQty: number,
     totalQty: number,
     lifeQty:number,
-    project: string
+    project: string,
+    qtyNotification : string
 }
 
 export interface CounterMaskData

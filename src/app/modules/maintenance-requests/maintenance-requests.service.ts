@@ -35,8 +35,8 @@ export class MaintenanceRequestsService {
     return this.httpClient.get<RequestMaintance[]>(`${this.rmUrl}/all`).pipe();
   }
 
-  aproveRejectRequestMaintance(action : boolean, idRequestMaintance : number, userAprove : string): Observable<GeneralResponse>{
-    return this.httpClient.put<GeneralResponse>(`${this.rmUrl}/updateAproved/${idRequestMaintance}/${action}/${userAprove}`,null).pipe();
+  aproveRejectRequestMaintance(action : boolean, idRequestMaintance : number, userAprove : string, comment:string): Observable<GeneralResponse>{
+    return this.httpClient.put<GeneralResponse>(`${this.rmUrl}/updateAproved/${idRequestMaintance}/${action}/${userAprove}/${comment}`,null).pipe();
   }
 
   getEmployeeValidation(employee:string): Observable<GeneralResponse>{

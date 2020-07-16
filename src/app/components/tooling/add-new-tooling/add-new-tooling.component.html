@@ -16,19 +16,25 @@
            
         </div>
         <div class="row justify-content-center mt-4">
-            <div class="col-4">
+            <div class="col-5">
                 <div id="slPartNumber">
                     <mat-form-field >
                         <mat-label style="font-size: 12pt;">Numeros de parte</mat-label>
                         <mat-select [(ngModel)]="partNumberSelected" multiple>
                         <mat-option [hidden]="partNumbers != undefined && partNumbers.length != 0" value="0.1" selected disabled>No hay opciones...</mat-option>
                         <mat-option [hidden]="partNumbers == undefined || partNumbers.length == 0" value="0" selected disabled>Elige...</mat-option>    
-                          <mat-option *ngFor="let partNumber of partNumbers" [value]="partNumber.pkPartnumber">{{partNumber.partnumber}}</mat-option>
+                          <mat-option *ngFor="let partNumber of partNumbers">{{partNumber.part_number}}</mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <!-- <input type="text" class="form-control" list="lFiles" onchange="addPartNumber()" placeholder="Agrega un numero de parte" [(ngModel)]="partNumberSelected" autocomplete="off" (keydown)="searchPartNumbers()">
+                    <div id="divDataListFiles">
+                        <datalist id="lFiles" >
+                            <option *ngFor="let partNumber of partNumbers" value="{{partNumber.part_number}}">
+                        </datalist>
+                    </div> -->
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-5">
                 <div class="input-group form-group">
                     <mat-form-field>
                         <mat-label style="font-size: 12pt;">Estaciones (opcional)</mat-label>
@@ -39,8 +45,8 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-around mt-4">
-            <div class="col-8">
+        <div class="row justify-content-center mt-3">
+            <div class="col-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <label class="input-group-text">TIPO:</label>
@@ -51,9 +57,7 @@
                     </select>
                 </div>
             </div>
-        </div>
-        <div class="row justify-content-center mt-4">
-            <div class="col-5 mt-3">
+            <div class="col-6">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <label class="input-group-text" >SERIAL:</label>
@@ -61,17 +65,9 @@
                     <input class="form-control" placeholder="Numero de herramental" [(ngModel)]="serialTooling" id="txtSerialTooling"> 
                 </div>
             </div>
-            <div class="col-3 mt-3">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" >RACK:</label>
-                    </div>
-                    <input class="form-control" placeholder="Rack (opcional)" [(ngModel)]="rackTooling"> 
-                </div>
-            </div>
         </div>
         <div class="row justify-content-center mt-4">
-            <div class="col-4 mt-3">
+            <div class="col-5 mt-3">
                 <div class="input-group" [hidden]="typeSelected == 2 || typeSelected == 0">
                     <div class="input-group-prepend">
                         <label class="input-group-text" >NUMERO DE PASADAS:</label>
@@ -88,7 +84,39 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4 mt-3">
+            <div class="col-5 mt-3" align="left">
+                <div class="input-group" [hidden]="typeSelected == 2 || typeSelected == 0">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" >Notificación a las:</label>
+                    </div>
+                    <input class="form-control" placeholder="0" type="number" [(ngModel)]="cantNotification" id="txtNotificationPallet">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">pasadas</span>
+                    </div>
+                </div>
+                <div class="input-group" [hidden]="typeSelected == 3 || this.typeSelected == 5">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" >Notificación a los:</label>
+                    </div>
+                    <input class="form-control" placeholder="0" type="number" [(ngModel)]="cantNotification" id="txtNotificationMagazine">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">dias restantes</span>
+                    </div>
+                </div>
+
+               
+            </div>
+        </div>
+        <div class="row justify-content-center mt-4">
+            <div class="col-5 mt-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" >RACK:</label>
+                    </div>
+                    <input class="form-control" placeholder="Rack (opcional)" [(ngModel)]="rackTooling"> 
+                </div>
+            </div>
+            <div class="col-5 mt-3">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <label class="input-group-text" >POSITION:</label>

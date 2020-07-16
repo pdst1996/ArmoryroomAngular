@@ -21,6 +21,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { MatSelectModule } from '@angular/material/select';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatCheckboxModule,
     ButtonsModule,
     TooltipModule.forRoot(),
-    MatSelectModule
+    MatSelectModule,
+    TabsModule.forRoot()
   ],
   declarations: [
     ToolingComponent, 

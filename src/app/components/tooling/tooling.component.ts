@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ShowToolingsComponent } from '../../components/tooling/show-toolings/show-toolings.component'
 
 @Component({
   selector: 'app-tooling',
@@ -10,11 +11,14 @@ export class ToolingComponent implements OnInit {
 
   constructor() { }
 
+  selectedTabIndex: number = 0;
+
   ngOnInit() {
   }
 
   reloadToolings(){
-    alert(2)
+    ShowToolingsComponent
   }
 
+ 
 }

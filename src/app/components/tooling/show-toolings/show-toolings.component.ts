@@ -6,7 +6,7 @@ import { ToolingService } from 'src/app/modules/tooling/tooling.service';
 import { Notify } from 'src/app/modules/notify/notify';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HistoryService } from 'src/app/modules/history/history.service';
-import { ApplicationData } from 'src/app/models/home/home.model';
+import { ApplicationData, Profile } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
 
 
@@ -40,6 +40,8 @@ export class ShowToolingsComponent implements OnInit {
   public toolingToChangeStatus : objTooling2;
   public valueStatus:string;
   public valueInOut = 'poner';
+  public profileAdmin = false;
+  public notificationToolingEdit = "";
 
   tooling : Tooling;
   notifyLoading : any;
@@ -52,6 +54,17 @@ export class ShowToolingsComponent implements OnInit {
     this.applicationData = JSON.parse(
       localStorage.getItem(Constants.localStorage)
     );
+    let profiles :any;
+    if(this.applicationData != null){
+      profiles = this.applicationData.profiles; 
+    }
+    
+    for (const profile of profiles) {
+      if(profile.idProfile==2){
+        this.profileAdmin = true;
+      }
+    }
+    console.log(this.applicationData)
   }
 
   changeStatus(modal:any, objTool:objTooling2,action:number){
@@ -106,6 +119,7 @@ export class ShowToolingsComponent implements OnInit {
         this.mttoToolingEdit =  (this.tooling.nextMtce != null) ? ''+this.weeksBetween(new Date(), new Date(this.tooling.nextMtce.replace('T',' ').substring(0,10))) : "NA";
         this.rackToolingEdit =  this.tooling.rack;
         this.positionToolingEdit = this.tooling.position;
+        this.notificationToolingEdit = this.tooling.qtyNotification;
         if(this.typeTooling  != 2){
           this.qtyMttoPassesEdit = this.tooling.mtceQty;
           this.qtyCurrentPasesEdit = this.tooling.actualQty;

@@ -49,7 +49,7 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
         </div>
     </div>
 </div>
@@ -112,6 +112,7 @@
         </div>
     </div>
 
+    <!-- FIRMA PROCESOS -->
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="row justify-content-center">
@@ -144,6 +145,7 @@
         </div>
     </div>
 
+    <!-- FIRMA CALIDAD -->
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="row justify-content-center">
@@ -175,6 +177,40 @@
             </div>
         </div>
     </div>
+
+
+    <!-- FIRMA PRUEBAS -->
+    <div class="row justify-content-center" [hidden]="!isUnivPallet">
+        <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-11 alert alert-success" [hidden]="!pruebasSignDone || pruebasSignRejected">
+                    <i class="fas fa-check"></i>&nbsp;&nbsp;Firma pruebas lista, firmada por {{pruebasSigner}}
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-11 alert alert-warning" [hidden]="pruebasSignDone || pruebasSignPermission || pruebasSignRejected">
+                    <i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;Falta firma pruebas
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-11 alert alert-danger" [hidden]="!pruebasSignRejected">
+                    <i class="fas fa-times"></i>&nbsp;&nbsp;Firma pruebas rechazada
+                </div>
+            </div>
+            <div class="row justify-content-center" [hidden]="pruebasSignDone || !pruebasSignPermission || pruebasSignRejected">
+                <div class="col-4">
+                    <button (click)="signMaintenance('pruebas',false,template2)" class="btn btn-outline-danger btn-lg btn-block mb-3">
+                        <span class="content"><i class="fas fa-thumbs-down"></i>&nbsp;&nbsp;Denegar</span>
+                    </button>
+                </div>
+                <div class="col-7">
+                    <button (click)="signMaintenance('pruebas',true,template2)" class="btn btn-success btn-lg btn-block  mb-3">
+                        <span class="content"><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Aprobar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
       
      
     </div>
@@ -191,8 +227,45 @@
                 <button type="button" class="btn btn-outline-danger mt-1" (click)="modalRef2.hide()">Cancelar</button>
               </div>
               <div class="col-3 form-group">
-                <input type="button" class="btn btn-success btn-lg" id="btnAccept" (click)="addSignMaintenance()" value="Aceptar">
+                <input type="button" class="btn btn-success btn-lg" id="btnAccept" (click)="addSignMaintenance(template3)" value="Aceptar">
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </ng-template>
+
+  <ng-template #template3>
+    <div class="modal-body modal-lg">
+        <div class="row justify-content-center mt-4">
+          <div class="col-11">
+            <h3>Ingrese las credenciales de personal autorizado para {{valueSign}}</h3>
+            <div class="row justify-content-end">
+                <div class="col-12">
+                    <div class="row mt-3">
+                        <div class="form-group col-12">
+                            <label for="exampleInputEmail1">Universal Login</label>
+                            <input type="text" class="form-control" id="txtUser" name="txtuser" placeholder="Enter user name" [(ngModel)]="userToApprove">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" autocomplete="off" class="form-control" id="txtPassword" name="txtpassword" placeholder="Password/2FA Code" [(ngModel)]="pwdToApprove">
+                         </div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="form-group col-12">
+                            <button [disabled]="btnLoading" type="submit" name="btn-submit" class="btn btn-danger btn-lg btn-loading col-sm-12" (click)="validateApproverCredentials()">
+                                <span class="content" [hidden]="btnLoading" >Sign in</span>
+                                <div class="spinner-border text-light" role="status" [hidden]="!btnLoading">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </button>
+                         </div>
+                    </div>
+                </div>
+              
             </div>
           </div>
         </div>
