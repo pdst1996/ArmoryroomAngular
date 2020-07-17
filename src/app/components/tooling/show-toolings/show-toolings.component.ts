@@ -82,48 +82,99 @@ export class ShowToolingsComponent implements OnInit {
     this.openModal3(modal);
   }
 
-  uploadFile(file) {  
+  uploadFile() {  
+    const fileUpload = this.fileUpload.nativeElement;  
+    const file = fileUpload.files[0];  
+    this.files.push({ data: file});  
     const formData = new FormData();  
+    //formData.append('enctype', "multipart/form-data");  
     formData.append('file', file.data);  
-    file.inProgress = true;  
-    this.uploadService.upload(formData).pipe(  
-      map(event => {  
-        switch (event.type) {  
-          case HttpEventType.UploadProgress:  
-            file.progress = Math.round(event.loaded * 100 / event.total);  
-            break;  
-          case HttpEventType.Response:  
-            return event;  
-        }  
-      }),  
-      catchError((error: HttpErrorResponse) => {  
-        file.inProgress = false;  
-        return of(`${file.data.name} upload failed.`);  
-      })).subscribe((event: any) => {  
-        if (typeof (event) === 'object') {  
-          console.log(event.body);  
-        }  
-      });  
+    console.log(file.data)
+
+    this.uploadService.upload(formData).subscribe( 
+      results =>{
+
+      },
+      (err: HttpErrorResponse) => {
+        if (err.error instanceof Error) {
+          console.log("Client-side error");
+        } else {
+          console.log("Server-side error");
+        }
+       console.log(err)
+      }
+    ) 
+     
+      
   }
 
-  private uploadFiles() {  
-    this.fileUpload.nativeElement.value = '';  
-    this.files.forEach(file => {  
-      this.uploadFile(file);  
-    });  
-  }
+ 
 
-  onClick() {  
-    const fileUpload = this.fileUpload.nativeElement;fileUpload.onchange = () => {  
-    for (let index = 0; index < fileUpload.files.length; index++)  
-    {  
-     const file = fileUpload.files[index];  
-     this.files.push({ data: file, inProgress: false, progress: 0});  
-    }  
-      this.uploadFiles();  
-    };  
-    fileUpload.click();  
-  }
+  // onClick() {  
+  //   const fileUpload = this.fileUpload.nativeElement;fileUpload.onchange = () => {  
+  //     for (let index = 0; index < fileUpload.files.length; index++)  
+  //     {  
+  //     const file = fileUpload.files[index];  
+  //     this.files.push({ data: file, inProgress: false, progress: 0});  
+  //     }  
+  //     this.uploadFiles();  
+  //   };  
+  //   fileUpload.click();  
+  // }
+
+//   xd(evt){ 
+//     //The below code is to verificate the extension required
+//     var extension = "" ;
+//     var archivo = document.getElementById("vFileCookbook").value;
+//       var extAllowed = [".png",".jpg"] ;
+//        var error = "" ;
+//        var allowed = false ;
+//        if (!archivo) {
+//          evt.preventDefault();
+//          mMessage("NO ENCONTRADO", "¡No has seleccionado ningún archivo!","error");
+//        }else{
+//              extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
+//     for (var i = 0; i < extAllowed.length; i++) {
+//       if (extAllowed[i] == extension) {
+//               allowed = true;
+//              }
+//     }
+           
+//     if (!allowed) {
+//           evt.preventDefault();
+//         mMessage("REVISA TU EXTENSIÓN", "Comprueba la extensión de la imagen a subir. Sólo se pueden subir archivos con extension .jpg y .png","error",6000);
+//          }else{
+//            evt.preventDefault();
+//       var formData = new FormData($(this)[0]);
+//       $.ajax({
+//         type:'POST',
+//         data:formData,
+//         url:'../UploadCookbook?idfailuremode='+window.vFailureModeSelectedToNewCookbook+'&department='+window.vDepartment,
+//         async:false,
+//         cache:false,
+//         contentType:false,
+//         enctype: 'multipart/form-data',
+//         processData:false,
+//         success: function(result){
+//           if(archivo.value==""){
+//             mMessage("ERROR", "Selecciona un archivo","error");
+//           }else if(!result.includes("Error")){
+//             mMessage("LISTO", result,"success");
+//             document.getElementById("vFileCookbook").value = "";
+//             $('#modalInsertCookbook').modal('hide');
+//           }else{
+//             mMessage("ERROR", result, "error", 7000);
+//           }
+//         },
+//         error: function (e) {
+//           mMessage("ERROR", "Ocurrio algo inesperado. Favor de reportar a IT","error");
+//            }
+//       });
+//          }
+//        }  
+  
+// }
+
 
   changeStatus(modal:any, objTool:objTooling2,action:number){
     this.newStatus = action;

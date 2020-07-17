@@ -1,3 +1,13 @@
+
+<div class="row mt-5 justify-content-center">
+  <div class="col-3">
+    <form id="formInsertCookbook">
+      <input id="vFileCookbook"  class="btn btn-success" type="file" name="file" width="90%;" #fileUpload id="fileUpload" name="fileUpload"/><br>
+      <input class="btn btn-info boton" type="submit" name="Submit" value="Subir" style="width: 30%" (click)="uploadFile()"><br>
+    </form>
+  </div>
+</div>
+
 <div class="mat-elevation-z8 mt-5">
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="id">
@@ -236,8 +246,10 @@
 </ng-template>
 
 
-<!--   
-        <h3>Para poner en scrap el herramental necesita subir una evidencia</h3>
+
+
+  
+        <!-- <h3>Para poner en scrap el herramental necesita subir una evidencia</h3>
         <p>Elija la evidencia (.jpg, .png, .jpeg, .pdf)</p>
         <div class="row justify-content-start mt-2">
           <div class="col-2">
