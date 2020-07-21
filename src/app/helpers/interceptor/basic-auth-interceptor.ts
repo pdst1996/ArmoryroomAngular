@@ -34,12 +34,21 @@ export class BasicAuthInterceptor implements HttpInterceptor {
       localStorage.getItem(Constants.localStorage)
     );
     if (this.loginResponse && this.loginResponse.token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: "Bearer " + this.loginResponse.token,
-          "Content-Type": "application/json; charset=utf-8"
-        }
-      });
+      if(request.url.includes("ScrapEvidence/uploadfile/")){
+        request = request.clone({
+         setHeaders: {
+           Authorization: "Bearer " + this.loginResponse.token,
+         }
+       });
+      }
+      else{
+        request = request.clone({
+          setHeaders: {
+            Authorization: "Bearer " + this.loginResponse.token,
+            "Content-Type": "application/json; charset=utf-8"
+          }
+        });
+      }
     } else {
       request = request.clone();
     }

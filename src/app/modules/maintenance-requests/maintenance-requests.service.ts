@@ -6,7 +6,12 @@ import { Constants } from '../../helpers/constats'
 import { GeneralResponse } from "../../models/login/login.model";
 import { RequestMaintance } from "../../models/request-maintance/request-maintance.model";
 
-
+export class objAprove{
+	id: number;
+	aproved: boolean;
+	comments:string;
+	useraproved:string;
+}
 
 @Injectable({
   providedIn: "root"
@@ -36,7 +41,12 @@ export class MaintenanceRequestsService {
   }
 
   aproveRejectRequestMaintance(action : boolean, idRequestMaintance : number, userAprove : string, comment:string): Observable<GeneralResponse>{
-    return this.httpClient.put<GeneralResponse>(`${this.rmUrl}/updateAproved/${idRequestMaintance}/${action}/${userAprove}/${comment}`,null).pipe();
+    var obj = new objAprove();
+    obj.aproved = action;
+    obj.comments = comment;
+    obj.id = idRequestMaintance;
+    obj.useraproved = userAprove;
+    return this.httpClient.put<GeneralResponse>(`${this.rmUrl}/updateAproved`,obj).pipe();
   }
 
   getEmployeeValidation(employee:string): Observable<GeneralResponse>{

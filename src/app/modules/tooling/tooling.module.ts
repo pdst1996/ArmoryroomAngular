@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
   imports: [
@@ -45,7 +46,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     TabsModule.forRoot(),
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatExpansionModule
     
   ],
   declarations: [

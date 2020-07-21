@@ -9,7 +9,7 @@ import { HistoryService } from 'src/app/modules/history/history.service';
 import { ApplicationData, Profile } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
 import { UploadService } from 'src/app/modules/tooling/upload.service';
-import { of } from 'rxjs';  
+import { of, Subscription } from 'rxjs';  
 import { catchError, map } from 'rxjs/operators';  
 
 
@@ -22,6 +22,7 @@ export class ShowToolingsComponent implements OnInit {
   modalRef: BsModalRef;
   modalRef2: BsModalRef;
   modalRef3: BsModalRef;
+  modalRef4: BsModalRef;
   toolingTable : Tooling[];
   statusArray : Status[];
   displayedColumns: string[] = ['id','project','serial', 'type', 'qtyPasses', 'qtyMtto', 'proxMtto', 'status', 'controls'];
@@ -42,16 +43,24 @@ export class ShowToolingsComponent implements OnInit {
   public applicationData: ApplicationData;
   public newStatus : number;
   public toolingToChangeStatus : objTooling2;
-  public toolingToScrap : objTooling2;
+  public toolingToScrap : Tooling;
   public valueStatus:string;
   public valueInOut = 'poner';
   public profileAdmin = false;
   public notificationToolingEdit = "";
+  public commentScrap = "";
+  public currentfile : any;
+  public fileScrap : any;
+  subscriptions: Subscription[] = [];
+  imgSrcEvidence = "";
+  commentScrapShow = "";
 
   tooling : Tooling;
   notifyLoading : any;
   
-  @ViewChild("fileUpload", {static: false}) fileUpload: ElementRef;files  = [];  
+  @ViewChild("fileUpload", {static: true}) fileUpload: ElementRef;
+  files  = [];  
+
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   constructor(private modalService: BsModalService, private toolingService: ToolingService, private notify:Notify, 
     private historyService: HistoryService,
@@ -75,25 +84,14 @@ export class ShowToolingsComponent implements OnInit {
     console.log(this.applicationData)
   }
 
-  scrapTool(modal:any, objTool:objTooling2){
-    this.toolingToScrap = new objTooling2();
-    this.toolingToScrap = objTool;
-    console.log(objTool)
-    this.openModal3(modal);
-  }
+  viewScrapEvidence(modal:any, objTool:Tooling){
 
-  uploadFile() {  
-    const fileUpload = this.fileUpload.nativeElement;  
-    const file = fileUpload.files[0];  
-    this.files.push({ data: file});  
-    const formData = new FormData();  
-    //formData.append('enctype', "multipart/form-data");  
-    formData.append('file', file.data);  
-    console.log(file.data)
-
-    this.uploadService.upload(formData).subscribe( 
+    this.toolingService.showEvidenceScrap(objTool.pkTooling).subscribe(
       results =>{
-
+        console.log(results)
+        this.openModal4(modal);
+        //this.imgSrcEvidence = "//"+results.data.src;
+        this.commentScrapShow = results.data.comments;
       },
       (err: HttpErrorResponse) => {
         if (err.error instanceof Error) {
@@ -101,80 +99,120 @@ export class ShowToolingsComponent implements OnInit {
         } else {
           console.log("Server-side error");
         }
-       console.log(err)
       }
-    ) 
-     
-      
+    );
+  }
+  
+  scrapTool(modal:any, objTool:Tooling){
+    this.toolingToScrap = objTool;
+    this.openModal3(modal);
   }
 
- 
+  onFileSelected(event:any) {
+    if(event.target.files.length > 0){
+       this.currentfile = event.target.files[0];
+    }
+  }
+   
+  uploadFile() {  
 
-  // onClick() {  
-  //   const fileUpload = this.fileUpload.nativeElement;fileUpload.onchange = () => {  
-  //     for (let index = 0; index < fileUpload.files.length; index++)  
-  //     {  
-  //     const file = fileUpload.files[index];  
-  //     this.files.push({ data: file, inProgress: false, progress: 0});  
-  //     }  
-  //     this.uploadFiles();  
-  //   };  
-  //   fileUpload.click();  
-  // }
+    const file = this.currentfile;
+    var extAllowed = [".png",".jpg", "jpeg", ".pdf"] ;
+    var extension = "";
+    var allowed =  false;
+    var allFine = false;
 
-//   xd(evt){ 
-//     //The below code is to verificate the extension required
-//     var extension = "" ;
-//     var archivo = document.getElementById("vFileCookbook").value;
-//       var extAllowed = [".png",".jpg"] ;
-//        var error = "" ;
-//        var allowed = false ;
-//        if (!archivo) {
-//          evt.preventDefault();
-//          mMessage("NO ENCONTRADO", "¡No has seleccionado ningún archivo!","error");
-//        }else{
-//              extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
-//     for (var i = 0; i < extAllowed.length; i++) {
-//       if (extAllowed[i] == extension) {
-//               allowed = true;
-//              }
-//     }
-           
-//     if (!allowed) {
-//           evt.preventDefault();
-//         mMessage("REVISA TU EXTENSIÓN", "Comprueba la extensión de la imagen a subir. Sólo se pueden subir archivos con extension .jpg y .png","error",6000);
-//          }else{
-//            evt.preventDefault();
-//       var formData = new FormData($(this)[0]);
-//       $.ajax({
-//         type:'POST',
-//         data:formData,
-//         url:'../UploadCookbook?idfailuremode='+window.vFailureModeSelectedToNewCookbook+'&department='+window.vDepartment,
-//         async:false,
-//         cache:false,
-//         contentType:false,
-//         enctype: 'multipart/form-data',
-//         processData:false,
-//         success: function(result){
-//           if(archivo.value==""){
-//             mMessage("ERROR", "Selecciona un archivo","error");
-//           }else if(!result.includes("Error")){
-//             mMessage("LISTO", result,"success");
-//             document.getElementById("vFileCookbook").value = "";
-//             $('#modalInsertCookbook').modal('hide');
-//           }else{
-//             mMessage("ERROR", result, "error", 7000);
-//           }
-//         },
-//         error: function (e) {
-//           mMessage("ERROR", "Ocurrio algo inesperado. Favor de reportar a IT","error");
-//            }
-//       });
-//          }
-//        }  
-  
-// }
+    if (file != null) {
+      extension = (file.name.substring(file.name.lastIndexOf("."))).toLowerCase();
+      for (var i = 0; i < extAllowed.length; i++) {
+        if (extAllowed[i] == extension) {
+          allowed = true;
+        }
+      }
+    }
+    
+    if (this.commentScrap == "") {
+      this.notify.setNotification("Error", "¡Escriba un comentario!", "error");
+    }
+    else{
+      allFine = true;
+    }
+    if(file != null && !allowed){
+      this.notify.setNotification("Error", "¡Selecciona una evidencia con extensión: [.png, .jpg, jpeg, .pdf]!", "error");
+      allFine = false;
+    }
+    else if(file != null){
+      allFine = true;
+      if(file.size > 2048000){
+        this.notify.setNotification("Error", "¡La evidencia debe pesar como máximo 2 MB", "error");
+        allFine = false;
+      }else{
+        allFine = true;
+      }
+    } 
 
+    if (allFine){
+
+      this.notifyLoading = this.notify.setLoading("Scrapeando herramental", this.notifyLoading);
+      this.toolingService.changeStatus(this.toolingToScrap.tooling, 9).subscribe(
+        results =>{
+          this.notify.setNotification("Listo", "El herramental se mando a scrap con éxito", "success");
+          this.notifyLoading = this.notify.setLoadingDone(" Cambios guardados", this.notifyLoading);
+          this.modalRef2.hide();
+          this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Se puso en scrap al herramental (${this.toolingToScrap.tooling})`);
+        },
+        (err: HttpErrorResponse) => {
+          if (err.error instanceof Error) {
+            console.log("Client-side error");
+          } else {
+            console.log("Server-side error");
+          }
+        }
+      );
+      
+      if(file != null){
+        const formData = new FormData();  
+        formData.append('file', file);  
+        formData.append('comments', this.commentScrap);
+        this.uploadService.upload(formData, file.name, this.toolingToScrap.pkTooling).subscribe( 
+          results =>{
+            if(results.success){
+              this.notify.setNotification("Listo", "¡Se guardó la evidencia!", "success");
+              this.getAllToolings();
+              this.modalRef3.hide();
+            }else{
+              this.notify.setNotification("Error", results.message, "error");
+            }
+          },
+          (err: HttpErrorResponse) => {
+            if (err.error instanceof Error) {
+              console.log("Client-side error");
+            } else {
+              console.log("Server-side error");
+            }
+          }
+        );
+      }else{
+        this.uploadService.uploadWF(this.commentScrap, this.toolingToScrap.pkTooling).subscribe( 
+          results =>{
+            if(results.success){
+              this.getAllToolings();
+              this.modalRef3.hide();
+            }else{
+              this.notify.setNotification("Error", results.message, "error");
+            }
+          },
+          (err: HttpErrorResponse) => {
+            if (err.error instanceof Error) {
+              console.log("Client-side error");
+            } else {
+              console.log("Server-side error");
+            }
+          }
+        );
+      }
+    }
+  }
 
   changeStatus(modal:any, objTool:objTooling2,action:number){
     this.newStatus = action;
@@ -310,6 +348,18 @@ export class ShowToolingsComponent implements OnInit {
   openModal3(template: TemplateRef<any>) {
     this.modalRef3 = this.modalService.show(template);
     this.modalRef3.setClass('modal-lg');
+    this.commentScrap = "";
+    
+    this.modalService.onHidden.subscribe((reason: string) => {
+      this.currentfile = null;
+      this.fileScrap = "";
+    })
+    
+  }
+
+  openModal4(template: TemplateRef<any>) {
+    this.modalRef4 = this.modalService.show(template);
+    this.modalRef4.setClass('modal-lg');
   }
 
   applyFilter(event: Event) {

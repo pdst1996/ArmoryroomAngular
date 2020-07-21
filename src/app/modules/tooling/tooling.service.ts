@@ -70,6 +70,9 @@ export class ToolingService {
     return this.httpClient.post<ToolingValidation[]>(`${this.toolingUrl}/changeStatusTools/${pkNewStatus}`,data);
   }
 
+  showEvidenceScrap(idtool:number): Observable<GeneralResponse>{
+    return this.httpClient.get<GeneralResponse>(`${this.toolingUrl}/scrapEvidence/${idtool}`).pipe();
+  }
 
   getToolingById(id:number): Observable<Tooling>{
     return this.httpClient.get<Tooling>(`${this.toolingUrl}/getToolById/${id}`).pipe();
