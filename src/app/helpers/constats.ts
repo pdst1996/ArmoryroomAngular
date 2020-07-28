@@ -11,6 +11,8 @@ export class Constants {
     ? "/" + Constants.application + "/"
     : "http://localhost:8080/" + Constants.application + "/";
 
+  public static pathUpload: string = (Constants.PRODUCTION) ? "http://ril-test.sanmina.com/files/Armoryroom/ScrapArmoryRoomEvidence/" : "file:///home/pedrodaniel_saldana/Armoryroom/ScrapArmoryRoomEvidence/" ;
+
 
   public static masterPageVersion: String = "1.2.0.1";
 

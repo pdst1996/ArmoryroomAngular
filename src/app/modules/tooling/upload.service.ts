@@ -21,7 +21,7 @@ export class UploadService {
     }
 
     public uploadWF(comments:string, idtool:number) : Observable<GeneralResponse>{
-        return this.httpClient.post<GeneralResponse>(`${this.url}whitoutfile/${comments}/${idtool}`, null).pipe();
+        return this.httpClient.post<GeneralResponse>(`${this.url}whitoutfile/${comments}/${idtool}`, "null").pipe();
     }
 
 }

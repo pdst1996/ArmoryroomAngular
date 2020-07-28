@@ -54,6 +54,7 @@ export class ShowToolingsComponent implements OnInit {
   subscriptions: Subscription[] = [];
   imgSrcEvidence = "";
   commentScrapShow = "";
+  withoutFile = false;
 
   tooling : Tooling;
   notifyLoading : any;
@@ -81,7 +82,7 @@ export class ShowToolingsComponent implements OnInit {
         this.profileAdmin = true;
       }
     }
-    console.log(this.applicationData)
+    
   }
 
   viewScrapEvidence(modal:any, objTool:Tooling){
@@ -90,8 +91,15 @@ export class ShowToolingsComponent implements OnInit {
       results =>{
         console.log(results)
         this.openModal4(modal);
-        //this.imgSrcEvidence = "//"+results.data.src;
+        this.imgSrcEvidence = Constants.pathUpload + results.data.fileName;
         this.commentScrapShow = results.data.comments;
+        if(results.data.fileName == null ){
+          this.withoutFile = true;
+        }else if(results.data.fileName.trim() == ""){
+          this.withoutFile = true;
+        }else{
+          this.withoutFile = false;
+        }
       },
       (err: HttpErrorResponse) => {
         if (err.error instanceof Error) {

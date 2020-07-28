@@ -50,7 +50,7 @@
         <button type="button" class="btn btn-danger btn-sm ml-2" title="Poner en scrap" (click)=" scrapTool(template3, element)" [hidden]="element.fkStatus.pkstatus == 9 || !profileAdmin">
           <i class="fas fa-trash"></i>
         </button>
-        <button type="button" class="btn btn-dark btn-sm ml-2" title="Ver evidencia de scrap" (click)=" viewScrapEvidence(template4, element)" [hidden]="true || element.fkStatus.pkstatus != 9 || !profileAdmin">
+        <button type="button" class="btn btn-dark btn-sm ml-2" title="Ver evidencia de scrap" (click)=" viewScrapEvidence(template4, element)" [hidden]="element.fkStatus.pkstatus != 9 || !profileAdmin">
           <i class="fas fa-eye"></i>
         </button>
       </td>
@@ -290,13 +290,25 @@
             <input class="form-control" type="text" [(ngModel)]="commentScrapShow" readonly>
           </div>
         </div>
-        <div class="row justify-content-center mt-2">
+        <div class="row justify-content-center mt-2" [hidden]="withoutFile">
           <div class="col-12">
-            <img class="img-employee ml-3 " src="file:///home/pedrodaniel_saldana/ScrapArmoryRoomEvidence/51_diagrama_factory.png">
+            <img class="img-employee ml-3 " [src]="imgSrcEvidence" width="75%">
             <!-- <img class="img-employee ml-3 " [src]="imgSrcEvidence"> -->
           </div>
+        </div>  
+        <div class="row justify-content-center mt-2" [hidden]="!withoutFile">
+         
+            <div class="col-11 alert alert-warning">
+              No se subió ninguna imagen
+            </div>
+        
         </div>
-        <div class="row justify-content-center mt-3">
+        <div class="row justify-content-center mt-2"> 
+          <div class="col-3 mt-2" [hidden]="withoutFile">
+            <a [href]="imgSrcEvidence" download="EvidenciaScrap" class="btn btn-lg btn-info">
+              Descargar
+            </a>
+          </div>
           <div class="col-5 mt-1">
             <button type="button" class="btn btn-outline-danger mt-1 btn-lg btn-block" (click)="modalRef4.hide();"><span aria-hidden="true">&times;</span>&nbsp;Close</button>
           </div>
