@@ -16,3 +16,5 @@ table{
     margin-top: 1%; 
     width: 90%;
 }
+mat-checkbox ::ng-deep .mat-checkbox-inner-container {width: 24px;height: 24px; margin-top: 7px;}
+mat-checkbox ::ng-deep .mat-checkbox-label {margin-top: 7px;}

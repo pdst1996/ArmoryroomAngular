@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { MatPaginator, MatTableDataSource} from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatCheckboxChange} from '@angular/material';
 import { StationsService } from 'src/app/modules/stations/stations.service';
 import { Station } from 'src/app/models/stations/stations.model';
 import { Notify } from 'src/app/modules/notify/notify';
@@ -10,12 +10,13 @@ import { ProjectsService } from 'src/app/modules/projects/projects.service';
 import { HistoryService } from 'src/app/modules/history/history.service';
 import { ApplicationData } from 'src/app/models/home/home.model';
 import { Constants } from 'src/app/helpers/constats';
-import { Status } from 'src/app/models/tooling/tooling.model';
+
 @Component({
   selector: 'app-stations-config',
   templateUrl: './stations-config.component.html',
   styleUrls: ['./stations-config.component.css']
 })
+
 export class StationsConfigComponent implements OnInit {
   stations : Station[];
   stationData: Station;
@@ -33,6 +34,9 @@ export class StationsConfigComponent implements OnInit {
   public applicationData: ApplicationData;
   stationToDelete:Station;
   action = "save";
+  isSelectiveBox = false;
+  notifyLoading : any;
+  ipMachine = "";
 
   displayedColumns: string[] = ['pkstation','station','project', 'correctVariable', 'unit', 'contramascaraQty', 'action'];
   dataSource :any;
@@ -47,8 +51,9 @@ export class StationsConfigComponent implements OnInit {
     );
   }
 
-  notifyLoading : any;
- 
+  changeIsSelective(mrChange: MatCheckboxChange){
+    this.isSelectiveBox = mrChange.checked;
+  }
 
   getAllStations(){
     this.stationService.findAllStations().subscribe(response =>{
@@ -74,6 +79,9 @@ export class StationsConfigComponent implements OnInit {
       this.referenceContramascara = this.stationData.referenceContramascara;
       this.projectStationEdit=this.stationData.fkProject.pkProject;
       this.contramascaraQty = this.stationData.contramascaraQty;
+      this.isSelectiveBox = this.stationData.isSelective;
+      this.ipMachine = this.stationData.ipMachine;
+
       this.notifyLoading = this.notify.setLoadingDone("Listo", this.notifyLoading);
       this.getAllProjects();
      
@@ -97,12 +105,14 @@ openModal(template: TemplateRef<any>) {
 }
 
 closeModal() {
-this.modalService.hide(1);
+  this.modalService.hide(1);
 }
+
 openModal2(template: TemplateRef<any>) {
   this.modalRef2 = this.modalService.show(template);
   this.modalRef2.setClass('modal-md');
 }
+
 getAllProjects(){
   this.projectService.findAllProjects().subscribe(pprojects =>{
     this.projectsArray = pprojects;
@@ -112,61 +122,60 @@ getAllProjects(){
 
 chargeStationChanges(){
   if(this.correctVariable.trim()=="" || this.unit.trim()=="" || this.stationName.trim()=="" || this.referenceContramascara.trim()=="" || this.referencePallet.trim()=="" ){
-  this.notify.setNotification("Error","Favor de llenar los campos requeridos", "error");
-}else{
-  if(this.contramascaraQty<1){
-  this.notify.setNotification("Error","El numero de contramascaras debe ser mayor a cero", "error");
-}else{
-  if(this.projectStationEdit<1){
-  this.notify.setNotification("Error","Favor de seleccionar el proyecto", "error");
-}else{
-  this.notifyLoading = this.notify.setLoading("Guardando cambios", this.notifyLoading);
-  const objUpdateStation=new Station;
-  const objProject=new Project;
-  objProject.pkProject=this.projectStationEdit;
-
-  objUpdateStation.contramascaraQty=this.contramascaraQty;
-  objUpdateStation.correctVariable=this.correctVariable;
-  objUpdateStation.fkProject=objProject;
-  objUpdateStation.pkstation=this.idStationEdit;
-  objUpdateStation.referenceContramascara=this.referenceContramascara;
-  objUpdateStation.referencePallet=this.referencePallet;
-  objUpdateStation.stationName=this.stationName;
-  objUpdateStation.unit=this.unit;
-console.log(objUpdateStation);
-  this.saveStationChanges(objUpdateStation);
-}
-}
-
-}
-
-
+    this.notify.setNotification("Error","Favor de llenar los campos requeridos", "error");
+  }
+  else if(this.contramascaraQty<1){
+    this.notify.setNotification("Error","El numero de contramascaras debe ser mayor a cero", "error");
+  }
+  else if(this.projectStationEdit<1){
+    this.notify.setNotification("Error","Favor de seleccionar el proyecto", "error");
+  }
+  else if(this.ipMachine.trim() == ""){
+    this.notify.setNotification("Error","Debe ingresar una ip", "error");
+  }
+  else{
+    this.notifyLoading = this.notify.setLoading("Guardando cambios", this.notifyLoading);
+    const objUpdateStation=new Station;
+    const objProject=new Project;
+    objProject.pkProject=this.projectStationEdit;
+    objUpdateStation.contramascaraQty=this.contramascaraQty;
+    objUpdateStation.correctVariable=this.correctVariable;
+    objUpdateStation.fkProject=objProject;
+    objUpdateStation.pkstation=this.idStationEdit;
+    objUpdateStation.referenceContramascara=this.referenceContramascara;
+    objUpdateStation.referencePallet=this.referencePallet;
+    objUpdateStation.stationName=this.stationName;
+    objUpdateStation.unit=this.unit;
+    objUpdateStation.isSelective = this.isSelectiveBox;
+    objUpdateStation.ipMachine  = this.ipMachine;
+    console.log(objUpdateStation);
+    this.saveStationChanges(objUpdateStation);
+  }
 }
 
 saveStationChanges(objUpdate:Station ){
-this.stationService.updateStation(objUpdate).subscribe(
-  results =>{
-    this.notifyLoading = this.notify.setLoadingDone(" Actualizado", this.notifyLoading);
-    if(objUpdate.pkstation==0){
-      this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Insertó la estacion (${objUpdate.pkstation})`);
-    }else{
-    this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Modificó la estacion (${objUpdate.pkstation})`);
-  }
-  this.closeModal();
-this.getAllStations();
-  },
-  (err: HttpErrorResponse) => {
-    if (err.error instanceof Error) {
-      console.log("Client-side error");
-    } else {
-      console.log("Server-side error");
+  this.stationService.updateStation(objUpdate).subscribe(
+    results =>{
+      this.notifyLoading = this.notify.setLoadingDone(" Actualizado", this.notifyLoading);
+      if(objUpdate.pkstation==0){
+        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Insertó la estacion (${objUpdate.pkstation})`);
+      }else{
+        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Modificó la estacion (${objUpdate.pkstation})`);
+      }
+      this.closeModal();
+      this.getAllStations();
+    },
+    (err: HttpErrorResponse) => {
+      if (err.error instanceof Error) {
+        console.log("Client-side error");
+      } else {
+        console.log("Server-side error");
+      }
+      this.notifyLoading = this.notify.setLoadingError(" Ocurrio un error", this.notifyLoading);
     }
-    this.notifyLoading = this.notify.setLoadingError(" Ocurrio un error", this.notifyLoading);
-   
-  }
-);
-
+  );
 }
+
 openModalDelete(modal:any, objStation:Station){
   this.stationToDelete=objStation;
   this.openModal2(modal);
@@ -209,7 +218,8 @@ deleteStation(){
     this.stationName = "";
     this.referencePallet = "";
     this.referenceContramascara = "";
-
+    this.ipMachine = "";
+    this.isSelectiveBox = false;
     this.projectStationEdit=0;
     this.contramascaraQty = 1;
     this.getAllProjects();

@@ -9,4 +9,6 @@ export class Station{
     referenceContramascara: string;
     referencePallet: string;
     unit: string;
+    ipMachine: string;
+    isSelective: boolean;
 }
