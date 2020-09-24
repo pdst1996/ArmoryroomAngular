@@ -35,7 +35,7 @@ export class InOutToolingsComponent implements OnInit {
   public ELEMENT_DATA : ValidationResults[];
   public dataSource : any;
   public statusAvailablesToIn = ["In Line"];
-  public statusAvailablesToOut = ["In Toolcrib"];
+  public statusAvailablesToOut = ["In Armory"];
   public serialsDone = false;
   public delieveringEmployee = "";
   public receivingEmployee = "";
@@ -105,10 +105,10 @@ export class InOutToolingsComponent implements OnInit {
           for (const element of results) {
             if(element.existe){
               if(this.radioModel == 'in' && !this.checkIfExists(this.statusAvailablesToIn, element.status)){
-                this.ELEMENT_DATA.push(new ValidationResults(element.tooling,`Se ecuentra en statuss ${element.status}`));
+                this.ELEMENT_DATA.push(new ValidationResults(element.tooling,`Se encuentra en status ${element.status}`));
               }
               else if(this.radioModel == 'out' && !this.checkIfExists(this.statusAvailablesToOut, element.status)){
-                this.ELEMENT_DATA.push(new ValidationResults(element.tooling,`Se ecuentra en status ${element.status}`));
+                this.ELEMENT_DATA.push(new ValidationResults(element.tooling,`Se encuentra en status ${element.status}`));
               }
               else{
                 auxSerials += element.tooling+"\n";
