@@ -140,6 +140,7 @@ export class ScanPalletComponent implements OnInit {
    
     this.scanPalletService.cazar(obj).subscribe(
       results =>{
+        console.log(results);
         if(results.success){
             this.allFine = true;
             this.alertShow = "success";
@@ -161,7 +162,9 @@ export class ScanPalletComponent implements OnInit {
 
   validateCounterMask(cmNumber: number){
     let auxCM = this.ngModelCM[cmNumber];
-    auxCM = auxCM.replace("'","-").replace("Ñ",":")
+    let comilla = /\'/gi;
+    let ene = /\Ñ/gi;
+    auxCM = auxCM.replace(comilla,"-").replace(ene,":")
     this.scanPalletService.getToolValidation(auxCM,"Contramascara", this.getSelectedStation()).subscribe(
       results =>{
         if(results.success){
@@ -248,7 +251,10 @@ export class ScanPalletComponent implements OnInit {
     
     if(this.selectedStation != 0){
       let auxPallet = this.pallet;
-      this.scanPalletService.getToolValidation(this.pallet, "Pallet", this.getSelectedStation()).subscribe(
+      let comilla = /\'/gi;
+    let ene = /\Ñ/gi;
+      auxPallet=auxPallet.replace(comilla,"-").replace(ene,":")
+      this.scanPalletService.getToolValidation(auxPallet, "Pallet", this.getSelectedStation()).subscribe(
         results =>{
           if(results.success){
             this.palletFine = true;

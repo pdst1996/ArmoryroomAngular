@@ -156,12 +156,20 @@ chargeStationChanges(){
 saveStationChanges(objUpdate:Station ){
   this.stationService.updateStation(objUpdate).subscribe(
     results =>{
+      if(results.success==true){
       this.notifyLoading = this.notify.setLoadingDone(" Actualizado", this.notifyLoading);
       if(objUpdate.pkstation==0){
         this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Insertó la estacion (${objUpdate.pkstation})`);
       }else{
         this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Modificó la estacion (${objUpdate.pkstation})`);
       }
+    }else{
+
+      this.notifyLoading = this.notify.setLoadingError(results.message, this.notifyLoading);
+
+
+    }
+     
       this.closeModal();
       this.getAllStations();
     },

@@ -38,7 +38,7 @@
         </div>
     </div>
     <div class="row justify-content-center">
-        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel != 'stationMode') ? 'las estaciones' : 'los herramantales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" [disabled]="station==0&&tooling.value==null" id="txtElements"> </textarea>
+        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel != 'stationMode') ? 'las estaciones' : 'los herramentales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" [disabled]="station==0&&tooling.value==null" id="txtElements"> </textarea>
         <div class="col-sm-2 mt-4">
             <button class="btn btn-success btn-md mt-5"  (click)="insertElements()" alt="" [hidden]="(radioModel == 'stationMode' && station==0) || (radioModel == 'toolingMode' && tooling.value==null) || txtElementsToSave == ''">&nbsp;<i class="fas fa-save"></i>&nbsp;&nbsp;Insertar&nbsp;</button><br>
             <button class="btn btn-danger btn-md mt-3"  (click)="deleteElements()" alt="" [hidden]="(radioModel == 'stationMode' && station==0) || (radioModel == 'toolingMode' && tooling.value==null)  || (elementsSelected.length == 0)"><i class="fas fa-backspace"></i>&nbsp;&nbsp;Eliminar</button>
