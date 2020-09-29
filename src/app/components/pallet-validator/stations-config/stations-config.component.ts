@@ -159,15 +159,13 @@ saveStationChanges(objUpdate:Station ){
       if(results.success==true){
       this.notifyLoading = this.notify.setLoadingDone(" Actualizado", this.notifyLoading);
       if(objUpdate.pkstation==0){
-        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Insertó la estacion (${objUpdate.pkstation})`);
+        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Insertó la estación (${results.data.pkstation})`);
       }else{
-        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Modificó la estacion (${objUpdate.pkstation})`);
+        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Modificó la estación (${objUpdate.pkstation})`);
       }
     }else{
-
-      this.notifyLoading = this.notify.setLoadingError(results.message, this.notifyLoading);
-
-
+      this.notifyLoading = this.notify.setLoadingError(" Error", this.notifyLoading);
+      this.notify.setNotification("Error",results.message,"error");
     }
      
       this.closeModal();

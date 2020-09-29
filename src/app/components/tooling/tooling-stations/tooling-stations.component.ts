@@ -164,7 +164,7 @@ export class ToolingStationsComponent implements OnInit {
       this.toolingService.deleteStationsFromTooling(this.tooling.value,this.elementsSelected).subscribe(results=>{
         this.loader = this.notify.setLoadingDone("Completado",this.loader);
         this.fillStationsByTooling();
-        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Le quitó las estaciones (${this.elementsSelected}) al herramental (${this.station})`);
+        this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Le quitó las estaciones (${this.elementsSelected}) al herramental (${this.tooling.value})`);
       })
     }
     

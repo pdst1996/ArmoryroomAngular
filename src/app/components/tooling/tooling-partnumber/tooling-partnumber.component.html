@@ -64,7 +64,7 @@
         <br>
     </div>
     <div class="row justify-content-center">
-        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel != 'partNumberMode') ? 'los numeros de parte' : 'los herramantales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" 
+        <textarea class="col-sm-4 form-control" placeholder="Escribe {{ (radioModel != 'partNumberMode') ? 'los numeros de parte' : 'los herramentales'}} a insertar" rows="10" [(ngModel)]="txtElementsToSave" 
         [disabled]="partNumberSelected.value==null && (tooling.value==null || projectSelected2 == 0)" id="txtElements"> </textarea>
         <div class="col-sm-2 mt-4">
             <button class="btn btn-success btn-md mt-5"  (click)="insertElements()" alt="" [hidden]="(radioModel == 'partNumberMode' && partNumberSelected.value==null) || (radioModel == 'toolingMode' && (tooling.value==null || projectSelected2 == 0)) || txtElementsToSave == ''">&nbsp;<i class="fas fa-save"></i>&nbsp;&nbsp;Insertar&nbsp;</button><br>

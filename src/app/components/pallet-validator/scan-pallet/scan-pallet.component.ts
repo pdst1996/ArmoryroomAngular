@@ -149,7 +149,7 @@ export class ScanPalletComponent implements OnInit {
             setTimeout(()=>{
               this.panelClass += ' panel-hide';
             },7000)
-            this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Casó las contramascaras (${this.ngModelCM}) al pallet (${this.pallet} con el serial (${this.serial})`);
+            this.historyService.insertNewHistory(this.applicationData.userInfo.userName,  `Se casaron las contramascaras (${obj.contramascaras}) y el pallet (${obj.pallet}) con el serial (${obj.serial})`);
         }else{
           this.allFine = false;
           this.palletResponse = results.data;
