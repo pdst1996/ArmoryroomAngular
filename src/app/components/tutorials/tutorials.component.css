@@ -1,3 +1,2 @@
-@import "reveal.js/dist/reveal.css";
-
-@import "reveal.js/dist/theme/black.css";
+@import url('ng-revealjs/demo/lib/reveal/styles/reveal.css');
+/* @import url('ng-revealjs/demo/lib/reveal/styles/theme/default.css'); */

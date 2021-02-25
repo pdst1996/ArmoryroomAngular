@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import Reveal from 'reveal.js';
-import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
+import Reveal from "ng-revealjs/src/ng-reveal.js";
+import Markdown from 'ng-revealjs/demo/lib/reveal/plugin/markdown/markdown.js';
+import Highlight from 'ng-revealjs/demo/lib/reveal/plugin/highlight/highlight.js';
+import Notes from 'ng-revealjs/demo/lib/reveal/plugin/notes/notes.js';
+
 
 @Component({
   selector: 'app-tutorials',
@@ -13,11 +16,21 @@ export class TutorialsComponent implements OnInit {
 
   ngOnInit() {
 
-    let deck = new Reveal({
-      plugins: [ Markdown ]
-   })
-   deck.initialize();
+  
 
   }
+
+  // ngAfterViewInit() {
+  //   Reveal.initialize(
+  //     {
+  //       plugins: [
+  //         Markdown,
+  //         Highlight,
+  //         Notes
+  //       ]
+  //     }
+  //   );
+  // }
+
 
 }
